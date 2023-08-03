@@ -14,7 +14,6 @@
 // @match        https://www.linkedin.com/jobs/*
 // @icon         https://www.indeed.com/images/favicon.ico
 // @grant        GM_addStyle
-// @grant        unsafeWindow
 // @require      http://code.jquery.com/jquery-3.4.1.min.js
 // @require      http://bartaz.github.io/sandbox.js/jquery.highlight.js
 // @require      https://gist.github.com/raw/2625891/waitForKeyElements.js
@@ -23,7 +22,6 @@
 (function () {
   "use strict";
   var $ = window.jQuery;
-  var waitForKeyElements = unsafeWindow.waitForKeyElements;
 
   //A list of terms to always highlight
   const descriptionAlwaysHighlight = [
@@ -51,7 +49,7 @@
     "able to obtain",
     "security clearance",
     "(Required)",
-    " do not apply if",
+    "do not apply if",
     "should be comfortable",
     "must be comfortable",
   ];

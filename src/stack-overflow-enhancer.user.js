@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Stack Overflow Enhancer
 // @namespace    https://github.com/FiniteLooper/UserScripts
-// @version      0.1
+// @version      0.2
 // @description  Improve some UI/UX stuff on StackOverflow
 // @author       Chris Barr
 // @homepageURL  https://github.com/FiniteLooper/UserScripts
@@ -163,7 +163,7 @@
     const startPos = textarea.selectionStart;
     const endPos = textarea.selectionEnd;
     if (ev.key === "Tab") {
-      event.preventDefault(); //stop the focus from changing
+      ev.preventDefault(); //stop the focus from changing
       const isUnIndenting = ev.shiftKey;
 
       if (startPos === endPos) {
@@ -186,7 +186,8 @@
         textarea.setSelectionRange(newCursorPos, newCursorPos);
       } else {
         //Indent/unindent the selected text
-        const selection = v.substring(startPos, endPos);
+        const lineStartPos = v.slice(0, startPos).lastIndexOf("\n") + 1;
+        const selection = v.substring(lineStartPos, endPos);
         let result = "";
         const lines = selection.split("\n");
         for (let i = 0; i < lines.length; i++) {
@@ -205,13 +206,23 @@
         }
 
         textarea.value = v.split(selection).join(result);
-        textarea.setSelectionRange(startPos, startPos + result.length);
+        if (isUnIndenting) {
+          textarea.setSelectionRange(
+            Math.max(startPos - editorIndentSpaces, lineStartPos),
+            lineStartPos + result.length
+          );
+        } else {
+          textarea.setSelectionRange(
+            startPos + editorIndentSpaces,
+            lineStartPos + result.length
+          );
+        }
       }
     } else if (ev.key === "Enter") {
       //When enter is pressed, maintain the current indentation level
 
       //We will place the newline character manually, this stops it from being typed
-      event.preventDefault();
+      ev.preventDefault();
 
       //Get the current indentation level and prefix the new line with the same
       const prevLinePos = v.slice(0, startPos).lastIndexOf("\n") + 1;

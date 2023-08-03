@@ -3,7 +3,7 @@ A few Tampermonkey/Greasemonkey scripts I've made
 
 
 # How to use
-* Install the [Tampermonkey browser plugin](https://www.tampermonkey.net/) or [GreaseMonkey browser plugin][https://www.greasespot.net/]
+* Install the [Tampermonkey browser plugin](https://www.tampermonkey.net/) or [GreaseMonkey browser plugin](https://www.greasespot.net/)
 * Navigate to one of the scripts either in the `/src/` folder and click the "RAW" button, or click one of the install links below
 
 

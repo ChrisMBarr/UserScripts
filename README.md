@@ -7,14 +7,17 @@ A few Tampermonkey/Greasemonkey scripts I've made
 * Navigate to one of the scripts either in the `/src/` folder and click the "RAW" button, or click one of the install links below
 
 
-# The Scripts
-
 ## Job Search Highlighting
-**Features**
+**[📜 Install Job Search Highlighting Script](https://raw.githubusercontent.com/FiniteLooper/UserScripts/main/src/job-search-highlighting.user.js)**
+
+### Features
 *  Highlight key words, locations, and your search terms if they are found within job descriptions
 *  Works on https://Indeed.com, https://Dice.com, https://ZipRecruiter.com, and https://Remote.co
 
-**Configuration**
+#### Demo
+![combo-tags](doc-img/job-indeed.gif)
+
+#### Configuration
 The key words that will be highlighted are split up into several categories, all of which are highlighted in different colors
 | Property                     | Type       | Description                                                                                                                                 |
 |:-----------------------------|:-----------|:--------------------------------------------------------------------------------------------------------------------------------------------|
@@ -28,18 +31,27 @@ How to use
 
 After installing you will need to edit the configuration variables described above to match whatever your preferences are.
 
-**[📜 Install Job Search Highlighting](https://raw.githubusercontent.com/FiniteLooper/UserScripts/main/src/job-search-highlighting.user.js)**
-
 
 ## Stack Overflow Enhancer
-**Features**
+**[📜 Install Stack Overflow Enhancer Script](https://raw.githubusercontent.com/FiniteLooper/UserScripts/main/src/stack-overflow-enhancer.user.js)**
+
+### Features
 *  Hides certain items in the right sidebar
 *  Highlights/flags tags on a question if specific combinations are found
 *  Allows easy indenting of code/text when editing a question or an answer (not within the snippet editor, just the plain question/answer editor)
 *  Adds a button to the question/answer toolbar to convert all tab indentations to spaces
 *  Adds "comment snippets" when adding a comment. Helpful if you find yourself re-writing the exact same comment many times (useful for moderating questions from new users)
 
-**Configuration**
+#### Flagged Tag Combinations
+![combo-tags](doc-img/so-combo-tags.png)
+
+#### Comment Snippets
+![comment snippet](doc-img/so-comment-snippet.gif)
+
+#### Enhanced editor indenting
+![indenting](doc-img/so-indenting.gif)
+
+#### Configuration
 | Property                         | Type         | Description                                                                                                  |
 |:---------------------------------|:-------------|:-------------------------------------------------------------------------------------------------------------|
 | `flagTagCombos`                  | `string[][]` | tags that when all are found in combination on a question they are highlighted in **red**. This is useful when moderating to improve question quality and searchability.  This might alert you that either one of these tags was likely added as a mistake, or that the question asker is using several things in combination that they probably should not be doing |
@@ -50,7 +62,5 @@ After installing you will need to edit the configuration variables described abo
 | `editorIndentSpaces`             | `number`     | number of spaces to use when indenting code.                                                                 |
 | `commentSnippets`                | `object[]`   | Each comment snippet has a display `name` property and a `text` property which contains the actual comment   |
 
-
 After installing you can edit the configuration variables described above to match whatever your preferences are.
 
-**[📜 Install Job Search Highlighting](https://raw.githubusercontent.com/FiniteLooper/UserScripts/main/src/stack-overflow-enhancer.user.js)**

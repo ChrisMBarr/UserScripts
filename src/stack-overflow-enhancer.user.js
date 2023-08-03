@@ -41,19 +41,19 @@
   const commentSnippets = [
     {
       name: "Welcome - How To Ask",
-      text: "Welcome to StackOverflow! Please take a look at the article on [How to Ask a Good Question](//stackoverflow.com/help/how-to-ask) as it will help you out in the future",
+      text: "Welcome to StackOverflow! Please take a look at the article on [How to Ask a Good Question](//stackoverflow.com/help/how-to-ask) as it will help you out in the future. Right now your question is missing some details that make it difficult for anyone to answer.",
     },
     {
       name: "Minimal Reproducible Example - General",
-      text: "Your question seems to be missing some detail. In order to help you we need a [Minimal Reproducible Example](//stackoverflow.com/help/minimal-reproducible-example). Please review that article in that link and edit your question so that it has enough code and detail for someone to be able to help you.",
+      text: "Your question seems to be missing some detail. In order to help you we need a [Minimal Reproducible Example](//stackoverflow.com/help/minimal-reproducible-example) directly in your question.  Please [edit your question](//stackoverflow.com/posts/{{QUESTION_ID}}/edit) and click the button in the toolbar that looks like `[<>]` to add a code snippet to your question. When you add it please be sure that it properly demonstrates the issue you are having.",
     },
     {
       name: "Minimal Reproducible Example - External Code",
-      text: "Welcome to StackOverflow! Please take a look at the article on [How to Ask a Good Question](//stackoverflow.com/help/how-to-ask) as it will help you out in the future.  Please include your code directly in the question instead of linking to it on another site.  Your question becomes much easier to answer when the code you want help with is actually in the question. Please [edit your question](//stackoverflow.com/posts/{{QUESTION_ID}}/edit) and click the button in the toolbar that looks like `[<>]` to add a code snippet to your question.",
+      text: "Your question seems to be missing some detail. In order to help you we need a [Minimal Reproducible Example](//stackoverflow.com/help/minimal-reproducible-example) directly in your question. Please do not just point us to code linked to another website - code presented there might change or disappear over time, leaving the question here without any context for future readers. Your question becomes much easier to answer when the code you want help with is actually in the question. Please [edit your question](//stackoverflow.com/posts/{{QUESTION_ID}}/edit) and click the button in the toolbar that looks like `[<>]` to add a code snippet to your question.",
     },
     {
       name: "Images of Code",
-      text: "Please do not post images of your code and/or error messages. Post the actual text instead. This makes it easier for people to help you and for others to find this question in a search if they have similar issues in the future.  Please read over the answers to this question: [Why should I not upload images of code/data/errors?](//meta.stackoverflow.com/q/285551)",
+      text: "Please do not post images of your code and/or error messages. Post the actual text instead. This makes it easier for people to help you and for others to find this question in a search if they have similar issues in the future.  Please read over the answers to this question to understand a bit more about this: [Why should I not upload images of code/data/errors?](//meta.stackoverflow.com/q/285551)",
     },
   ];
 
@@ -62,7 +62,7 @@
   //------------------------------------------------------------------------------------------------------------
   //Set the color for highlighted tag combinations
   GM_addStyle(
-    `.js-tag-combo-flag a{background-color:rgb(113, 65, 65)!important;}`
+    `.js-tag-combo-flag > a{background-color:rgb(113, 65, 65)!important;}`
   );
 
   //------------------------------------------------------------------------------------------------------------

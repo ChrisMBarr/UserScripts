@@ -44,8 +44,16 @@
       text: "Welcome to StackOverflow! Please take a look at the article on [How to Ask a Good Question](//stackoverflow.com/help/how-to-ask) as it will help you out in the future. Right now your question is missing some details that make it difficult for anyone to answer.",
     },
     {
-      name: "Minimal Reproducible Example - General",
-      text: "Your question seems to be missing some detail. In order to help you we need a [Minimal Reproducible Example](//stackoverflow.com/help/minimal-reproducible-example) directly in your question.  Please [edit your question](//stackoverflow.com/posts/{{QUESTION_ID}}/edit) and click the button in the toolbar that looks like `[<>]` to add a code snippet to your question. When you add it please be sure that it properly demonstrates the issue you are having.",
+      name: "Minimal Reproducible Example - No Code",
+      text: "Your question seems to be missing some detail. If you want help with your code, it's impossible for anyone to help you if you don't show the code you want help with. In order to help you we need a [Minimal Reproducible Example](//stackoverflow.com/help/minimal-reproducible-example) directly in your question.  Please [edit your question](//stackoverflow.com/posts/{{QUESTION_ID}}/edit) and add some code to your question.",
+    },
+    {
+      name: "Minimal Reproducible Example - Add More Code",
+      text: "Your question seems to be missing some detail. In order to help you we need a [Minimal Reproducible Example](//stackoverflow.com/help/minimal-reproducible-example) directly in your question.  Please [edit your question](//stackoverflow.com/posts/{{QUESTION_ID}}/edit) and add some code to your question.",
+    },
+    {
+      name: "Minimal Reproducible Example - Add Snippet",
+      text: "Your question seems to be missing some detail. In order to help you we need a [Minimal Reproducible Example](//stackoverflow.com/help/minimal-reproducible-example) directly in your question.  Please [edit your question](//stackoverflow.com/posts/{{QUESTION_ID}}/edit) and click the button in the toolbar that looks like `[<>]` to add a code snippet to your question. When you add it, please be sure that it properly demonstrates the issue you are having.",
     },
     {
       name: "Minimal Reproducible Example - External Code",

@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Stack Overflow Enhancer
 // @namespace    https://github.com/FiniteLooper/UserScripts
-// @version      0.2
+// @version      0.3
 // @description  Improve some UI/UX stuff on StackOverflow
 // @author       Chris Barr
 // @homepageURL  https://github.com/FiniteLooper/UserScripts
@@ -73,6 +73,8 @@
   GM_addStyle(
     [
       `.${classNameTagComboFlag} > a{background-color:var(--red-100)!important;color:var(--red-900)!important;}`,
+      `.${classNameClosedQuestion} {background-color:var(--powder-050)!important;--_ps-state-fc:var(--powder-500)!important;--_ps-meta-tags-tag-bg:var(--powder-200)!important;}`,
+      `.${classNameClosedQuestion} .post-tag{color:var(--powder-500) !important}`,
     ].join("")
   );
 
@@ -101,6 +103,13 @@
   if (sidebarHideHotNetworkQuestions) {
     $("#hot-network-questions").hide();
   }
+
+  //------------------------------------------------------------------------------------------------------------
+  //Dim closed questions
+  $("#mainbar")
+    .find(".s-post-summary--content-title:contains([closed])")
+    .parents(".s-post-summary")
+    .addClass(classNameClosedQuestion);
 
   //------------------------------------------------------------------------------------------------------------
   //Highlight question tag combinations

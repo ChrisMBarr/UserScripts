@@ -66,16 +66,22 @@
   ];
 
   //------------------------------------------------------------------------------------------------------------
-  // HIGHLIGHTING STYLES
+  // CUSTOM STYLES
   //------------------------------------------------------------------------------------------------------------
-  //Set the color for highlighted tag combinations
+  const classNameTagComboFlag = "SOE--tag-combo-flag";
+  const classNameClosedQuestion = "SOE--closed-question";
   GM_addStyle(
-    `.js-tag-combo-flag > a{background-color:rgb(113, 65, 65)!important;}`
+    [
+      `.${classNameTagComboFlag} > a{background-color:var(--red-100)!important;color:var(--red-900)!important;}`,
+    ].join("")
   );
 
   //------------------------------------------------------------------------------------------------------------
   // THE CODE
   //------------------------------------------------------------------------------------------------------------
+
+  //------------------------------------------------------------------------------------------------------------
+  //Hide some elements
   const $sidebarItems = $("#sidebar").children();
   if (sidebarHideBlogs) {
     $sidebarItems
@@ -111,7 +117,7 @@
               .filter(
                 (i, tag) => tag.innerText.trim().toLowerCase() === tagText
               )
-              .addClass("js-tag-combo-flag")
+              .addClass(classNameTagComboFlag)
           );
         }
       });

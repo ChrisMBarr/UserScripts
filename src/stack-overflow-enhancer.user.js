@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Stack Overflow Enhancer
 // @namespace    https://github.com/FiniteLooper/UserScripts
-// @version      0.3
+// @version      0.4
 // @description  Improve some UI/UX stuff on StackOverflow
 // @author       Chris Barr
 // @homepageURL  https://github.com/FiniteLooper/UserScripts
@@ -69,22 +69,28 @@
   // CUSTOM STYLES
   //------------------------------------------------------------------------------------------------------------
   const classNameTagComboFlag = "SOE--tag-combo-flag";
+  const classNameTagCurrentlyViewing = "SOE--tag-currently-viewing";
   const classNameClosedQuestion = "SOE--closed-question";
   GM_addStyle(
+    //Note that the CSS rule order matters here for when certain things should be overridden by others
     [
-      `.${classNameTagComboFlag} > a{background-color:var(--red-100)!important;color:var(--red-900)!important;}`,
       `.${classNameClosedQuestion} {background-color:var(--powder-050)!important;--_ps-state-fc:var(--powder-500)!important;--_ps-meta-tags-tag-bg:var(--powder-200)!important;}`,
       `.${classNameClosedQuestion} .post-tag{color:var(--powder-500) !important}`,
+      `.${classNameTagCurrentlyViewing} > .post-tag{background-color:var(--green-100)!important;color:var(--green-900)!important;border-color:var(--green-300)!important;}`,
+      `.${classNameTagComboFlag} > .post-tag{background-color:var(--red-100)!important;color:var(--red-900)!important;border-color:var(--red-300)!important;}`,
     ].join("")
   );
 
   //------------------------------------------------------------------------------------------------------------
   // THE CODE
   //------------------------------------------------------------------------------------------------------------
+  const $sidebar = $("#sidebar");
+  const $mainContent = $("#mainbar");
+  const $sidebarItems = $sidebar.children();
+  const $questionTags = $mainContent.find(".js-post-tag-list-wrapper");
 
   //------------------------------------------------------------------------------------------------------------
   //Hide some elements
-  const $sidebarItems = $("#sidebar").children();
   if (sidebarHideBlogs) {
     $sidebarItems
       .find(".s-sidebarwidget--header:contains(The Overflow Blog)")
@@ -106,14 +112,28 @@
 
   //------------------------------------------------------------------------------------------------------------
   //Dim closed questions
-  $("#mainbar")
+  $mainContent
     .find(".s-post-summary--content-title:contains([closed])")
     .parents(".s-post-summary")
     .addClass(classNameClosedQuestion);
 
   //------------------------------------------------------------------------------------------------------------
+  //Highlight tag being currently viewed
+  const tagPathPrefix = "/questions/tagged/";
+  if (location.pathname.includes(tagPathPrefix)) {
+    const tags = location.pathname.replace(tagPathPrefix, "").split("+");
+    $questionTags
+      .add($sidebar.find(".js-tag"))
+      .find(`a.post-tag`)
+      .filter((i, el) => {
+        return tags.includes(el.innerText);
+      })
+      .parent()
+      .addClass(classNameTagCurrentlyViewing);
+  }
+
+  //------------------------------------------------------------------------------------------------------------
   //Highlight question tag combinations
-  const $questionTags = $(".js-post-tag-list-wrapper");
   if ($questionTags.length) {
     $questionTags.each((i, el) => {
       const $tags = $(el).children();
@@ -135,7 +155,7 @@
 
   //------------------------------------------------------------------------------------------------------------
   //Easy indent/unindent when editing a question or answer
-  const $editLinks = $(".js-edit-post");
+  const $editLinks = $mainContent.find(".js-edit-post");
   $editLinks.on("click", (editClickEvent) => {
     setTimeout(() => {
       const $editTextarea = $(editClickEvent.target)
@@ -263,7 +283,7 @@
 
   //------------------------------------------------------------------------------------------------------------
   //Pre-written Comment snippets
-  $(".js-add-link").on("click", (editClickEvent) => {
+  $mainContent.find(".js-add-link").on("click", (editClickEvent) => {
     //Add a dropdown near the comment field
     setTimeout(() => {
       const $commentLayout = $(editClickEvent.target)

@@ -12,7 +12,7 @@ A few Tampermonkey/Greasemonkey scripts I've made
 
 ### Features
 *  Highlight key words, locations, and your search terms if they are found within job descriptions
-*  Works on https://Indeed.com, https://Dice.com, https://ZipRecruiter.com, https://Remote.co, https://jobsfordevelopers.com, and https://jobot.com
+*  Works on https://Indeed.com, https://Dice.com, https://ZipRecruiter.com, https://Remote.co, https://JobsForDevelopers.com, and https://Jobot.com
 
 #### Demo
 ![combo-tags](doc-img/job-indeed.gif)

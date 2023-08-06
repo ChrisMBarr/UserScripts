@@ -259,6 +259,9 @@
   runForHostname("jobot.com", (path) => {
     searchParam = "q";
     if (path.startsWith("/search")) {
+      //More clear highlighting of the current job
+      GM_addStyle(`.search-result .job.selected{box-shadow: 0 0 0.8rem #23b3e7;}`);
+      
       waitForKeyElements(".JobDescription", highlightJobDesc, false);
       waitForKeyElements(
         ".JobPanel .header-details li",

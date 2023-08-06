@@ -12,7 +12,7 @@ A few Tampermonkey/Greasemonkey scripts I've made
 
 ### Features
 *  Highlight key words, locations, and your search terms if they are found within job descriptions
-*  Works on https://Indeed.com, https://Dice.com, https://ZipRecruiter.com, and https://Remote.co
+*  Works on https://Indeed.com, https://Dice.com, https://ZipRecruiter.com, https://Remote.co, https://jobsfordevelopers.com, and https://jobot.com
 
 #### Demo
 ![combo-tags](doc-img/job-indeed.gif)
@@ -24,7 +24,7 @@ The key words that will be highlighted are split up into several categories, all
 | `descriptionAlwaysHighlight` | `string[]` | words to always highlight in **yellow** when found in a job description                                                                     |
 | `descriptionAlwaysFlag`      | `string[]` | words to always highlight in **red** as "flagged" terms. Not necessarily bad things, but things to be sure you are aware of before applying |
 | `workTypesAlwaysHighlight`   | `string[]` | words to always highlight in **purple** as the job type (full time, part time, W2, etc.)                                                    |
-| `locationHighlightPattern`   | `RexExp`   | the location(s) of your choice. This currently defaults to anything remote or in the Charlotte, NC area.                                    |
+| `locationHighlightPattern`   | `RexExp`   | the location(s) of your choice. Defaults to anything remote or in the Charlotte, NC area (that's where I live, change it to your location!) |
 
 For example, when looking for a remote position there are lots of jobs that say "remote from Los Angeles, CA". If you don't live in that city, even though it's remote it doesn't really apply to you. This allows you to highlight the location if it is simply "remote" (with no location) or you can specify things to look for in the location to highlight them for the locations you are interested in.
 How to use

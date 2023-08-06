@@ -1,8 +1,8 @@
 // ==UserScript==
-// @name         Job Search Highlighting (Indeed, Dice, ZipRecruiter, LinkedIn, Remote.co)
+// @name         Job Search Highlighting (Indeed, Dice, ZipRecruiter, LinkedIn, Remote.co, JobsForDevelopers.com, Jobot.com)
 // @namespace    https://github.com/FiniteLooper/UserScripts
-// @version      0.7
-// @description  Highlights key words and locations on Indeed.com, Dice.com, LinkedIn.com, and Remote.co - also highlights your search string on Indeed
+// @version      0.8
+// @description  Highlights key words and locations on many popular job sites
 // @author       Chris Barr
 // @homepageURL  https://github.com/FiniteLooper/UserScripts
 // @updateURL    https://github.com/FiniteLooper/UserScripts/blob/master/src/job-search-highlighter.user.js
@@ -12,6 +12,8 @@
 // @match        https://www.remote.co/job/*
 // @match        https://www.ziprecruiter.com/jobs/*
 // @match        https://www.linkedin.com/jobs/*
+// @match        https://jobsfordevelopers.com/jobs/*
+// @match        https://jobot.com/*
 // @icon         https://www.indeed.com/images/favicon.ico
 // @grant        GM_addStyle
 // @require      http://code.jquery.com/jquery-3.4.1.min.js
@@ -73,7 +75,7 @@
   //Just "remote" or any location that includes specific words like "remote in Charlotte, NC"
   //This way we don't highlight results like "Remote from Las Vegas, NM" - although it is remote, you don't live there
   const locationHighlightPattern =
-    /(^remote(, US.*)?$)|(^remote or.+)|United States \(?Remote\)?|hybrid remote|charlotte|, nc|north carolina/i;
+    /(^remote(, US.*)?$)|(^remote;? united states$)|(^remote or.+)|United States;? \(?Remote\)?|hybrid remote|charlotte|, nc|north carolina/i;
 
   //------------------------------------------------------------------------------------------------------------
   // HIGHLIGHTING STYLES
@@ -114,31 +116,36 @@
   }
 
   function highlightLocation(jNode) {
-    $(jNode).each((i, n) => {
+    $(jNode).each((_i, n) => {
       const txt = n.innerText
         .replace(/^location:/i, "")
         .replace(/[\n\r]+/gi, " ")
         .trim();
+
       if (locationHighlightPattern.test(txt)) {
         $(n).highlight(txt, { className: "job-highlight" });
       }
     });
   }
 
+  function runForHostname(partialUrl, fn) {
+    if (location.hostname.includes(partialUrl)) fn(location.pathname);
+  }
+
   //------------------------------------------------------------------------------------------------------------
   // Website-specific elements
   //------------------------------------------------------------------------------------------------------------
-  if (location.hostname.includes("indeed.com")) {
+
+  //===========
+  //INDEED
+  runForHostname("indeed.com", (path) => {
     searchParam = "q";
     //Improve the look of the currently selected job - a more visible shadow/glow
     GM_addStyle(`.mosaic-provider-jobcards .desktop.vjs-highlight .slider_container{
-          box-shadow: 0 0.125rem 0.25rem rgba(0,0,0,.5), 0 0 0.8rem rgba(37, 87, 167,.5);
-        }`);
+        box-shadow: 0 0.125rem 0.25rem rgba(0,0,0,.5), 0 0 0.8rem rgba(37, 87, 167,.5);
+      }`);
 
-    if (
-      location.pathname.startsWith("/job/") ||
-      location.pathname.startsWith("/viewjob")
-    ) {
+    if (path.startsWith("/job/") || path.startsWith("/viewjob")) {
       //static individual job details page
       waitForKeyElements("#jobDescriptionText", highlightJobDesc);
       waitForKeyElements(
@@ -156,8 +163,12 @@
         );
       }, 1000);
     }
-  } else if (location.hostname.includes("dice.com")) {
-    if (location.pathname.startsWith("/job-detail/")) {
+  });
+
+  //===========
+  //DICE
+  runForHostname("dice.com", (path) => {
+    if (path.startsWith("/job-detail/")) {
       //individual job detail page
       waitForKeyElements("#jobDescription", highlightJobDesc);
       waitForKeyElements(
@@ -173,16 +184,28 @@
       //ajax job search page
       waitForKeyElements(".search-result-location", highlightLocation, false);
     }
-  } else if (location.hostname.includes("remote.co")) {
+  });
+
+  //===========
+  //REMOTE.CO
+  runForHostname("remote.co", (path) => {
     waitForKeyElements(".job_description", highlightJobDesc);
     waitForKeyElements(".location_sm", highlightLocation);
-  } else if (location.hostname.includes("ziprecruiter.com")) {
+  });
+
+  //===========
+  //ZIP RECRUITER
+  runForHostname("ziprecruiter.com", (path) => {
     waitForKeyElements(".job_description", highlightJobDesc);
     waitForKeyElements(".job_header .hiring_location", highlightLocation);
 
     //auto-expand the description
     $(".job_details_tile").addClass("clicked");
-  } else if (location.hostname.includes("linkedin.com")) {
+  });
+
+  //===========
+  //LINKEDIN
+  runForHostname("linkedin.com", (path) => {
     searchParam = "keywords";
     //auto-expand the description
     waitForKeyElements(".jobs-description footer button", function (n) {
@@ -211,8 +234,8 @@
       }
 
       if (
-        location.pathname.startsWith("/jobs/collections/") ||
-        location.pathname.startsWith("/jobs/search/")
+        path.startsWith("/jobs/collections/") ||
+        path.startsWith("/jobs/search/")
       ) {
         //select additional items for the AJAX search
         highlightLocation(
@@ -222,5 +245,37 @@
         );
       }
     }, 1000);
-  }
+  });
+
+  //===========
+  //JOBS FOR DEVELOPERS
+  runForHostname("jobsfordevelopers.com", (path) => {
+    //Locations are easy to see on this site, and the format they use is different from other sites. Not worth highlighting locations for this site
+    waitForKeyElements(".container .prose", highlightJobDesc);
+  });
+
+  //===========
+  //JOBOT
+  runForHostname("jobot.com", (path) => {
+    searchParam = "q";
+    if (path.startsWith("/search")) {
+      waitForKeyElements(".JobDescription", highlightJobDesc, false);
+      waitForKeyElements(
+        ".JobPanel .header-details li",
+        highlightLocation,
+        false
+      );
+
+      setInterval(() => {
+        highlightLocation(
+          document.querySelectorAll(".search-result .header-details li")
+        );
+      }, 1000);
+    } else if (path.startsWith("/details/")) {
+      setTimeout(() => {
+        waitForKeyElements(".JobDescription", highlightJobDesc);
+        waitForKeyElements(".header-details li, .JobInfoCard .q-item__section--main, .JobInfoCard .q-item__section--main .content div", highlightLocation);
+      }, 1000);
+    }
+  });
 })();

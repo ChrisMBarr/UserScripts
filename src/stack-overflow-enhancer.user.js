@@ -121,7 +121,7 @@
   //Highlight tag being currently viewed
   const tagPathPrefix = "/questions/tagged/";
   if (location.pathname.includes(tagPathPrefix)) {
-    const tags = location.pathname.replace(tagPathPrefix, "").split("+");
+    const tags = location.pathname.replace(tagPathPrefix, "").split("+").map(decodeURIComponent);
     $questionTags
       .add($sidebar.find(".js-tag"))
       .find(`a.post-tag`)

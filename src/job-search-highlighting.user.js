@@ -167,7 +167,7 @@
       setInterval(function () {
         highlightJobDesc($("#jobDescriptionText"));
         highlightLocation(
-          $("#mosaic-provider-jobcards .companyLocation"),
+          $("#mosaic-provider-jobcards .companyLocation, #mosaic-provider-jobcards .companyLocation span:not(.companyLocation--extras)"),
           true
         );
         highlightLocation(

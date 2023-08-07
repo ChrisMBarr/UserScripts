@@ -57,7 +57,7 @@
     },
     {
       name: "Minimal Reproducible Example - External Code",
-      text: "In order to help you we need a [Minimal Reproducible Example](//stackoverflow.com/help/minimal-reproducible-example) directly in your question. Please do not just point us to code linked to another website. Code on that site might change or disappear over time, leaving the question here without any context for future readers. Your question becomes much easier to answer when the code you want help with is actually in the question. Please [edit your question](//stackoverflow.com/posts/76855015/edit) and click the button in the toolbar that looks like `[<>]` to add a code snippet to your question",
+      text: "In order to help you we need a [Minimal Reproducible Example](//stackoverflow.com/help/minimal-reproducible-example) directly in your question. Please do not just point us to code linked to another website. Code on that site might change or disappear over time, leaving the question here without any context for future readers. Your question becomes much easier to answer when the code you want help with is actually in the question. Please [edit your question](//stackoverflow.com/posts/{{QUESTION_ID}}/edit) and click the button in the toolbar that looks like `[<>]` to add a code snippet to your question",
     },
     {
       name: "Images of Code",

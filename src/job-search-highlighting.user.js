@@ -115,9 +115,19 @@
     }
   }
 
-  function highlightLocation(jNode) {
+  function highlightLocation(jNode, textNodesOnly) {
     $(jNode).each((_i, n) => {
-      const txt = n.innerText
+      let txt = n.innerText;
+
+      if (textNodesOnly) {
+        //This will ignore text from any child nodes
+        txt = [...n.childNodes]
+          .filter((c) => c.nodeType === 3)
+          .map((c) => c.nodeValue)
+          .join("");
+      }
+
+      txt = txt
         .replace(/^location:/i, "")
         .replace(/[\n\r]+/gi, " ")
         .trim();
@@ -159,7 +169,8 @@
         highlightLocation(
           document.querySelectorAll(
             '#mosaic-provider-jobcards .companyLocation, .jobsearch-CompanyInfoWithReview [data-testid="inlineHeader-companyLocation"], .jobsearch-CompanyInfoWithoutHeaderImage [data-testid="inlineHeader-companyLocation"]'
-          )
+          ),
+          true
         );
       }, 1000);
     }

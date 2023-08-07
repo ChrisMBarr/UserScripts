@@ -264,12 +264,15 @@
       `.search-result .job.selected{box-shadow: 0 0 0.8rem #23b3e7;border-radius:10px 0 0 10px;}`
     );
 
-    //This is a React single-page app so we cannot check for URLs since the page never reloads
+    //This is a single-page app so we cannot check for URLs since the page never reloads
+    //We need to wait a bit for the app to initialize and then it's good to go
+    setTimeout(() => {
       waitForKeyElements(".JobDescription", highlightJobDesc, false);
       waitForKeyElements(
       ".header-details li, .JobInfoCard .q-item__section--main, .JobInfoCard .q-item__section--main .content div",
         highlightLocation,
         false
       );
+    }, 1000);
   });
 })();

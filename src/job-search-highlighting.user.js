@@ -260,26 +260,16 @@
     searchParam = "q";
     
     //More clear highlighting of the current job
-    GM_addStyle(`.search-result .job.selected{box-shadow: 0 0 0.8rem #23b3e7;border-radius:10px 0 0 10px;}`);
+    GM_addStyle(
+      `.search-result .job.selected{box-shadow: 0 0 0.8rem #23b3e7;border-radius:10px 0 0 10px;}`
+    );
 
-    if (path.startsWith("/search")) {
+    //This is a React single-page app so we cannot check for URLs since the page never reloads
       waitForKeyElements(".JobDescription", highlightJobDesc, false);
       waitForKeyElements(
-        ".JobPanel .header-details li",
+      ".header-details li, .JobInfoCard .q-item__section--main, .JobInfoCard .q-item__section--main .content div",
         highlightLocation,
         false
       );
-
-      setInterval(() => {
-        highlightLocation(
-          document.querySelectorAll(".search-result .header-details li")
-        );
-      }, 1000);
-    } else if (path.startsWith("/details/")) {
-      setTimeout(() => {
-        waitForKeyElements(".JobDescription", highlightJobDesc);
-        waitForKeyElements(".header-details li, .JobInfoCard .q-item__section--main, .JobInfoCard .q-item__section--main .content div", highlightLocation);
-      }, 1000);
-    }
   });
 })();

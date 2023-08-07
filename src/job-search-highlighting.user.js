@@ -165,12 +165,15 @@
     } else {
       //ajax job search page
       setInterval(function () {
-        highlightJobDesc(document.querySelectorAll("#jobDescriptionText"));
+        highlightJobDesc($("#jobDescriptionText"));
         highlightLocation(
-          document.querySelectorAll(
-            '#mosaic-provider-jobcards .companyLocation, .jobsearch-CompanyInfoWithReview [data-testid="inlineHeader-companyLocation"], .jobsearch-CompanyInfoWithoutHeaderImage [data-testid="inlineHeader-companyLocation"]'
-          ),
+          $("#mosaic-provider-jobcards .companyLocation"),
           true
+        );
+        highlightLocation(
+          $(
+            '.jobsearch-CompanyInfoWithReview [data-testid="inlineHeader-companyLocation"], .jobsearch-CompanyInfoWithoutHeaderImage [data-testid="inlineHeader-companyLocation"]'
+          )
         );
       }, 1000);
     }

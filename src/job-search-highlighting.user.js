@@ -35,7 +35,6 @@
     "css",
     "scss",
     "html",
-    "encouraged to apply",
   ];
 
   //a list of terms to always highlight, but with a red/flagged color. These are things to be alerted about
@@ -46,7 +45,8 @@
     "not available to",
     "employment is contingent upon",
     "may be required",
-    "be able to",
+    "should be able to",
+    "must be able to",
     "ability to obtain",
     "able to obtain",
     "security clearance",
@@ -54,6 +54,9 @@
     "do not apply if",
     "should be comfortable",
     "must be comfortable",
+    "encouraged to apply",
+    "you are encouraged to",
+    "encourage you to",
   ];
 
   //Work types that are highlighted in a different color
@@ -75,7 +78,7 @@
   //Just "remote" or any location that includes specific words like "remote in Charlotte, NC"
   //This way we don't highlight results like "Remote from Las Vegas, NM" - although it is remote, you don't live there
   const locationHighlightPattern =
-    /(^remote(, US.*)?$)|(^remote;? united states$)|(^remote or.+)|United States;? \(?Remote\)?|hybrid remote|charlotte|, nc|north carolina/i;
+    /(^remote(, US.*)?$)|(^remote;? united states$)|(^remote or.+)|United States;? \(?Remote\)?|(^hybrid remote$)|charlotte|, nc|north carolina/i;
 
   //------------------------------------------------------------------------------------------------------------
   // HIGHLIGHTING STYLES

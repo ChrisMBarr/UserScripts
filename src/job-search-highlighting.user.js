@@ -47,13 +47,16 @@
     "may be required",
     "should be able to",
     "must be able to",
+    "should be comfortable",
+    "must be comfortable",
+    "is a must",
+    "must have",
+    "must be",
     "ability to obtain",
     "able to obtain",
     "security clearance",
     "(Required)",
     "do not apply if",
-    "should be comfortable",
-    "must be comfortable",
     "encouraged to apply",
     "you are encouraged to",
     "encourage you to",
@@ -66,6 +69,7 @@
     "full time",
     "part time",
     "contract to hire",
+    "contract-to-hire",
     "c2h",
     "contract",
     "w2",
@@ -170,7 +174,9 @@
       setInterval(function () {
         highlightJobDesc($("#jobDescriptionText"));
         highlightLocation(
-          $("#mosaic-provider-jobcards .companyLocation, #mosaic-provider-jobcards .companyLocation span:not(.companyLocation--extras)"),
+          $(
+            "#mosaic-provider-jobcards .companyLocation, #mosaic-provider-jobcards .companyLocation span:not(.companyLocation--extras)"
+          ),
           true
         );
         highlightLocation(
@@ -200,6 +206,7 @@
     } else {
       //ajax job search page
       waitForKeyElements(".search-result-location", highlightLocation, false);
+      waitForKeyElements(".card-description", highlightJobDesc, false);
     }
   });
 

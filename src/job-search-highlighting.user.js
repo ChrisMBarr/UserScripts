@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name         Job Search Highlighting (Indeed, Dice, ZipRecruiter, LinkedIn, Remote.co, JobsForDevelopers.com, Jobot.com)
+// @name         Job Search Highlighting
 // @namespace    https://github.com/FiniteLooper/UserScripts
 // @version      0.8
 // @description  Highlights key words and locations on many popular job sites
@@ -107,6 +107,9 @@
   const locationHighlightPattern =
     /(^remote(, US.*)?$)|(^remote;? united states$)|(^remote or.+)|United States;? \(?Remote\)?|(^hybrid remote$)|charlotte|, nc|north carolina/i;
 
+  //Any mention of money/currency is highlighted
+  const moneyHighlightPattern = /[$£€][\d,.]+[BMK]?\+?/gi;
+
   //------------------------------------------------------------------------------------------------------------
   // HIGHLIGHTING STYLES
   //------------------------------------------------------------------------------------------------------------
@@ -115,18 +118,26 @@
   GM_addStyle(`.job-searchterm{background-color:#cfecff;}`); // light blue highlighting of your search terms
   GM_addStyle(`.job-flagged{background-color:#ffa7a7;}`); //red highlighting of flagged terms
   GM_addStyle(`.job-worktype{background-color:#edddff;}`); //light purple highlighting of work type terms
+  GM_addStyle(`.job-money{background-color:#9eeea6;}`); //light green highlighting of money/currency
 
   //------------------------------------------------------------------------------------------------------------
   // Highlighting logic
   //------------------------------------------------------------------------------------------------------------
   let searchParam = "";
   function highlightJobDesc(jNode) {
+    const $node = $(jNode);
     //always highlight these words
-    $(jNode).highlight(descriptionAlwaysHighlight, {
+    $node.highlight(descriptionAlwaysHighlight, {
       className: "job-highlight",
     });
-    $(jNode).highlight(descriptionAlwaysFlag, { className: "job-flagged" });
-    $(jNode).highlight(workTypesAlwaysHighlight, { className: "job-worktype" });
+    $node.highlight(descriptionAlwaysFlag, { className: "job-flagged" });
+    $node.highlight(workTypesAlwaysHighlight, { className: "job-worktype" });
+
+    $node.each((_i, n) => {
+      [...n.innerText.matchAll(moneyHighlightPattern)].forEach((m) => {
+        $(n).highlight(m[0], { className: "job-money" });
+      });
+    });
 
     //Find words to highlight from the search parameters
     const params = new URLSearchParams(location.search);
@@ -135,11 +146,11 @@
       [...searchQuery.matchAll(/"([\w ]+?)"|\w+/g)].forEach((q) => {
         //prefer match 1 first with the quoted string, then look for the other one
         if (q[1]) {
-          $(jNode).highlight(q[1].replace(/"/g, ""), {
+          $node.highlight(q[1].replace(/"/g, ""), {
             className: "job-searchterm",
           });
         } else if (q[0]) {
-          $(jNode).highlight(q[0], { className: "job-searchterm" });
+          $node.highlight(q[0], { className: "job-searchterm" });
         }
       });
     }

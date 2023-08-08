@@ -11,7 +11,7 @@ A few Tampermonkey/Greasemonkey scripts I've made
 **[📜 Install Job Search Highlighting Script](https://raw.githubusercontent.com/FiniteLooper/UserScripts/main/src/job-search-highlighting.user.js)**
 
 ### Features
-*  Highlight key words, locations, and your search terms if they are found within job descriptions
+*  Highlight key words, locations, all mentions of money/currency, and your search terms if they are found within job descriptions
 *  Works on https://Indeed.com, https://Dice.com, https://ZipRecruiter.com, https://Remote.co, https://JobsForDevelopers.com, and https://Jobot.com
 
 #### Demo

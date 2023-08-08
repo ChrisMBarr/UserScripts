@@ -42,6 +42,7 @@
     "initially remote",
     "not available to",
     "employment is contingent upon",
+    "will not be considered",
     "may be required",
     "should be able to",
     "must be able to",

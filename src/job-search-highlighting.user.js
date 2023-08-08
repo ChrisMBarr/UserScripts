@@ -40,8 +40,6 @@
   //a list of terms to always highlight, but with a red/flagged color. These are things to be alerted about
   const descriptionAlwaysFlag = [
     "initially remote",
-    "no c2c",
-    "not a C2C",
     "not available to",
     "employment is contingent upon",
     "may be required",
@@ -52,31 +50,56 @@
     "is a must",
     "must have",
     "must be",
-    "ability to obtain",
-    "able to obtain",
-    "security clearance",
-    "(Required)",
+    "Must possess",
+    "required",
+    "able to use",
+    "is a requirement",
+    "Experience with",
+    "Experience in",
+    "Experienced with",
+    "Experienced in",
     "do not apply if",
     "encouraged to apply",
-    "you are encouraged to",
+    "are encouraged to",
     "encourage you to",
+    //Security Clearances
+    "ability to obtain",
+    "able to obtain",
+    "TS/SCI",
+    "DoD Secret",
+    "DoE Secret",
+    "Top Secret/Sensitive Compartmented Information",
+    "security clearance",
+    "top secret clearance",
+    "secret clearance",
+    "public trust clearance",
+    "public trust",
+    "Q clearance",
+    "L clearance",
+    "government background investigation",
   ];
 
   //Work types that are highlighted in a different color
   const workTypesAlwaysHighlight = [
+    "no c2c",
+    "not a C2C",
+    "No third-party/C2C",
+    "c2c",
+    "corp-to-corp",
+    "corp to corp",
     "freelance",
     "fulltime",
     "full time",
+    "full-time",
+    "parttime",
     "part time",
+    "part-time",
     "contract to hire",
     "contract-to-hire",
     "c2h",
     "contract",
     "w2",
     "1099",
-    "c2c",
-    "corp-to-corp",
-    "corp to corp",
   ];
 
   //Just "remote" or any location that includes specific words like "remote in Charlotte, NC"
@@ -159,8 +182,8 @@
     searchParam = "q";
     //Improve the look of the currently selected job - a more visible shadow/glow
     GM_addStyle(`.mosaic-provider-jobcards .desktop.vjs-highlight .slider_container{
-        box-shadow: 0 0.125rem 0.25rem rgba(0,0,0,.5), 0 0 0.8rem rgba(37, 87, 167,.5);
-      }`);
+      box-shadow: 0 0.125rem 0.25rem rgba(0,0,0,.5), 0 0 0.8rem rgba(37, 87, 167,.5);
+    }`);
 
     if (path.startsWith("/job/") || path.startsWith("/viewjob")) {
       //static individual job details page
@@ -282,7 +305,7 @@
   //JOBOT
   runForHostname("jobot.com", (path) => {
     searchParam = "q";
-    
+
     //More clear highlighting of the current job
     GM_addStyle(
       `.search-result .job.selected{box-shadow: 0 0 0.8rem #23b3e7;border-radius:10px 0 0 10px;}`
@@ -293,7 +316,7 @@
     setTimeout(() => {
       waitForKeyElements(".JobDescription", highlightJobDesc, false);
       waitForKeyElements(
-      ".header-details li, .JobInfoCard .q-item__section--main, .JobInfoCard .q-item__section--main .content div",
+        ".header-details li, .JobInfoCard .q-item__section--main, .JobInfoCard .q-item__section--main .content div",
         highlightLocation,
         false
       );

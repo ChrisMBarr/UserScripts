@@ -305,6 +305,13 @@
   //===========
   //DICE
   runForHostname("dice.com", (path) => {
+    searchParam = "q";
+
+      //Show full descriptions on the search results page. This also prevents the tooltips from being cut off
+      GM_addStyle(
+      `.search-card .card-description{overflow:visible !important; max-height:none !important;}`
+    );
+
     if (path.startsWith("/job-detail/")) {
       //individual job detail page
       waitForKeyElements("#jobDescription", highlightJobDesc);

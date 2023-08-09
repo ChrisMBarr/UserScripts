@@ -25,6 +25,10 @@
   "use strict";
   var $ = window.jQuery;
 
+  //Options for additional things to flag in the words list
+  const flagSecurityClearances = true;
+  const flagCriminalRecord = false;
+
   //A list of terms to always highlight
   const descriptionAlwaysHighlight = [
     "angular",
@@ -56,14 +60,18 @@
     "able to use",
     "is a requirement",
     "Experience with",
-    "Experience in",
+    "Experience in ", //intentional space here to avoid flagging part of "experience including" (for example)
     "Experienced with",
     "Experienced in",
     "do not apply if",
     "encouraged to apply",
     "are encouraged to",
     "encourage you to",
-    //Security Clearances
+  ];
+
+  if (flagSecurityClearances) {
+    descriptionAlwaysFlag.push(
+      ...[
         "ability to obtain",
         "able to obtain",
         "TS/SCI",
@@ -78,7 +86,27 @@
         "Q clearance",
         "L clearance",
         "government background investigation",
-  ];
+      ]
+    );
+  }
+
+  if (flagCriminalRecord) {
+    descriptionAlwaysFlag.push(
+      ...[
+        "background investigation",
+        "background check",
+        "fair chance",
+        "conviction record",
+        "arrest record",
+        "criminal history",
+        "criminal histories",
+        "criminal record",
+        "criminal",
+        "felony",
+        "felonies",
+      ]
+    );
+  }
 
   //Work types that are highlighted in a different color
   const workTypesAlwaysHighlight = [

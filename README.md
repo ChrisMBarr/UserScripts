@@ -12,15 +12,18 @@ A few Tampermonkey/Greasemonkey scripts I've made
 
 ### Features
 *  Highlight key words, locations, all mentions of money/currency, and your search terms if they are found within job descriptions
+*  Optional list of flagged terms in certain categories can be added
 *  Works on https://Indeed.com, https://Dice.com, https://ZipRecruiter.com, https://Remote.co, https://JobsForDevelopers.com, and https://Jobot.com
 
 #### Demo
-![combo-tags](doc-img/job-indeed.gif)
+![indeed](doc-img/job-indeed.gif)
 
 #### Configuration
 The key words that will be highlighted are split up into several categories, all of which are highlighted in different colors
 | Property                     | Type       | Description                                                                                                                                 |
 |:-----------------------------|:-----------|:--------------------------------------------------------------------------------------------------------------------------------------------|
+| `flagSecurityClearances`     | `boolean`  | `true` by default - When `true` it will add words related to obtaining a security clearance to the list of flagged terms                    |
+| `flagCriminalRecord`         | `boolean`  | `false` by default - When `true` it will add words related to a criminal history, or a background check to the list of flagged terms        |
 | `descriptionAlwaysHighlight` | `string[]` | words to always highlight in **yellow** when found in a job description                                                                     |
 | `descriptionAlwaysFlag`      | `string[]` | words to always highlight in **red** as "flagged" terms. Not necessarily bad things, but things to be sure you are aware of before applying |
 | `workTypesAlwaysHighlight`   | `string[]` | words to always highlight in **purple** as the job type (full time, part time, W2, etc.)                                                    |

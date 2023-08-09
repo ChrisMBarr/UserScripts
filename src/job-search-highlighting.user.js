@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Job Search Highlighting
 // @namespace    https://github.com/FiniteLooper/UserScripts
-// @version      0.8
+// @version      0.9
 // @description  Highlights key words and locations on many popular job sites
 // @author       Chris Barr
 // @homepageURL  https://github.com/FiniteLooper/UserScripts
@@ -64,20 +64,20 @@
     "are encouraged to",
     "encourage you to",
     //Security Clearances
-    "ability to obtain",
-    "able to obtain",
-    "TS/SCI",
-    "DoD Secret",
-    "DoE Secret",
-    "Top Secret/Sensitive Compartmented Information",
-    "security clearance",
-    "top secret clearance",
-    "secret clearance",
-    "public trust clearance",
-    "public trust",
-    "Q clearance",
-    "L clearance",
-    "government background investigation",
+        "ability to obtain",
+        "able to obtain",
+        "TS/SCI",
+        "DoD Secret",
+        "DoE Secret",
+        "Top Secret/Sensitive Compartmented Information",
+        "security clearance",
+        "top secret clearance",
+        "secret clearance",
+        "public trust clearance",
+        "public trust",
+        "Q clearance",
+        "L clearance",
+        "government background investigation",
   ];
 
   //Work types that are highlighted in a different color
@@ -108,18 +108,65 @@
   const locationHighlightPattern =
     /(^remote(, US.*)?$)|(^remote;? united states$)|(^remote or.+)|United States;? \(?Remote\)?|(^hybrid remote$)|charlotte|, nc|north carolina/i;
 
-  //Any mention of money/currency is highlighted
-  const moneyHighlightPattern = /[$£€][\d,.]+[BMK]?\+?/gi;
+  //Any mention of currency is highlighted
+  const currencyHighlightPattern = /[$£€][\d,.]+[BMK]?\+?/gi;
 
   //------------------------------------------------------------------------------------------------------------
   // HIGHLIGHTING STYLES
   //------------------------------------------------------------------------------------------------------------
-  //Change the color of the highlighting
-  GM_addStyle(`.job-highlight{background-color:#ffdb62;}`);
-  GM_addStyle(`.job-searchterm{background-color:#cfecff;}`); // light blue highlighting of your search terms
-  GM_addStyle(`.job-flagged{background-color:#ffa7a7;}`); //red highlighting of flagged terms
-  GM_addStyle(`.job-worktype{background-color:#edddff;}`); //light purple highlighting of work type terms
-  GM_addStyle(`.job-money{background-color:#9eeea6;}`); //light green highlighting of money/currency
+  //.jsh-mark is added to all highlight types
+  GM_addStyle(`
+.jsh-mark {
+  position: relative;
+  outline-width: 1px;
+  outline-style: solid;
+  border-radius: 0.25rem;
+  cursor: help;
+}
+.jsh-mark::before {
+  display:none;
+  position: absolute;
+  bottom: 1.25rem;
+  left: 0;
+  width: 150px;
+  padding: 0.25rem;
+  font-size: 12px;
+  font-weight: normal;
+  line-height: 1.1;
+  color: hsl(50, 60%, 40%);
+  background-color: hsl(50, 95%, 90%);
+  border: 1px solid hsl(50, 60%, 70%);
+  border-radius: 0.5rem;
+  box-shadow: 0 0.15rem 0.5rem rgba(45,45,45,0.15);
+}
+.jsh-mark:hover::before {
+  display: block;
+}
+
+.jsh-always-highlight {background-color:hsla(46,100%,70%,0.5); outline-color:hsla(46,100%,50%,0.5);}
+.jsh-always-highlight:hover {outline-color:hsla(46,100%,50%,1);}
+.jsh-always-highlight::before {content:'Job Search Highlighter: You specified this word or phrase to always be highlighted';}
+
+.jsh-location {background-color:hsla(28,100%,80%,0.75); outline-color:hsla(28,90%,60%,0.75);}
+.jsh-location:hover {outline-color:hsla(28,90%,60%,1);}
+.jsh-location::before {content:'Job Search Highlighter: This location matches the pattern you specified';}
+
+.jsh-search-term {background-color:hsla(203,100%,90%,0.75); outline-color:hsla(203,90%,75%,0.75);}
+.jsh-search-term:hover {outline-color:hsla(203,90%,75%,1);}
+.jsh-search-term::before {content:'Job Search Highlighter: You searched for this word or phrase on this website';}
+
+.jsh-flagged {background-color:hsla(0,80%,80%,0.75); outline-color:hsla(0,70%,70%,0.75);}
+.jsh-flagged:hover {outline-color:hsla(0,70%,70%,1);}
+.jsh-flagged::before {content:'Job Search Highlighter: You specified this as a flagged term that you should be made aware of';}
+
+.jsh-work-type {background-color:hsla(268,100%,90%,0.75); outline-color:hsla(268,85%,85%,0.75);}
+.jsh-work-type:hover {outline-color:hsla(268,85%,85%,1);}
+.jsh-work-type::before {content:'Job Search Highlighter: You marked this as a type of work';}
+
+.jsh-currency {background-color:hsla(126,70%,80%,0.75); outline-color:hsla(126,70%,70%,0.75);}
+.jsh-currency:hover {outline-color:hsla(126,70%,70%,1);}
+.jsh-currency::before {content:'Job Search Highlighter: This matches a pattern that looks like it might mention a compensation amount';}
+`);
 
   //------------------------------------------------------------------------------------------------------------
   // Highlighting logic
@@ -129,14 +176,18 @@
     const $node = $(jNode);
     //always highlight these words
     $node.highlight(descriptionAlwaysHighlight, {
-      className: "job-highlight",
+      className: "jsh-mark jsh-always-highlight",
     });
-    $node.highlight(descriptionAlwaysFlag, { className: "job-flagged" });
-    $node.highlight(workTypesAlwaysHighlight, { className: "job-worktype" });
+    $node.highlight(descriptionAlwaysFlag, {
+      className: "jsh-mark jsh-flagged",
+    });
+    $node.highlight(workTypesAlwaysHighlight, {
+      className: "jsh-mark jsh-work-type",
+    });
 
     $node.each((_i, n) => {
-      [...n.innerText.matchAll(moneyHighlightPattern)].forEach((m) => {
-        $(n).highlight(m[0], { className: "job-money" });
+      [...n.innerText.matchAll(currencyHighlightPattern)].forEach((m) => {
+        $(n).highlight(m[0], { className: "jsh-mark jsh-currency" });
       });
     });
 
@@ -148,10 +199,10 @@
         //prefer match 1 first with the quoted string, then look for the other one
         if (q[1]) {
           $node.highlight(q[1].replace(/"/g, ""), {
-            className: "job-searchterm",
+            className: "jsh-mark jsh-search-term",
           });
         } else if (q[0]) {
-          $node.highlight(q[0], { className: "job-searchterm" });
+          $node.highlight(q[0], { className: "jsh-mark jsh-search-term" });
         }
       });
     }
@@ -175,7 +226,7 @@
         .trim();
 
       if (locationHighlightPattern.test(txt)) {
-        $(n).highlight(txt, { className: "job-highlight" });
+        $(n).highlight(txt, { className: "jsh-mark jsh-location" });
       }
     });
   }

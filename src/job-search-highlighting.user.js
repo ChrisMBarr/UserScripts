@@ -136,8 +136,10 @@
   const locationHighlightPattern =
     /(^remote(, US.*)?$)|(^remote;? united states$)|(^remote or.+)|United States;? \(?Remote\)?|(^hybrid remote$)|charlotte|, nc|north carolina/i;
 
-  //Any mention of currency is highlighted
-  const currencyHighlightPattern = /[$£€][\d,.]+[BMK]?\+?/gi;
+  //Matches mentions of currency or currency ranges
+  //Ex: "$65" "$65.00" "$65K" "$65,000" "$1B" "$50/hr" "$50 per hour" "$40 - 50 per hour" "$75K per year"
+  const currencyHighlightPattern =
+    /([$£€][\d,.]+[BMK]?\+?([-\s]+[$£€]?[\d,.]+[BMK]?)?)(\s*(\/|per)\s*(hr|hour|month|week|yr|year|annual|annum))?/gi;
 
   //------------------------------------------------------------------------------------------------------------
   // HIGHLIGHTING STYLES
@@ -202,7 +204,6 @@
   let searchParam = "";
   function highlightJobDesc(jNode) {
     const $node = $(jNode);
-    
 
     //Find words to highlight from the search parameters
     const params = new URLSearchParams(location.search);
@@ -220,7 +221,14 @@
       });
     }
 
-      //always highlight these words
+    //Highlight mentions of currency
+    $(jNode).each((_i, n) => {
+      [...n.innerHTML.matchAll(currencyHighlightPattern)].forEach((m) => {
+        $(n).highlight(m[0], { className: "jsh-mark jsh-currency" });
+      });
+    });
+
+    //always highlight these words
     $node.highlight(descriptionAlwaysHighlight, {
       className: "jsh-mark jsh-always-highlight",
     });
@@ -229,12 +237,6 @@
     });
     $node.highlight(workTypesAlwaysHighlight, {
       className: "jsh-mark jsh-work-type",
-    });
-
-    $node.each((_i, n) => {
-      [...n.innerText.matchAll(currencyHighlightPattern)].forEach((m) => {
-        $(n).highlight(m[0], { className: "jsh-mark jsh-currency" });
-      });
     });
   }
 
@@ -309,22 +311,23 @@
   runForHostname("dice.com", (path) => {
     searchParam = "q";
 
-      //Show full descriptions on the search results page. This also prevents the tooltips from being cut off
-      GM_addStyle(
+    //Show full descriptions on the search results page. This also prevents the tooltips from being cut off
+    GM_addStyle(
       `.search-card .card-description{overflow:visible !important; max-height:none !important;}`
     );
 
     if (path.startsWith("/job-detail/")) {
       //individual job detail page
-      waitForKeyElements("#jobDescription", highlightJobDesc);
-      waitForKeyElements(
-        '.companyInfo li[data-cy="companyLocation"]',
-        highlightLocation
-      );
 
-      //auto-expand the job description
       setTimeout(() => {
+        //auto-expand the job description
         $("#descriptionToggle").click();
+
+        waitForKeyElements("#jobDescription", highlightJobDesc);
+        waitForKeyElements(
+          '.companyInfo li[data-cy="companyLocation"]',
+          highlightLocation
+        );
       }, 1000);
     } else {
       //ajax job search page

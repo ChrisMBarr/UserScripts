@@ -202,22 +202,7 @@
   let searchParam = "";
   function highlightJobDesc(jNode) {
     const $node = $(jNode);
-    //always highlight these words
-    $node.highlight(descriptionAlwaysHighlight, {
-      className: "jsh-mark jsh-always-highlight",
-    });
-    $node.highlight(descriptionAlwaysFlag, {
-      className: "jsh-mark jsh-flagged",
-    });
-    $node.highlight(workTypesAlwaysHighlight, {
-      className: "jsh-mark jsh-work-type",
-    });
-
-    $node.each((_i, n) => {
-      [...n.innerText.matchAll(currencyHighlightPattern)].forEach((m) => {
-        $(n).highlight(m[0], { className: "jsh-mark jsh-currency" });
-      });
-    });
+    
 
     //Find words to highlight from the search parameters
     const params = new URLSearchParams(location.search);
@@ -234,6 +219,23 @@
         }
       });
     }
+
+      //always highlight these words
+    $node.highlight(descriptionAlwaysHighlight, {
+      className: "jsh-mark jsh-always-highlight",
+    });
+    $node.highlight(descriptionAlwaysFlag, {
+      className: "jsh-mark jsh-flagged",
+    });
+    $node.highlight(workTypesAlwaysHighlight, {
+      className: "jsh-mark jsh-work-type",
+    });
+
+    $node.each((_i, n) => {
+      [...n.innerText.matchAll(currencyHighlightPattern)].forEach((m) => {
+        $(n).highlight(m[0], { className: "jsh-mark jsh-currency" });
+      });
+    });
   }
 
   function highlightLocation(jNode, textNodesOnly) {

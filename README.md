@@ -13,7 +13,7 @@ A few Tampermonkey/Greasemonkey scripts I've made
 ### Features
 *  Highlight key words, locations, all mentions of money/currency, and your search terms if they are found within job descriptions
 *  Optional list of flagged terms in certain categories can be added
-*  Works on https://Indeed.com, https://Dice.com, https://ZipRecruiter.com, https://Remote.co, https://JobsForDevelopers.com, and https://Jobot.com
+*  Works on https://Indeed.com, https://Dice.com, https://ZipRecruiter.com, https://Remote.co, https://JobsForDevelopers.com, https://GlassDoor.com and https://Jobot.com
 
 #### Demo
 ![indeed](doc-img/job-indeed.gif)

@@ -9,6 +9,8 @@
 // @match        https://www.indeed.com/*
 // @match        https://www.dice.com/jobs*
 // @match        https://www.dice.com/job-detail/*
+// @match        https://www.glassdoor.com/Job/*
+// @match        https://www.glassdoor.com/job-listing/*
 // @match        https://www.remote.co/job/*
 // @match        https://www.ziprecruiter.com/jobs/*
 // @match        https://www.linkedin.com/jobs/*
@@ -148,11 +150,15 @@
   //.jsh-mark is added to all highlight types
   GM_addStyle(`
 .jsh-mark {
-  position: relative;
+  position: relative !important;
   outline-width: 1px;
   outline-style: solid;
   border-radius: 0.25rem;
   cursor: help;
+  top: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  left: 0 !important;
 }
 .jsh-mark::before {
   display:none;
@@ -272,7 +278,8 @@
   }
 
   function runForHostname(partialUrl, fn) {
-    if (location.hostname.includes(partialUrl)) fn(location.pathname);
+    if (location.hostname.toLowerCase().includes(partialUrl.toLowerCase()))
+      fn(location.pathname.toLowerCase());
   }
 
   //------------------------------------------------------------------------------------------------------------
@@ -440,5 +447,37 @@
         false
       );
     }, 1000);
+  });
+
+  //===========
+  //GLASS DOOR
+  runForHostname("glassdoor.com", (path) => {
+    if (path.startsWith("/job/")) {
+      //job search page
+
+      //Force the job details to appear expanded, clicking the button doesn't seem to work
+      GM_addStyle(
+        `[class^='JobDetails_jobDescription']{max-height:none; mask-image:none; -webkit-mask-image:none;}
+        #JobDescriptionContainer > [id^='JobDesc']{max-height:none; overflow:visible;}
+        .jobDescriptionContent{overflow:visible;}
+        .selected{box-shadow:inset 0 1px 0 #1861bf,inset 0 -1px 0 #1861bf, inset -1px 0 0 #1861bf, 0 0 10px #1861bf; z-index:1;}
+        .selected::before{background-color:#1861bf !important;}`
+      );
+
+      waitForKeyElements(
+        "[data-test='location'], [data-test='emp-location']",
+        highlightLocation,
+        false
+      );
+      waitForKeyElements(
+        "[class^='JobDetails_jobDescription'], #JobDescriptionContainer [id^='JobDesc']",
+        highlightJobDesc,
+        false
+      );
+    } else if (path.startsWith("/job-listing/")) {
+      //job details page
+      waitForKeyElements("[data-test='location']", highlightLocation);
+      waitForKeyElements("#JobDescriptionContainer", highlightJobDesc);
+    }
   });
 })();

@@ -42,7 +42,7 @@ After installing you will need to edit the configuration variables described abo
 *  Hides certain items in the right sidebar
 *  Highlights/flags tags on a question if specific combinations are found
 *  When viewing questions by tag, the current tags are highlighted
-*  Dims questioned that have been marked as `[CLOSED]`
+*  Dims questioned that have been marked as `[CLOSED]` or `[DUPLICATE]`
 *  Allows easy indenting of code/text when editing a question or an answer (not within the snippet editor, just the plain question/answer editor)
 *  Adds a button to the question/answer toolbar to convert all tab indentations to spaces
 *  Adds "comment snippets" when adding a comment. Helpful if you find yourself re-writing the exact same comment many times (useful for moderating questions from new users)

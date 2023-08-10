@@ -74,7 +74,7 @@
   GM_addStyle(
     //Note that the CSS rule order matters here for when certain things should be overridden by others
     [
-      `.${classNameClosedQuestion} {background-color:var(--powder-050)!important;--_ps-state-fc:var(--powder-500)!important;--_ps-meta-tags-tag-bg:var(--powder-200)!important;}`,
+      `.${classNameClosedQuestion} {background-color:var(--powder-050)!important;--_ps-state-fc:var(--powder-500)!important;--_ps-stats-fc:var(--powder-500)!important;--_ps-meta-tags-tag-bg:var(--powder-200)!important;--theme-post-title-color:var(--powder-500);--theme-post-title-color-visited:var(--powder-500);--theme-post-title-color-hover:var(--powder-600);}`,
       `.${classNameClosedQuestion} .post-tag{color:var(--powder-500) !important}`,
       `.${classNameTagCurrentlyViewing} > .post-tag{background-color:var(--green-100)!important;color:var(--green-900)!important;border-color:var(--green-300)!important;}`,
       `.${classNameTagComboFlag} > .post-tag{background-color:var(--red-100)!important;color:var(--red-900)!important;border-color:var(--red-300)!important;}`,
@@ -111,9 +111,9 @@
   }
 
   //------------------------------------------------------------------------------------------------------------
-  //Dim closed questions
+  //Dim closed/duplicate questions
   $mainContent
-    .find(".s-post-summary--content-title:contains([closed])")
+    .find(".s-post-summary--content-title:contains([closed]), .s-post-summary--content-title:contains([duplicate])")
     .parents(".s-post-summary")
     .addClass(classNameClosedQuestion);
 

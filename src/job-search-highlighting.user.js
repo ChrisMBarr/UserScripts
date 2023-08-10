@@ -110,6 +110,7 @@
 
   //Work types that are highlighted in a different color
   const workTypesAlwaysHighlight = [
+    "not c2c",
     "no c2c",
     "not a C2C",
     "No third-party/C2C",
@@ -202,24 +203,31 @@
   // Highlighting logic
   //------------------------------------------------------------------------------------------------------------
   let searchParam = "";
+  let paramsToSearch = location.search; //default
+  function highlightSearchParam($node) {
+    if (searchParam) {
+      const params = new URLSearchParams(paramsToSearch);
+      const searchQuery = params.get(searchParam);
+      if (searchQuery) {
+        [...searchQuery.matchAll(/"([\w ]+?)"|\w+/g)].forEach((q) => {
+          //prefer match 1 first with the quoted string, then look for the other one
+          if (q[1]) {
+            $node.highlight(q[1].replace(/"/g, ""), {
+              className: "jsh-mark jsh-search-term",
+            });
+          } else if (q[0]) {
+            $node.highlight(q[0], { className: "jsh-mark jsh-search-term" });
+          }
+        });
+      }
+    }
+  }
+
   function highlightJobDesc(jNode) {
     const $node = $(jNode);
 
     //Find words to highlight from the search parameters
-    const params = new URLSearchParams(location.search);
-    const searchQuery = params.get(searchParam);
-    if (searchQuery) {
-      [...searchQuery.matchAll(/"([\w ]+?)"|\w+/g)].forEach((q) => {
-        //prefer match 1 first with the quoted string, then look for the other one
-        if (q[1]) {
-          $node.highlight(q[1].replace(/"/g, ""), {
-            className: "jsh-mark jsh-search-term",
-          });
-        } else if (q[0]) {
-          $node.highlight(q[0], { className: "jsh-mark jsh-search-term" });
-        }
-      });
-    }
+    highlightSearchParam($node);
 
     //Highlight mentions of currency
     $(jNode).each((_i, n) => {
@@ -318,6 +326,14 @@
 
     if (path.startsWith("/job-detail/")) {
       //individual job detail page
+
+      //On this page the return search QS is stored as a param itself which we can parse
+      const encodedSearchParams = new URLSearchParams(location.search).get(
+        "searchlink"
+      );
+      if (encodedSearchParams) {
+        paramsToSearch = encodedSearchParams.replace("search/?", "");
+      }
 
       setTimeout(() => {
         //auto-expand the job description

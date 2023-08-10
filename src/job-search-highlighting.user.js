@@ -1,21 +1,21 @@
 // ==UserScript==
 // @name         Job Search Highlighting
 // @namespace    https://github.com/FiniteLooper/UserScripts
-// @version      0.9
+// @version      0.91
 // @description  Highlights key words and locations on many popular job sites
 // @author       Chris Barr
 // @homepageURL  https://github.com/FiniteLooper/UserScripts
 // @updateURL    https://github.com/FiniteLooper/UserScripts/blob/master/src/job-search-highlighter.user.js
-// @match        https://www.indeed.com/*
-// @match        https://www.dice.com/jobs*
 // @match        https://www.dice.com/job-detail/*
+// @match        https://www.dice.com/jobs*
 // @match        https://www.glassdoor.com/Job/*
 // @match        https://www.glassdoor.com/job-listing/*
-// @match        https://www.remote.co/job/*
-// @match        https://www.ziprecruiter.com/jobs/*
-// @match        https://www.linkedin.com/jobs/*
-// @match        https://jobsfordevelopers.com/jobs/*
+// @match        https://www.indeed.com/*
 // @match        https://jobot.com/*
+// @match        https://jobsfordevelopers.com/jobs/*
+// @match        https://www.linkedin.com/jobs/*
+// @match        https://remote.co/job/*
+// @match        https://www.ziprecruiter.com/jobs/*
 // @icon         https://www.indeed.com/images/favicon.ico
 // @grant        GM_addStyle
 // @require      http://code.jquery.com/jquery-3.4.1.min.js
@@ -291,41 +291,6 @@
   //------------------------------------------------------------------------------------------------------------
 
   //===========
-  //INDEED
-  runForHostname("indeed.com", (path) => {
-    searchParam = "q";
-    //Improve the look of the currently selected job - a more visible shadow/glow
-    GM_addStyle(`.mosaic-provider-jobcards .desktop.vjs-highlight .slider_container{
-      box-shadow: 0 0.125rem 0.25rem rgba(0,0,0,.5), 0 0 0.8rem rgba(37, 87, 167,.5);
-    }`);
-
-    if (path.startsWith("/job/") || path.startsWith("/viewjob")) {
-      //static individual job details page
-      waitForKeyElements("#jobDescriptionText", highlightJobDesc);
-      waitForKeyElements(
-        ".jobsearch-CompanyInfoWithReview > div > div > div:nth-child(2)",
-        highlightLocation
-      );
-    } else {
-      //ajax job search page
-      setInterval(function () {
-        highlightJobDesc($("#jobDescriptionText"));
-        highlightLocation(
-          $(
-            "#mosaic-provider-jobcards .companyLocation, #mosaic-provider-jobcards .companyLocation span:not(.companyLocation--extras)"
-          ),
-          true
-        );
-        highlightLocation(
-          $(
-            '.jobsearch-CompanyInfoWithReview [data-testid="inlineHeader-companyLocation"], .jobsearch-CompanyInfoWithoutHeaderImage [data-testid="inlineHeader-companyLocation"]'
-          )
-        );
-      }, 1000);
-    }
-  });
-
-  //===========
   //DICE
   runForHostname("dice.com", (path) => {
     searchParam = "q";
@@ -364,20 +329,99 @@
   });
 
   //===========
-  //REMOTE.CO
-  runForHostname("remote.co", (path) => {
-    waitForKeyElements(".job_description", highlightJobDesc);
-    waitForKeyElements(".location_sm", highlightLocation);
+  //GLASS DOOR
+  runForHostname("glassdoor.com", (path) => {
+    if (path.startsWith("/job/")) {
+      //job search page
+
+      //Force the job details to appear expanded, clicking the button doesn't seem to work
+      GM_addStyle(
+        `[class^='JobDetails_jobDescription']{max-height:none; mask-image:none; -webkit-mask-image:none;}
+        #JobDescriptionContainer > [id^='JobDesc']{max-height:none; overflow:visible;}
+        .jobDescriptionContent{overflow:visible;}
+        .selected{box-shadow:inset 0 1px 0 #1861bf,inset 0 -1px 0 #1861bf, inset -1px 0 0 #1861bf, 0 0 10px #1861bf; z-index:1;}
+        .selected::before{background-color:#1861bf !important;}`
+      );
+
+      waitForKeyElements(
+        "[data-test='location'], [data-test='emp-location']",
+        highlightLocation,
+        false
+      );
+      waitForKeyElements(
+        "[class^='JobDetails_jobDescription'], #JobDescriptionContainer [id^='JobDesc']",
+        highlightJobDesc,
+        false
+      );
+    } else if (path.startsWith("/job-listing/")) {
+      //job details page
+      waitForKeyElements("[data-test='location']", highlightLocation);
+      waitForKeyElements("#JobDescriptionContainer", highlightJobDesc);
+    }
   });
 
   //===========
-  //ZIP RECRUITER
-  runForHostname("ziprecruiter.com", (path) => {
-    waitForKeyElements(".job_description", highlightJobDesc);
-    waitForKeyElements(".job_header .hiring_location", highlightLocation);
+  //INDEED
+  runForHostname("indeed.com", (path) => {
+    searchParam = "q";
+    //Improve the look of the currently selected job - a more visible shadow/glow
+    GM_addStyle(`.mosaic-provider-jobcards .desktop.vjs-highlight .slider_container{
+      box-shadow: 0 0.125rem 0.25rem rgba(0,0,0,.5), 0 0 0.8rem rgba(37, 87, 167,.5);
+    }`);
 
-    //auto-expand the description
-    $(".job_details_tile").addClass("clicked");
+    if (path.startsWith("/job/") || path.startsWith("/viewjob")) {
+      //static individual job details page
+      waitForKeyElements("#jobDescriptionText", highlightJobDesc);
+      waitForKeyElements(
+        ".jobsearch-CompanyInfoWithReview > div > div > div:nth-child(2)",
+        highlightLocation
+      );
+    } else {
+      //ajax job search page
+      setInterval(function () {
+        highlightJobDesc($("#jobDescriptionText"));
+        highlightLocation(
+          $(
+            "#mosaic-provider-jobcards .companyLocation, #mosaic-provider-jobcards .companyLocation span:not(.companyLocation--extras)"
+          ),
+          true
+        );
+        highlightLocation(
+          $(
+            '.jobsearch-CompanyInfoWithReview [data-testid="inlineHeader-companyLocation"], .jobsearch-CompanyInfoWithoutHeaderImage [data-testid="inlineHeader-companyLocation"]'
+          )
+        );
+      }, 1000);
+    }
+  });
+
+  //===========
+  //JOBOT
+  runForHostname("jobot.com", (path) => {
+    searchParam = "q";
+
+    //More clear highlighting of the current job
+    GM_addStyle(
+      `.search-result .job.selected{box-shadow: 0 0 0.8rem #23b3e7;border-radius:10px 0 0 10px;}`
+    );
+
+    //This is a single-page app so we cannot check for URLs since the page never reloads
+    //We need to wait a bit for the app to initialize and then it's good to go
+    setTimeout(() => {
+      waitForKeyElements(".JobDescription", highlightJobDesc, false);
+      waitForKeyElements(
+        ".header-details li, .JobInfoCard .q-item__section--main, .JobInfoCard .q-item__section--main .content div",
+        highlightLocation,
+        false
+      );
+    }, 1000);
+  });
+
+  //===========
+  //JOBS FOR DEVELOPERS
+  runForHostname("jobsfordevelopers.com", (path) => {
+    //Locations are easy to see on this site, and the format they use is different from other sites. Not worth highlighting locations for this site
+    waitForKeyElements(".container .prose", highlightJobDesc);
   });
 
   //===========
@@ -425,63 +469,19 @@
   });
 
   //===========
-  //JOBS FOR DEVELOPERS
-  runForHostname("jobsfordevelopers.com", (path) => {
-    //Locations are easy to see on this site, and the format they use is different from other sites. Not worth highlighting locations for this site
-    waitForKeyElements(".container .prose", highlightJobDesc);
+  //REMOTE.CO
+  runForHostname("remote.co", (path) => {
+    waitForKeyElements(".job_description", highlightJobDesc);
+    waitForKeyElements(".location_sm", highlightLocation);
   });
 
   //===========
-  //JOBOT
-  runForHostname("jobot.com", (path) => {
-    searchParam = "q";
+  //ZIP RECRUITER
+  runForHostname("ziprecruiter.com", (path) => {
+    waitForKeyElements(".job_description", highlightJobDesc);
+    waitForKeyElements(".job_header .hiring_location", highlightLocation);
 
-    //More clear highlighting of the current job
-    GM_addStyle(
-      `.search-result .job.selected{box-shadow: 0 0 0.8rem #23b3e7;border-radius:10px 0 0 10px;}`
-    );
-
-    //This is a single-page app so we cannot check for URLs since the page never reloads
-    //We need to wait a bit for the app to initialize and then it's good to go
-    setTimeout(() => {
-      waitForKeyElements(".JobDescription", highlightJobDesc, false);
-      waitForKeyElements(
-        ".header-details li, .JobInfoCard .q-item__section--main, .JobInfoCard .q-item__section--main .content div",
-        highlightLocation,
-        false
-      );
-    }, 1000);
-  });
-
-  //===========
-  //GLASS DOOR
-  runForHostname("glassdoor.com", (path) => {
-    if (path.startsWith("/job/")) {
-      //job search page
-
-      //Force the job details to appear expanded, clicking the button doesn't seem to work
-      GM_addStyle(
-        `[class^='JobDetails_jobDescription']{max-height:none; mask-image:none; -webkit-mask-image:none;}
-        #JobDescriptionContainer > [id^='JobDesc']{max-height:none; overflow:visible;}
-        .jobDescriptionContent{overflow:visible;}
-        .selected{box-shadow:inset 0 1px 0 #1861bf,inset 0 -1px 0 #1861bf, inset -1px 0 0 #1861bf, 0 0 10px #1861bf; z-index:1;}
-        .selected::before{background-color:#1861bf !important;}`
-      );
-
-      waitForKeyElements(
-        "[data-test='location'], [data-test='emp-location']",
-        highlightLocation,
-        false
-      );
-      waitForKeyElements(
-        "[class^='JobDetails_jobDescription'], #JobDescriptionContainer [id^='JobDesc']",
-        highlightJobDesc,
-        false
-      );
-    } else if (path.startsWith("/job-listing/")) {
-      //job details page
-      waitForKeyElements("[data-test='location']", highlightLocation);
-      waitForKeyElements("#JobDescriptionContainer", highlightJobDesc);
-    }
+    //auto-expand the description
+    $(".job_details_tile").addClass("clicked");
   });
 })();

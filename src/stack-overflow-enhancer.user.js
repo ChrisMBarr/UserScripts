@@ -113,7 +113,9 @@
   //------------------------------------------------------------------------------------------------------------
   //Dim closed/duplicate questions
   $mainContent
-    .find(".s-post-summary--content-title:contains([closed]), .s-post-summary--content-title:contains([duplicate])")
+    .find(
+      ".s-post-summary--content-title:contains([closed]), .s-post-summary--content-title:contains([duplicate])"
+    )
     .parents(".s-post-summary")
     .addClass(classNameClosedQuestion);
 
@@ -121,7 +123,10 @@
   //Highlight tag being currently viewed
   const tagPathPrefix = "/questions/tagged/";
   if (location.pathname.includes(tagPathPrefix)) {
-    const tags = location.pathname.replace(tagPathPrefix, "").split("+").map(decodeURIComponent);
+    const tags = location.pathname
+      .replace(tagPathPrefix, "")
+      .split("+")
+      .map(decodeURIComponent);
     $questionTags
       .add($sidebar.find(".js-tag"))
       .find(`a.post-tag`)
@@ -289,26 +294,30 @@
       const $commentLayout = $(editClickEvent.target)
         .parents(".js-post-comments-component")
         .find(".js-comment-form-layout");
-      const $commentField = $commentLayout.find("textarea");
-      const btnWidth = $commentLayout.find("button").parent().width();
-      const opts = commentSnippets.map(
-        (obj) => `<option value="${obj.text}">${obj.name}</option>`
-      );
 
-      $(
-        `<div class='s-select my8'><select style='width:${btnWidth}px'><option value=''>Snippets</option>${opts}</select></div>`
-      )
-        .insertBefore($commentLayout.find(".js-comment-help-link"))
-        .find("select")
-        .on("change", (snippetChangeEvent) => {
-          if (snippetChangeEvent.target.value !== "") {
-            const finalCommentStr = replaceCommentTokens(
-              snippetChangeEvent.target.value
-            );
-            $commentField.val(finalCommentStr).trigger("paste");
-            snippetChangeEvent.target.value = "";
-          }
-        });
+      //Don't add it if it already exists!
+      if ($commentLayout.find("select.s-select").length === 0) {
+        const $commentField = $commentLayout.find("textarea");
+        const btnWidth = $commentLayout.find("button").parent().width();
+        const opts = commentSnippets.map(
+          (obj) => `<option value="${obj.text}">${obj.name}</option>`
+        );
+
+        $(
+          `<div class='s-select my8'><select style='width:${btnWidth}px'><option value=''>Snippets</option>${opts}</select></div>`
+        )
+          .insertBefore($commentLayout.find(".js-comment-help-link"))
+          .find("select")
+          .on("change", (snippetChangeEvent) => {
+            if (snippetChangeEvent.target.value !== "") {
+              const finalCommentStr = replaceCommentTokens(
+                snippetChangeEvent.target.value
+              );
+              $commentField.val(finalCommentStr).trigger("paste");
+              snippetChangeEvent.target.value = "";
+            }
+          });
+      }
     }, 10);
   });
 

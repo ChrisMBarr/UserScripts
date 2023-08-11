@@ -20,11 +20,13 @@
   //------------------------------------------------------------------------------------------------------------
   // CONFIG
   //------------------------------------------------------------------------------------------------------------
-  //Add arrays of tags you want to have flagged when they are all present on a question
+  //Add arrays of tags you want to have flagged/highlighted when they are ALL present on a question
   //The must be lower case
   const flagTagCombos = [
     ["angular", "angularjs"],
     ["angular", "jquery"],
+    ["bootstrap", "twitter-bootstrap"],
+    ["bootstrap-4", "bootstrap-5"],
   ];
 
   //Elements to show or hide
@@ -41,27 +43,27 @@
   const commentSnippets = [
     {
       name: "Welcome - How To Ask",
-      text: "Welcome to StackOverflow! Please take a look at the article on [How to Ask a Good Question](//stackoverflow.com/help/how-to-ask) as it will help you out in the future. Right now your question is missing some details that make it difficult for anyone to answer.",
+      text: "Welcome to StackOverflow! Please take a look at the article on {{LINK_HELP_HOW_TO_ASK}} as it will help you out in the future. Right now your question is missing some details that make it difficult for anyone to answer.",
     },
     {
       name: "Minimal Reproducible Example - No Code",
-      text: "Your question seems to be missing some detail. If you want help with your code, it's impossible for anyone to help you if you don't show the code you want help with. In order to help you we need a [Minimal Reproducible Example](//stackoverflow.com/help/minimal-reproducible-example) directly in your question.  Please [edit your question](//stackoverflow.com/posts/{{QUESTION_ID}}/edit) and add some code to your question.",
+      text: "Your question seems to be missing some detail. If you want help with your code, it's impossible for anyone to help you if you don't show the code you want help with. In order to help you we need a {{LINK_HELP_MRE}} directly in your question. Please {{LINK_EDIT_YOUR_QUESTION}} and add some code to your question.",
     },
     {
       name: "Minimal Reproducible Example - Add More Code",
-      text: "Your question seems to be missing some detail. In order to help you we need a [Minimal Reproducible Example](//stackoverflow.com/help/minimal-reproducible-example) directly in your question.  Please [edit your question](//stackoverflow.com/posts/{{QUESTION_ID}}/edit) and add some code to your question.",
+      text: "Your question seems to be missing some detail. In order to help you we need a {{LINK_HELP_MRE}} directly in your question. Please {{LINK_EDIT_YOUR_QUESTION}} and add some code to your question.",
     },
     {
       name: "Minimal Reproducible Example - Add Snippet",
-      text: "Your question seems to be missing some detail. In order to help you we need a [Minimal Reproducible Example](//stackoverflow.com/help/minimal-reproducible-example) directly in your question.  Please [edit your question](//stackoverflow.com/posts/{{QUESTION_ID}}/edit) and click the button in the toolbar that looks like `[<>]` to add a code snippet to your question. When you add it, please be sure that it properly demonstrates the issue you are having.",
+      text: "Your question seems to be missing some detail. In order to help you we need a {{LINK_HELP_MRE}} directly in your question. Please {{LINK_EDIT_YOUR_QUESTION}} and click the button in the toolbar that looks like `[<>]` to add a code snippet to your question. When you add it, please be sure that it properly demonstrates the issue you are having.",
     },
     {
       name: "Minimal Reproducible Example - External Code",
-      text: "In order to help you we need a [Minimal Reproducible Example](//stackoverflow.com/help/minimal-reproducible-example) directly in your question. Please do not just point us to code linked to another website. Code on that site might change or disappear over time, leaving the question here without any context for future readers. Your question becomes much easier to answer when the code you want help with is actually in the question. Please [edit your question](//stackoverflow.com/posts/{{QUESTION_ID}}/edit) and click the button in the toolbar that looks like `[<>]` to add a code snippet to your question",
+      text: "In order to help you we need a {{LINK_HELP_MRE}} directly in your question. Please do not just point us to code linked to another website. Code on that site might change or disappear over time, leaving the question here without any context for future readers. Your question becomes much easier to answer when the code you want help with is actually in the question. Please {{LINK_EDIT_YOUR_QUESTION}} and click the button in the toolbar that looks like `[<>]` to add a code snippet to your question",
     },
     {
       name: "Images of Code",
-      text: "Please do not post images of your code and/or error messages. Post the actual text instead. This makes it easier for people to help you and for others to find this question in a search if they have similar issues in the future.  Please read over the answers to this question to understand a bit more about this: [Why should I not upload images of code/data/errors?](//meta.stackoverflow.com/q/285551)",
+      text: "Please do not post images of your code and/or error messages. Post the actual text instead. This makes it easier for people to help you and for others to find this question in a search if they have similar issues in the future. Please read over the answers to this question to understand a bit more about this: [Why should I not upload images of code/data/errors?](//meta.stackoverflow.com/q/285551)",
     },
   ];
 
@@ -170,34 +172,34 @@
       $editTextarea.on("keydown", editorKeyListener);
 
       const $lastEditorButton = $editTextarea
-        .parents(".wmd-container")
-        .find(".wmd-button-row .wmd-help-button");
-      $(
-        `<li class='wmd-button' title='convert all tabs to spaces' style='max-width:50px;padding-top:9px;line-height:1'>tabs to<br>spaces</li>`
+      .parents(".wmd-container")
+      .find(".wmd-button-row .wmd-help-button");
+    $(
+      `<li class='wmd-button' title='convert all tabs to spaces' style='max-width:50px;padding-top:9px;line-height:1'>tabs to<br>spaces</li>`
+    )
+      .hover(
+        (ev) => {
+          $(ev.target).css({
+            background: "rgba(255,255,255,0.25)",
+            color: "#FFF",
+          });
+        },
+        (ev) => {
+          $(ev.target).css({ background: "", color: "" });
+        }
       )
-        .hover(
-          (ev) => {
-            $(ev.target).css({
-              background: "rgba(255,255,255,0.25)",
-              color: "#FFF",
-            });
-          },
-          (ev) => {
-            $(ev.target).css({ background: "", color: "" });
-          }
-        )
-        .on("click", (ev) => {
+      .on("click", (ev) => {
           const lines = $editTextarea.val().split("\n");
-          const replacedIndents = lines
-            .map((l) => {
-              const tabCount = l.match(/^\t*/)[0].length;
-              const spaces = indent.repeat(tabCount);
-              return l.replace(/^\t+/, spaces);
-            })
-            .join("\n");
+        const replacedIndents = lines
+          .map((l) => {
+            const tabCount = l.match(/^\t*/)[0].length;
+            const spaces = indent.repeat(tabCount);
+            return l.replace(/^\t+/, spaces);
+          })
+          .join("\n");
           $editTextarea.val(replacedIndents);
-        })
-        .insertBefore($lastEditorButton);
+      })
+      .insertBefore($lastEditorButton);
     }, 100);
   });
 
@@ -323,7 +325,11 @@
 
   function replaceCommentTokens(commentStr) {
     const tokenMap = {
-      QUESTION_ID: StackExchange.question.getQuestionId(),
+      LINK_EDIT_YOUR_QUESTION: `[edit your question](//stackoverflow.com/posts/${StackExchange.question.getQuestionId()}/edit)`,
+      LINK_HELP_MRE:
+        "[Minimal Reproducible Example](//stackoverflow.com/help/minimal-reproducible-example)",
+      LINK_HELP_HOW_TO_ASK:
+        "[How to Ask a Good Question](//stackoverflow.com/help/how-to-ask)",
     };
 
     Object.keys(tokenMap).forEach((key) => {

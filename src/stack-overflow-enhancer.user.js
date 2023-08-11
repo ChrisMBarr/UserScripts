@@ -290,15 +290,15 @@
 
   //------------------------------------------------------------------------------------------------------------
   //Pre-written Comment snippets
-  $mainContent.find(".js-add-link").on("click", (editClickEvent) => {
+  $mainContent.find(".js-add-link").on("click", (event) => {
     //Add a dropdown near the comment field
     setTimeout(() => {
-      const $commentLayout = $(editClickEvent.target)
+      const $commentLayout = $(event.target)
         .parents(".js-post-comments-component")
         .find(".js-comment-form-layout");
 
       //Don't add it if it already exists!
-      if ($commentLayout.find("select.s-select").length === 0) {
+      if ($commentLayout.find(".s-select").length === 0) {
         const $commentField = $commentLayout.find("textarea");
         const btnWidth = $commentLayout.find("button").parent().width();
         const opts = commentSnippets.map(

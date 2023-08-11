@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Stack Overflow Enhancer
 // @namespace    https://github.com/FiniteLooper/UserScripts
-// @version      0.4
+// @version      0.5
 // @description  Improve some UI/UX stuff on StackOverflow
 // @author       Chris Barr
 // @homepageURL  https://github.com/FiniteLooper/UserScripts
@@ -162,16 +162,13 @@
 
   //------------------------------------------------------------------------------------------------------------
   //Easy indent/unindent when editing a question or answer
-  const $editLinks = $mainContent.find(".js-edit-post");
-  $editLinks.on("click", (editClickEvent) => {
-    setTimeout(() => {
-      const $editTextarea = $(editClickEvent.target)
-        .parents(".post-layout")
-        .find(".inline-editor textarea");
+  const indent = " ".repeat(editorIndentSpaces);
+  const unIndentPattern = new RegExp(`^ {${editorIndentSpaces}}`);
 
-      $editTextarea.on("keydown", editorKeyListener);
+  function initCustomizedTextarea($textArea) {
+    $textArea.on("keydown", editorKeyListener);
 
-      const $lastEditorButton = $editTextarea
+    const $lastEditorButton = $textArea
       .parents(".wmd-container")
       .find(".wmd-button-row .wmd-help-button");
     $(
@@ -189,7 +186,7 @@
         }
       )
       .on("click", (ev) => {
-          const lines = $editTextarea.val().split("\n");
+        const lines = $textArea.val().split("\n");
         const replacedIndents = lines
           .map((l) => {
             const tabCount = l.match(/^\t*/)[0].length;
@@ -197,16 +194,11 @@
             return l.replace(/^\t+/, spaces);
           })
           .join("\n");
-          $editTextarea.val(replacedIndents);
+        $textArea.val(replacedIndents);
       })
       .insertBefore($lastEditorButton);
-    }, 100);
-  });
+  }
 
-  $("#post-editor textarea").on("keydown", editorKeyListener);
-
-  const indent = " ".repeat(editorIndentSpaces);
-  const unIndentPattern = new RegExp(`^ {${editorIndentSpaces}}`);
   function editorKeyListener(ev) {
     const textarea = ev.target;
     const v = textarea.value;
@@ -287,6 +279,26 @@
       textarea.setSelectionRange(newCursorPos, newCursorPos);
     }
   }
+
+  setTimeout(() => {
+    initCustomizedTextarea($("#post-editor textarea"));
+  }, 100);
+
+  $mainContent.find(".js-edit-post").on("click", (event) => {
+    setTimeout(() => {
+      const $textarea = $(event.target)
+        .parents(".post-layout")
+        .find(".inline-editor textarea");
+
+      initCustomizedTextarea($textarea);
+    }, 100);
+  });
+
+  $mainContent.find(".js-add-another-answer").on("click", (event) => {
+    setTimeout(() => {
+      initCustomizedTextarea($("#post-form textarea"));
+    }, 100);
+  });
 
   //------------------------------------------------------------------------------------------------------------
   //Pre-written Comment snippets

@@ -92,6 +92,7 @@
   //------------------------------------------------------------------------------------------------------------
   const $sidebar = $("#sidebar");
   const $mainContent = $("#mainbar");
+  const $questionsList = $("#questions");
   const $sidebarItems = $sidebar.children();
   const $questionTags = $mainContent.find(".js-post-tag-list-wrapper");
 
@@ -133,14 +134,19 @@
       .replace(tagPathPrefix, "")
       .split("+")
       .map(decodeURIComponent);
-    $questionTags
-      .add($sidebar.find(".js-tag"))
-      .find(`a.post-tag`)
-      .filter((i, el) => {
-        return tags.includes(el.innerText);
-      })
-      .parent()
-      .addClass(classNameTagCurrentlyViewing);
+
+    function highlightTags($el) {
+      $el
+        .find(`a.post-tag`)
+        .filter((i, el) => {
+          return tags.includes(el.innerText);
+        })
+        .parent()
+        .addClass(classNameTagCurrentlyViewing);
+    }
+
+    highlightTags($questionTags);
+    highlightTags($sidebar.find(".js-tag"));
   }
 
   //------------------------------------------------------------------------------------------------------------

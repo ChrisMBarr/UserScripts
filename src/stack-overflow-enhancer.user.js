@@ -65,6 +65,10 @@
       name: "Images of Code",
       text: "Please do not post images of your code and/or error messages. Post the actual text instead. This makes it easier for people to help you and for others to find this question in a search if they have similar issues in the future. Please read over the answers to this question to understand a bit more about this: [Why should I not upload images of code/data/errors?](//meta.stackoverflow.com/q/285551)",
     },
+    {
+      name: "Converted to Snippet",
+      text: "I've edited your question so that your code is now a snippet that can be run directly from your question.",
+    },
   ];
 
   //------------------------------------------------------------------------------------------------------------

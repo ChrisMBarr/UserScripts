@@ -294,7 +294,7 @@
     initCustomizedTextarea($("#post-editor textarea"));
   }, 100);
 
-  $mainContent.find(".js-edit-post").on("click", (event) => {
+  $mainContent.on("click", ".js-edit-post", (event) => {
     setTimeout(() => {
       const $textarea = $(event.target)
         .parents(".post-layout")
@@ -304,7 +304,7 @@
     }, 100);
   });
 
-  $mainContent.find(".js-add-another-answer").on("click", (event) => {
+  $mainContent.on("click", ".js-add-another-answer", (event) => {
     setTimeout(() => {
       initCustomizedTextarea($("#post-form textarea"));
     }, 100);
@@ -312,7 +312,7 @@
 
   //------------------------------------------------------------------------------------------------------------
   //Pre-written Comment snippets
-  $mainContent.find(".js-add-link").on("click", (event) => {
+  $mainContent.on("click", ".js-add-link, .js-comment-edit", (event) => {
     //Add a dropdown near the comment field
     setTimeout(() => {
       const $commentLayout = $(event.target)

@@ -146,7 +146,7 @@
   //Matches mentions of currency or currency ranges
   //Ex: "$65" "$65.00" "$65K" "$65,000" "$1B" "$50/hr" "$50 per hour" "$40 - 50 per hour" "$75K per year"
   const currencyHighlightPattern =
-    /([$£€][\d,.]+[BMK]?\+?([-\s]+[$£€]?[\d,.]+[BMK]?)?)(\s*(\/|per)\s*(hr|hour|month|week|yr|year|annual|annum))?/gi;
+    /([$£€][\d,.]+[KMBT]?\+?((\s*(to|-|–)\s*)?[$£€]?[\d,.]+[KMBT]?)?)(\s*(\/|per)\s*(hr|hour|month|week|yr|year|annual|annum))?/gi;
 
   //------------------------------------------------------------------------------------------------------------
   // HIGHLIGHTING STYLES
@@ -219,13 +219,14 @@
       const params = new URLSearchParams(paramsToSearch);
       const searchQuery = params.get(searchParam);
       if (searchQuery) {
-        [...searchQuery.matchAll(/"([\w ]+?)"|\w+/g)].forEach((q) => {
+        [...searchQuery.matchAll(/"(.+?)"|[\w-]+/g)].forEach((q) => {
           //prefer match 1 first with the quoted string, then look for the other one
           if (q[1]) {
             $node.highlight(q[1].replace(/"/g, ""), {
               className: "jsh-mark jsh-search-term",
             });
           } else if (q[0]) {
+            //no quoted string found, so just search for whatever else was matched
             $node.highlight(q[0], { className: "jsh-mark jsh-search-term" });
           }
         });
@@ -334,8 +335,9 @@
     if (path.startsWith("/job/")) {
       //job search page
 
+      searchParam = "sc.occupationParam";
+
       //Force the job details to appear expanded, clicking the button doesn't seem to work
-      //Better highlighting for the currently selected job
       GM_addStyle(
         `[class^='JobDetails_jobDescription']{max-height:none; mask-image:none; -webkit-mask-image:none;}
         #JobDescriptionContainer > [id^='JobDesc']{max-height:none; overflow:visible;}

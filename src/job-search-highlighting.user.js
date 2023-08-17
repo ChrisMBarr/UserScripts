@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Job Search Highlighting
 // @namespace    https://github.com/FiniteLooper/UserScripts
-// @version      0.91
+// @version      0.92
 // @description  Highlights key words and locations on many popular job sites
 // @author       Chris Barr
 // @homepageURL  https://github.com/FiniteLooper/UserScripts
@@ -15,6 +15,7 @@
 // @match        https://jobsfordevelopers.com/jobs/*
 // @match        https://www.linkedin.com/jobs/*
 // @match        https://remote.co/job/*
+// @match        https://startup.jobs/*
 // @match        https://www.ziprecruiter.com/jobs/*
 // @icon         https://www.indeed.com/images/favicon.ico
 // @grant        GM_addStyle
@@ -441,6 +442,16 @@
   runForHostname("remote.co", (path) => {
     waitForKeyElements(".job_description", highlightJobDesc);
     waitForKeyElements(".location_sm", highlightLocation);
+  });
+
+  //===========
+  //STARTUP.JOBS
+  runForHostname("startup.jobs", (path) => {
+    waitForKeyElements(".jobListing__main__text", highlightJobDesc);
+    waitForKeyElements(".jobListing__main__meta__remote", highlightLocation);
+
+    //Location highlighting for the ajax search
+    waitForKeyElements(".content-wrapper [data-post-template-target='location']", highlightLocation, false);
   });
 
   //===========

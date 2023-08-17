@@ -99,16 +99,10 @@
   //------------------------------------------------------------------------------------------------------------
   //Hide some elements
   if (sidebarHideBlogs) {
-    $sidebarItems
-      .find(".s-sidebarwidget--header:contains(The Overflow Blog)")
-      .parents(".s-sidebarwidget")
-      .hide();
+    $sidebarItems.find(".s-sidebarwidget--header:contains(The Overflow Blog)").parents(".s-sidebarwidget").hide();
   }
   if (sidebarHideCollectives) {
-    $sidebarItems
-      .find(".s-sidebarwidget--header:contains(Collectives)")
-      .parents(".s-sidebarwidget")
-      .hide();
+    $sidebarItems.find(".s-sidebarwidget--header:contains(Collectives)").parents(".s-sidebarwidget").hide();
   }
   if (sidebarHideAds) {
     $sidebarItems.filter(".js-sidebar-zone").remove();
@@ -120,9 +114,7 @@
   //------------------------------------------------------------------------------------------------------------
   //Dim closed/duplicate questions
   $mainContent
-    .find(
-      ".s-post-summary--content-title:contains([closed]), .s-post-summary--content-title:contains([duplicate])"
-    )
+    .find(".s-post-summary--content-title:contains([closed]), .s-post-summary--content-title:contains([duplicate])")
     .parents(".s-post-summary")
     .addClass(classNameClosedQuestion);
 
@@ -130,10 +122,7 @@
   //Highlight tag being currently viewed
   const tagPathPrefix = "/questions/tagged/";
   if (location.pathname.includes(tagPathPrefix)) {
-    const tags = location.pathname
-      .replace(tagPathPrefix, "")
-      .split("+")
-      .map(decodeURIComponent);
+    const tags = location.pathname.replace(tagPathPrefix, "").split("+").map(decodeURIComponent);
 
     function highlightTags($el) {
       $el
@@ -159,11 +148,7 @@
         const hasCombo = tagCombo.every((v) => tagArr.includes(v));
         if (hasCombo) {
           tagCombo.forEach((tagText) =>
-            $tags
-              .filter(
-                (i, tag) => tag.innerText.trim().toLowerCase() === tagText
-              )
-              .addClass(classNameTagComboFlag)
+            $tags.filter((i, tag) => tag.innerText.trim().toLowerCase() === tagText).addClass(classNameTagComboFlag)
           );
         }
       });
@@ -178,9 +163,7 @@
   function initCustomizedTextarea($textArea) {
     $textArea.on("keydown", editorKeyListener);
 
-    const $lastEditorButton = $textArea
-      .parents(".wmd-container")
-      .find(".wmd-button-row .wmd-help-button");
+    const $lastEditorButton = $textArea.parents(".wmd-container").find(".wmd-button-row .wmd-help-button");
     $(
       `<li class='wmd-button' title='convert all tabs to spaces' style='max-width:50px;padding-top:9px;line-height:1'>tabs to<br>spaces</li>`
     )
@@ -224,15 +207,11 @@
         const lineStartPos = v.slice(0, startPos).lastIndexOf("\n") + 1;
         const lineEndPos = v.slice(lineStartPos, v.length).indexOf("/n");
         if (isUnIndenting) {
-          const newLineContent = v
-            .slice(lineStartPos, lineEndPos)
-            .replace(unIndentPattern, "");
-          textarea.value =
-            v.slice(0, lineStartPos) + newLineContent + v.slice(lineEndPos);
+          const newLineContent = v.slice(lineStartPos, lineEndPos).replace(unIndentPattern, "");
+          textarea.value = v.slice(0, lineStartPos) + newLineContent + v.slice(lineEndPos);
           newCursorPos = Math.max(startPos - editorIndentSpaces, lineStartPos);
         } else {
-          textarea.value =
-            v.slice(0, lineStartPos) + indent + v.slice(lineStartPos);
+          textarea.value = v.slice(0, lineStartPos) + indent + v.slice(lineStartPos);
           newCursorPos = startPos + editorIndentSpaces;
         }
         textarea.setSelectionRange(newCursorPos, newCursorPos);
@@ -259,15 +238,9 @@
 
         textarea.value = v.split(selection).join(result);
         if (isUnIndenting) {
-          textarea.setSelectionRange(
-            Math.max(startPos - editorIndentSpaces, lineStartPos),
-            lineStartPos + result.length
-          );
+          textarea.setSelectionRange(Math.max(startPos - editorIndentSpaces, lineStartPos), lineStartPos + result.length);
         } else {
-          textarea.setSelectionRange(
-            startPos + editorIndentSpaces,
-            lineStartPos + result.length
-          );
+          textarea.setSelectionRange(startPos + editorIndentSpaces, lineStartPos + result.length);
         }
       }
     } else if (ev.key === "Enter") {
@@ -281,8 +254,7 @@
       const prevLine = v.slice(prevLinePos, endPos);
       const levels = prevLine.match(/^ */)[0].length / editorIndentSpaces;
       const indentation = indent.repeat(levels);
-      textarea.value =
-        v.slice(0, endPos) + "\n" + indentation + v.slice(endPos);
+      textarea.value = v.slice(0, endPos) + "\n" + indentation + v.slice(endPos);
 
       //Set the cursor position
       const newCursorPos = endPos + 1 + indentation.length;
@@ -296,9 +268,7 @@
 
   $mainContent.on("click", ".js-edit-post", (event) => {
     setTimeout(() => {
-      const $textarea = $(event.target)
-        .parents(".post-layout")
-        .find(".inline-editor textarea");
+      const $textarea = $(event.target).parents(".post-layout").find(".inline-editor textarea");
 
       initCustomizedTextarea($textarea);
     }, 100);
@@ -315,17 +285,13 @@
   $mainContent.on("click", ".js-add-link, .js-comment-edit", (event) => {
     //Add a dropdown near the comment field
     setTimeout(() => {
-      const $commentLayout = $(event.target)
-        .parents(".js-post-comments-component")
-        .find(".js-comment-form-layout");
+      const $commentLayout = $(event.target).parents(".js-post-comments-component").find(".js-comment-form-layout");
 
       //Don't add it if it already exists!
       if ($commentLayout.find(".s-select").length === 0) {
         const $commentField = $commentLayout.find("textarea");
         const btnWidth = $commentLayout.find("button").parent().width();
-        const opts = commentSnippets.map(
-          (obj) => `<option value="${obj.text}">${obj.name}</option>`
-        );
+        const opts = commentSnippets.map((obj) => `<option value="${obj.text}">${obj.name}</option>`);
 
         $(
           `<div class='s-select my8'><select style='width:${btnWidth}px'><option value=''>Snippets</option>${opts}</select></div>`
@@ -334,9 +300,7 @@
           .find("select")
           .on("change", (snippetChangeEvent) => {
             if (snippetChangeEvent.target.value !== "") {
-              const finalCommentStr = replaceCommentTokens(
-                snippetChangeEvent.target.value
-              );
+              const finalCommentStr = replaceCommentTokens(snippetChangeEvent.target.value);
               $commentField.val(finalCommentStr).trigger("paste");
               snippetChangeEvent.target.value = "";
             }
@@ -348,10 +312,8 @@
   function replaceCommentTokens(commentStr) {
     const tokenMap = {
       LINK_EDIT_YOUR_QUESTION: `[edit your question](//stackoverflow.com/posts/${StackExchange.question.getQuestionId()}/edit)`,
-      LINK_HELP_MRE:
-        "[Minimal Reproducible Example](//stackoverflow.com/help/minimal-reproducible-example)",
-      LINK_HELP_HOW_TO_ASK:
-        "[How to Ask a Good Question](//stackoverflow.com/help/how-to-ask)",
+      LINK_HELP_MRE: "[Minimal Reproducible Example](//stackoverflow.com/help/minimal-reproducible-example)",
+      LINK_HELP_HOW_TO_ASK: "[How to Ask a Good Question](//stackoverflow.com/help/how-to-ask)",
     };
 
     Object.keys(tokenMap).forEach((key) => {

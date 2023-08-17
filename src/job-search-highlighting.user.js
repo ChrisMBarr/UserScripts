@@ -32,16 +32,7 @@
   const flagCriminalRecord = false;
 
   //A list of terms to always highlight
-  const descriptionAlwaysHighlight = [
-    "angular",
-    "typescript",
-    "type script",
-    "javascript",
-    "java script",
-    "css",
-    "scss",
-    "html",
-  ];
+  const descriptionAlwaysHighlight = ["angular", "typescript", "type script", "javascript", "java script", "css", "scss", "html"];
 
   //a list of terms to always highlight, but with a red/flagged color. These are things to be alerted about
   const descriptionAlwaysFlag = [
@@ -283,8 +274,7 @@
   }
 
   function runForHostname(partialUrl, fn) {
-    if (location.hostname.toLowerCase().includes(partialUrl.toLowerCase()))
-      fn(location.pathname.toLowerCase());
+    if (location.hostname.toLowerCase().includes(partialUrl.toLowerCase())) fn(location.pathname.toLowerCase());
   }
 
   //------------------------------------------------------------------------------------------------------------
@@ -305,9 +295,7 @@
       //individual job detail page
 
       //On this page the return search QS is stored as a param itself which we can parse
-      const encodedSearchParams = new URLSearchParams(location.search).get(
-        "searchlink"
-      );
+      const encodedSearchParams = new URLSearchParams(location.search).get("searchlink");
       if (encodedSearchParams) {
         paramsToSearch = encodedSearchParams.replace("search/?", "");
       }
@@ -317,10 +305,7 @@
         $("#descriptionToggle").click();
 
         waitForKeyElements("#jobDescription", highlightJobDesc);
-        waitForKeyElements(
-          '.companyInfo li[data-cy="companyLocation"]',
-          highlightLocation
-        );
+        waitForKeyElements('.companyInfo li[data-cy="companyLocation"]', highlightLocation);
       }, 1000);
     } else {
       //ajax job search page
@@ -346,11 +331,7 @@
         #MainCol .selected::before{background-color:#1861bf !important;}`
       );
 
-      waitForKeyElements(
-        "[data-test='location'], [data-test='emp-location']",
-        highlightLocation,
-        false
-      );
+      waitForKeyElements("[data-test='location'], [data-test='emp-location']", highlightLocation, false);
       waitForKeyElements(
         "[class^='JobDetails_jobDescription'], #JobDescriptionContainer [id^='JobDesc']",
         highlightJobDesc,
@@ -375,10 +356,7 @@
     if (path.startsWith("/job/") || path.startsWith("/viewjob")) {
       //static individual job details page
       waitForKeyElements("#jobDescriptionText", highlightJobDesc);
-      waitForKeyElements(
-        ".jobsearch-CompanyInfoWithReview > div > div > div:nth-child(2)",
-        highlightLocation
-      );
+      waitForKeyElements(".jobsearch-CompanyInfoWithReview > div > div > div:nth-child(2)", highlightLocation);
     } else {
       //ajax job search page
       setInterval(function () {
@@ -404,9 +382,7 @@
     searchParam = "q";
 
     //More clear highlighting of the current job
-    GM_addStyle(
-      `.search-result .job.selected{box-shadow: 0 0 0.8rem #23b3e7;border-radius:10px 0 0 10px;}`
-    );
+    GM_addStyle(`.search-result .job.selected{box-shadow: 0 0 0.8rem #23b3e7;border-radius:10px 0 0 10px;}`);
 
     //This is a single-page app so we cannot check for URLs since the page never reloads
     //We need to wait a bit for the app to initialize and then it's good to go
@@ -441,13 +417,9 @@
     setInterval(function () {
       highlightJobDesc(document.querySelectorAll("#job-details"));
 
-      const locationEl = document.querySelector(
-        ".jobs-unified-top-card__primary-description > div"
-      );
+      const locationEl = document.querySelector(".jobs-unified-top-card__primary-description > div");
       if (locationEl) {
-        const locationTextNode = Array.from(locationEl.childNodes).filter(
-          (n) => n.nodeType === 3 && n.data.trim() !== ""
-        )[0];
+        const locationTextNode = Array.from(locationEl.childNodes).filter((n) => n.nodeType === 3 && n.data.trim() !== "")[0];
         if (locationTextNode) {
           locationTextNode.data = locationTextNode.data.replace("· ", "");
           $(locationTextNode).wrap('<span id="LOCATION_FOR_HIGHLIGHT"></span>');
@@ -457,16 +429,9 @@
         }
       }
 
-      if (
-        path.startsWith("/jobs/collections/") ||
-        path.startsWith("/jobs/search/")
-      ) {
+      if (path.startsWith("/jobs/collections/") || path.startsWith("/jobs/search/")) {
         //select additional items for the AJAX search
-        highlightLocation(
-          document.querySelectorAll(
-            ".job-card-container__metadata-wrapper .job-card-container__metadata-item"
-          )
-        );
+        highlightLocation(document.querySelectorAll(".job-card-container__metadata-wrapper .job-card-container__metadata-item"));
       }
     }, 1000);
   });

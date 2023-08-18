@@ -115,6 +115,7 @@
     "not a C2C",
     "No third-party/C2C",
     "c2c",
+    "ctc",
     "corp-to-corp",
     "corp to corp",
     "freelance",
@@ -135,12 +136,12 @@
   //Just "remote" or any location that includes specific words like "remote in Charlotte, NC"
   //This way we don't highlight results like "Remote from Las Vegas, NM" - although it is remote, you don't live there
   const locationHighlightPattern =
-    /(^remote(, US.*)?$)|(^remote;? united states$)|(^remote or.+)|United States;? \(?Remote\)?|(^hybrid remote$)|charlotte|, nc|north carolina/i;
+    /(^remote(, US.?)?$)|(^U.?S.?\s|-remote$)|(^remote;? united states$)|(^remote or.+)|United States;? \(?Remote\)?|(^hybrid remote$)|charlotte|, nc|north carolina/i;
 
   //Matches mentions of currency or currency ranges
   //Ex: "$65" "$65.00" "$65K" "$65,000" "$1B" "$50/hr" "$50 per hour" "$40 - 50 per hour" "$75K per year"
   const currencyHighlightPattern =
-    /([$£€][\d,.]+[KMBT]?\+?((\s*(to|-|–)\s*)?[$£€]?[\d,.]+[KMBT]?)?)(\s*\/?(|pe?r)\s*(hr|hour|month|week|yr|year|annual|annum))?/gi;
+    /([$£€][\d,.]+[KMBT]?\+?((\s*(to|-|–)\s*)?[$£€]?[\d,.]+[KMBT]?)?)(\s*\/?(|pe?r)\s*(hr|hour|month|week|yr|year|annually|annual|annum))?/gi;
 
   //------------------------------------------------------------------------------------------------------------
   // HIGHLIGHTING STYLES

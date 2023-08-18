@@ -6,6 +6,7 @@
 // @author       Chris Barr
 // @homepageURL  https://github.com/FiniteLooper/UserScripts
 // @updateURL    https://github.com/FiniteLooper/UserScripts/raw/main/src/job-search-highlighting.user.js
+// @match        https://*.applytojob.com/*
 // @match        https://www.dice.com/job-detail/*
 // @match        https://www.dice.com/jobs*
 // @match        https://www.glassdoor.com/Job/*
@@ -14,6 +15,7 @@
 // @match        https://jobot.com/*
 // @match        https://jobsfordevelopers.com/jobs/*
 // @match        https://www.linkedin.com/jobs/*
+// @match        https://*.myworkdayjobs.com/*/job/*
 // @match        https://remote.co/job/*
 // @match        https://startup.jobs/*
 // @match        https://www.ziprecruiter.com/jobs/*
@@ -283,6 +285,13 @@
   //------------------------------------------------------------------------------------------------------------
 
   //===========
+  //APPLY TO JOB (recruitment/application site some companies, no job searching)
+  runForHostname("applytojob.com", (path) => {
+    waitForKeyElements("#job-description", highlightJobDesc);
+    waitForKeyElements('.job-attributes-container [title="Location"]', highlightLocation);
+  });
+
+  //===========
   //DICE
   runForHostname("dice.com", (path) => {
     searchParam = "q";
@@ -435,6 +444,13 @@
         highlightLocation(document.querySelectorAll(".job-card-container__metadata-wrapper .job-card-container__metadata-item"));
       }
     }, 1000);
+  });
+
+  //===========
+  //MY WORKDAY JOBS  (recruitment/application site some companies, no job searching)
+  runForHostname("myworkdayjobs.com", (path) => {
+    waitForKeyElements("#mainContent [data-automation-id='jobPostingDescription']", highlightJobDesc);
+    waitForKeyElements("#mainContent [data-automation-id='locations'] dd", highlightLocation);
   });
 
   //===========

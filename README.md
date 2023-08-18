@@ -13,7 +13,9 @@ A few Tampermonkey/Greasemonkey scripts I've made
 ### Features
 *  Highlight key words, locations, all mentions of money/currency, and your search terms if they are found within job descriptions
 *  Optional list of flagged terms in certain categories can be added
-*  Works on https://Dice.com, https://GlassDoor.com, https://Indeed.com, https://LinkedIn.com, https://Jobot.com, https://JobsForDevelopers.com, https://Remote.co, https://startup.jobs, and https://ZipRecruiter.com
+*  Works on multiple websites:
+   *  Job search sites: https://Dice.com, https://GlassDoor.com, https://Indeed.com, https://LinkedIn.com, https://Jobot.com, https://JobsForDevelopers.com, https://Remote.co, https://startup.jobs, and https://ZipRecruiter.com
+   *  Job application/recruitment sites used by many companies: applytojob.com and myworkdayjobs.com
 
 #### Demo
 ![indeed](doc-img/job-indeed.gif)

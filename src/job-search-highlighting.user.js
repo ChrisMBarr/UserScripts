@@ -5,7 +5,7 @@
 // @description  Highlights key words and locations on many popular job sites
 // @author       Chris Barr
 // @homepageURL  https://github.com/FiniteLooper/UserScripts
-// @updateURL    https://github.com/FiniteLooper/UserScripts/blob/master/src/job-search-highlighter.user.js
+// @updateURL    https://github.com/FiniteLooper/UserScripts/raw/main/src/job-search-highlighting.user.js
 // @match        https://www.dice.com/job-detail/*
 // @match        https://www.dice.com/jobs*
 // @match        https://www.glassdoor.com/Job/*

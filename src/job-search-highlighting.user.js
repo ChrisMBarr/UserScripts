@@ -11,6 +11,7 @@
 // @match        https://www.dice.com/jobs*
 // @match        https://www.glassdoor.com/Job/*
 // @match        https://www.glassdoor.com/job-listing/*
+// @match        https://boards.greenhouse.io/*/jobs/*
 // @match        https://www.indeed.com/*
 // @match        https://jobot.com/*
 // @match        https://jobsfordevelopers.com/jobs/*
@@ -18,6 +19,7 @@
 // @match        https://*.myworkdayjobs.com/*/job/*
 // @match        https://remote.co/job/*
 // @match        https://startup.jobs/*
+// @match        https://app.testedrecruits.com/posting/*
 // @match        https://www.ziprecruiter.com/jobs/*
 // @icon         https://www.indeed.com/images/favicon.ico
 // @grant        GM_addStyle
@@ -58,7 +60,7 @@
     "Experience with",
     "Experience in ", //intentional space here to avoid flagging part of "experience including" (for example)
     "Experienced with",
-    "Experienced in",
+    "Experienced in ", //intentional space here to avoid flagging part of "experience including" (for example)
     "do not apply if",
     "encouraged to apply",
     "are encouraged to",
@@ -136,12 +138,12 @@
   //Just "remote" or any location that includes specific words like "remote in Charlotte, NC"
   //This way we don't highlight results like "Remote from Las Vegas, NM" - although it is remote, you don't live there
   const locationHighlightPattern =
-    /(^remote(, US.?)?$)|(^U.?S.?\s|-remote$)|(^remote;? united states$)|(^remote or.+)|United States;? \(?Remote\)?|(^hybrid remote$)|charlotte|, nc|north carolina/i;
+    /(^remote(, US.?)?$)|(^U.?S.?\s|-remote$)|(^remote[;–\- ]*united states$)|(^remote or.+)|United States;? \(?Remote\)?|(^hybrid remote$)|charlotte|, nc|north carolina/i;
 
   //Matches mentions of currency or currency ranges
   //Ex: "$65" "$65.00" "$65K" "$65,000" "$1B" "$50/hr" "$50 per hour" "$40 - 50 per hour" "$75K per year"
   const currencyHighlightPattern =
-    /([$£€][\d,.]+[KMBT]?\+?((\s*(to|-|–)\s*)?[$£€]?[\d,.]+[KMBT]?)?)(\s*\/?(|pe?r)\s*(hr|hour|month|week|yr|year|annually|annual|annum))?/gi;
+    /([$£€][\d,.]+\s*((hundred|thousand|million|billion|trillion)|[KMBT])?\+?((\s*(to|-|–)\s*)?[$£€]?[\d,.]+[KMBT]?)?)(\s*\/?(|pe?r)\s*(hr|hour|month|week|yr|year|annually|annual|annum))?/gi;
 
   //------------------------------------------------------------------------------------------------------------
   // HIGHLIGHTING STYLES
@@ -356,6 +358,13 @@
   });
 
   //===========
+  //GREENHOUSE
+  runForHostname("greenhouse.io", (path) => {
+    waitForKeyElements("#header .location", highlightLocation);
+    waitForKeyElements("#content", highlightJobDesc);
+  });
+
+  //===========
   //INDEED
   runForHostname("indeed.com", (path) => {
     searchParam = "q";
@@ -459,6 +468,12 @@
   runForHostname("remote.co", (path) => {
     waitForKeyElements(".job_description", highlightJobDesc);
     waitForKeyElements(".location_sm", highlightLocation);
+  });
+
+  //===========
+  //TESTED RECRUITS
+  runForHostname("testedrecruits.com", (path) => {
+    waitForKeyElements(".description", highlightJobDesc);
   });
 
   //===========

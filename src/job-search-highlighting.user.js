@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Job Search Highlighting
 // @namespace    https://github.com/FiniteLooper/UserScripts
-// @version      0.92
+// @version      0.93
 // @description  Highlights key words and locations on many popular job sites
 // @author       Chris Barr
 // @homepageURL  https://github.com/FiniteLooper/UserScripts
@@ -149,7 +149,7 @@
   // HIGHLIGHTING STYLES
   //------------------------------------------------------------------------------------------------------------
   //.jsh-mark is added to all highlight types
-  GM_addStyle(`
+  const highlightStyles = `
 .jsh-mark {
   position: relative !important;
   outline-width: 1px;
@@ -204,7 +204,8 @@
 .jsh-currency {background-color:hsla(126,70%,80%,0.75); outline-color:hsla(126,70%,70%,0.75);}
 .jsh-currency:hover {outline-color:hsla(126,70%,70%,1);}
 .jsh-currency::before {content:'Job Search Highlighter: This matches a pattern that looks like it might mention a compensation amount';}
-`);
+`;
+  let highlightStylesEl = GM_addStyle(highlightStyles);
 
   //------------------------------------------------------------------------------------------------------------
   // Highlighting logic
@@ -212,7 +213,7 @@
   let searchParam = "";
   let paramsToSearch = location.search; //default
   function highlightSearchParam($node) {
-    if (searchParam) {
+    if (searchParam.length > 0) {
       const params = new URLSearchParams(paramsToSearch);
       const searchQuery = params.get(searchParam);
       if (searchQuery) {
@@ -238,7 +239,7 @@
     highlightSearchParam($node);
 
     //Highlight mentions of currency
-    $(jNode).each((_i, n) => {
+    $node.each((_i, n) => {
       [...n.innerHTML.matchAll(currencyHighlightPattern)].forEach((m) => {
         $(n).highlight(m[0], { className: "jsh-mark jsh-currency" });
       });
@@ -279,8 +280,38 @@
     });
   }
 
+  //------------------------------------------------------------------------------------------------------------
+  // Helper Functions
+  //------------------------------------------------------------------------------------------------------------
   function runForHostname(partialUrl, fn) {
     if (location.hostname.toLowerCase().includes(partialUrl.toLowerCase())) fn(location.pathname.toLowerCase());
+  }
+
+  function selectSingleNode(selector) {
+    return document.querySelector(selector);
+  }
+
+  function selectNodes(selector) {
+    return document.querySelectorAll(selector);
+  }
+
+  const delayTime = 1000; //1 second
+
+  function runAfterDelay(fn) {
+    setTimeout(fn, delayTime);
+  }
+
+  function runOnInterval(fn) {
+    setInterval(fn, delayTime);
+  }
+
+  function reApplyStyles() {
+    const id = highlightStylesEl.id;
+    //these generated IDs contain a dot which is technically invalid and that breaks jQuery and querySelector, but not getElementById
+    const styleNode = document.getElementById(id);
+    if (styleNode == null) {
+      highlightStylesEl = GM_addStyle(highlightStyles);
+    }
   }
 
   //------------------------------------------------------------------------------------------------------------
@@ -313,13 +344,13 @@
         paramsToSearch = encodedSearchParams.replace("search/?", "");
       }
 
-      setTimeout(() => {
+      runAfterDelay(() => {
         //auto-expand the job description
         $("#descriptionToggle").click();
 
         waitForKeyElements("#jobDescription", highlightJobDesc);
         waitForKeyElements('.companyInfo li[data-cy="companyLocation"]', highlightLocation);
-      }, 1000);
+      });
     } else {
       //ajax job search page
       waitForKeyElements(".search-result-location", highlightLocation, false);
@@ -379,7 +410,7 @@
       waitForKeyElements(".jobsearch-CompanyInfoWithReview > div > div > div:nth-child(2)", highlightLocation);
     } else {
       //ajax job search page
-      setInterval(function () {
+      runOnInterval(() => {
         highlightJobDesc($("#jobDescriptionText"));
         highlightLocation(
           $(
@@ -392,7 +423,7 @@
             '.jobsearch-CompanyInfoWithReview [data-testid="inlineHeader-companyLocation"], .jobsearch-CompanyInfoWithoutHeaderImage [data-testid="inlineHeader-companyLocation"]'
           )
         );
-      }, 1000);
+      });
     }
   });
 
@@ -406,21 +437,22 @@
 
     //This is a single-page app so we cannot check for URLs since the page never reloads
     //We need to wait a bit for the app to initialize and then it's good to go
-    setTimeout(() => {
+    runAfterDelay(() => {
       waitForKeyElements(".JobDescription", highlightJobDesc, false);
       waitForKeyElements(
         ".header-details li, .JobInfoCard .q-item__section--main, .JobInfoCard .q-item__section--main .content div",
         highlightLocation,
         false
       );
-    }, 1000);
+    });
   });
 
   //===========
   //JOBS FOR DEVELOPERS
   runForHostname("jobsfordevelopers.com", (path) => {
     //Locations are easy to see on this site, and the format they use is different from other sites. Not worth highlighting locations for this site
-    waitForKeyElements(".container .prose", highlightJobDesc);
+    waitForKeyElements(".container .prose", highlightJobDesc, false);
+    runOnInterval(reApplyStyles);
   });
 
   //===========
@@ -428,16 +460,16 @@
   runForHostname("linkedin.com", (path) => {
     searchParam = "keywords";
     //auto-expand the description
-    waitForKeyElements(".jobs-description footer button", function (n) {
-      setTimeout(() => {
+    waitForKeyElements(".jobs-description footer button", (n) => {
+      runAfterDelay(() => {
         $(n).click();
-      }, 1000);
+      });
     });
 
-    setInterval(function () {
-      highlightJobDesc(document.querySelectorAll("#job-details"));
+    runOnInterval(() => {
+      highlightJobDesc(selectNodes("#job-details"));
 
-      const locationEl = document.querySelector(".jobs-unified-top-card__primary-description > div");
+      const locationEl = selectSingleNode(".jobs-unified-top-card__primary-description > div");
       if (locationEl) {
         const locationTextNode = Array.from(locationEl.childNodes).filter((n) => n.nodeType === 3 && n.data.trim() !== "")[0];
         if (locationTextNode) {
@@ -451,9 +483,9 @@
 
       if (path.startsWith("/jobs/collections/") || path.startsWith("/jobs/search/")) {
         //select additional items for the AJAX search
-        highlightLocation(document.querySelectorAll(".job-card-container__metadata-wrapper .job-card-container__metadata-item"));
+        highlightLocation(selectNodes(".job-card-container__metadata-wrapper .job-card-container__metadata-item"));
       }
-    }, 1000);
+    });
   });
 
   //===========

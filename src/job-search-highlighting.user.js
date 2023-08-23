@@ -9,6 +9,7 @@
 // @match        https://*.applytojob.com/*
 // @match        https://www.dice.com/job-detail/*
 // @match        https://www.dice.com/jobs*
+// @match        https://www.dice.com/dashboard/intellisearch-jobs/*
 // @match        https://www.glassdoor.com/Job/*
 // @match        https://www.glassdoor.com/job-listing/*
 // @match        https://boards.greenhouse.io/*/jobs/*
@@ -352,7 +353,7 @@
         waitForKeyElements('.companyInfo li[data-cy="companyLocation"]', highlightLocation);
       });
     } else {
-      //ajax job search page
+      //ajax job search page or intellisearch jobs page
       waitForKeyElements(".search-result-location", highlightLocation, false);
       waitForKeyElements(".card-description", highlightJobDesc, false);
     }

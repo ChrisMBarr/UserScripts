@@ -21,6 +21,7 @@
 // @match        https://remote.co/job/*
 // @match        https://startup.jobs/*
 // @match        https://app.testedrecruits.com/posting/*
+// @match        https://recruiting.ultipro.com/*/JobBoard/*
 // @match        https://www.ziprecruiter.com/jobs/*
 // @icon         https://www.indeed.com/images/favicon.ico
 // @grant        GM_addStyle
@@ -296,14 +297,15 @@
     return document.querySelectorAll(selector);
   }
 
-  const delayTime = 1000; //1 second
+  const defaultDelayTime = 1000; //1 second
 
-  function runAfterDelay(fn) {
-    setTimeout(fn, delayTime);
+  function runAfterDelay(fn, time) {
+    if (!time) time = defaultDelayTime;
+    setTimeout(fn, time);
   }
 
   function runOnInterval(fn) {
-    setInterval(fn, delayTime);
+    setInterval(fn, defaultDelayTime);
   }
 
   function reApplyStyles() {
@@ -320,7 +322,7 @@
   //------------------------------------------------------------------------------------------------------------
 
   //===========
-  //APPLY TO JOB (recruitment/application site some companies, no job searching)
+  //APPLY TO JOB (recruitment/application site some companies use, no job searching)
   runForHostname("applytojob.com", (path) => {
     waitForKeyElements("#job-description", highlightJobDesc);
     waitForKeyElements('.job-attributes-container [title="Location"]', highlightLocation);
@@ -490,7 +492,7 @@
   });
 
   //===========
-  //MY WORKDAY JOBS  (recruitment/application site some companies, no job searching)
+  //MY WORKDAY JOBS (recruitment/application site some companies use, no job searching)
   runForHostname("myworkdayjobs.com", (path) => {
     waitForKeyElements("#mainContent [data-automation-id='jobPostingDescription']", highlightJobDesc);
     waitForKeyElements("#mainContent [data-automation-id='locations'] dd", highlightLocation);
@@ -504,9 +506,29 @@
   });
 
   //===========
-  //TESTED RECRUITS
+  //TESTED RECRUITS (recruitment/application site some companies use, no job searching)
   runForHostname("testedrecruits.com", (path) => {
     waitForKeyElements(".description", highlightJobDesc);
+  });
+
+  //===========
+  //ULTIPRO  (recruitment/application site some companies use)
+  runForHostname("ultipro.com", (path) => {
+    runAfterDelay(() => {
+      //Expand all job locations
+      $('[data-automation="job-location-more"]').each((i, x) => x.click());
+
+      if (path.includes("/opportunitydetail")) {
+        //specific job posting
+        waitForKeyElements(".opportunity-sidebar [data-automation='physical-location'] > *", highlightLocation, false);
+        waitForKeyElements(".opportunity-description", highlightJobDesc, false);
+      } else {
+        //listing/search page
+        searchParam = "q";
+        waitForKeyElements(".opportunity .location-bottom", highlightLocation, false);
+        waitForKeyElements(".opportunity > [data-automation='job-brief-description']", highlightJobDesc, false);
+      }
+    });
   });
 
   //===========

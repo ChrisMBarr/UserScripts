@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Job Search Highlighting
 // @namespace    https://github.com/FiniteLooper/UserScripts
-// @version      0.93
+// @version      0.95
 // @description  Highlights key words and locations on many popular job sites
 // @author       Chris Barr
 // @homepageURL  https://github.com/FiniteLooper/UserScripts
@@ -16,6 +16,7 @@
 // @match        https://www.indeed.com/*
 // @match        https://jobot.com/*
 // @match        https://jobsfordevelopers.com/jobs/*
+// @match        https://jobs.lever.co/*
 // @match        https://www.linkedin.com/jobs/*
 // @match        https://*.myworkdayjobs.com/*/job/*
 // @match        https://remote.co/job/*
@@ -36,7 +37,7 @@
 
   //Options for additional things to flag in the words list
   const flagSecurityClearances = true;
-  const flagCriminalRecord = false;
+  const flagCriminalRecord = true;
 
   //A list of terms to always highlight
   const descriptionAlwaysHighlight = ["angular", "typescript", "type script", "javascript", "java script", "css", "scss", "html"];
@@ -456,6 +457,13 @@
     //Locations are easy to see on this site, and the format they use is different from other sites. Not worth highlighting locations for this site
     waitForKeyElements(".container .prose", highlightJobDesc, false);
     runOnInterval(reApplyStyles);
+  });
+
+  //===========
+  //LEVER (recruitment/application site some companies use, no job searching)
+  runForHostname("lever.co", (path) => {
+    waitForKeyElements(".posting-categories .location, .posting-categories .workplaceTypes", highlightLocation);
+    waitForKeyElements(".section-wrapper.page-full-width .section", highlightJobDesc);
   });
 
   //===========

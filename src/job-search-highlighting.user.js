@@ -375,8 +375,8 @@
         `[class^='JobDetails_jobDescription']{max-height:none; mask-image:none; -webkit-mask-image:none;}
         #JobDescriptionContainer > [id^='JobDesc']{max-height:none; overflow:visible;}
         .jobDescriptionContent{overflow:visible;}
-        #MainCol .selected{box-shadow:inset 0 1px 0 #1861bf,inset 0 -1px 0 #1861bf, inset -1px 0 0 #1861bf, 0 0 10px #1861bf; z-index:1;}
-        #MainCol .selected::before{background-color:#1861bf !important;}`
+        #MainCol ul li .selected{box-shadow:inset 0 1px 0 #1861bf,inset 0 -1px 0 #1861bf, inset -1px 0 0 #1861bf, 0 0 10px #1861bf; z-index:1;}
+        #MainCol ul li .selected::before{background-color:#1861bf !important;}`
       );
 
       waitForKeyElements("[data-test='location'], [data-test='emp-location']", highlightLocation, false);

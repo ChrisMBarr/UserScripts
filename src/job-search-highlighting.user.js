@@ -7,6 +7,7 @@
 // @homepageURL  https://github.com/FiniteLooper/UserScripts
 // @updateURL    https://github.com/FiniteLooper/UserScripts/raw/main/src/job-search-highlighting.user.js
 // @match        https://*.applytojob.com/*
+// @match        https://*.dejobs.org/*
 // @match        https://www.dice.com/job-detail/*
 // @match        https://www.dice.com/jobs*
 // @match        https://www.dice.com/dashboard/intellisearch-jobs/*
@@ -37,7 +38,7 @@
 
   //Options for additional things to flag in the words list
   const flagSecurityClearances = true;
-  const flagCriminalRecord = true;
+  const flagCriminalRecord = false;
 
   //A list of terms to always highlight
   const descriptionAlwaysHighlight = ["angular", "typescript", "type script", "javascript", "java script", "css", "scss", "html"];
@@ -327,6 +328,13 @@
   runForHostname("applytojob.com", (path) => {
     waitForKeyElements("#job-description", highlightJobDesc);
     waitForKeyElements('.job-attributes-container [title="Location"]', highlightLocation);
+  });
+
+  //===========
+  //DEJOBS (recruitment/application site some companies, no job searching)
+  runForHostname("dejobs.org", (path) => {
+    waitForKeyElements("#direct_jobDescriptionText", highlightJobDesc);
+    waitForKeyElements('#direct_jobListingTitle [itemprop="jobLocation"]', highlightLocation);
   });
 
   //===========

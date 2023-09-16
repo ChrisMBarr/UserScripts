@@ -147,7 +147,7 @@
   //Matches mentions of currency or currency ranges
   //Ex: "$65" "$65.00" "$65K" "$65,000" "$1B" "$50/hr" "$50 per hour" "$40 - 50 per hour" "$75K per year"
   const currencyHighlightPattern =
-    /([$£€][\d,.]+\s*((hundred|thousand|million|billion|trillion)|[KMBT])?\+?((\s*(to|-|–)\s*)?[$£€]?[\d,.]+[KMBT]?)?)(\s*\/?(|pe?r)\s*(hr|hour|month|week|yr|year|annually|annual|annum))?/gi;
+    /([$£€][\d,.]+\s*((hundred|thousand|million|billion|trillion)|[KMB])?\+?((\s*(to|-|–)\s*)?[$£€]?[\d,.]+[KMB]?)?)(\s*\/?(|pe?r)\s*(hr|hour|month|week|yr|year|annually|annual|annum))?/gi;
 
   //------------------------------------------------------------------------------------------------------------
   // HIGHLIGHTING STYLES

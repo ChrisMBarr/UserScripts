@@ -15,6 +15,7 @@
 // @match        https://www.glassdoor.com/job-listing/*
 // @match        https://boards.greenhouse.io/*/jobs/*
 // @match        https://www.indeed.com/*
+// @match        https://*.apply.indeed.com/form/*
 // @match        https://jobot.com/*
 // @match        https://jobsfordevelopers.com/jobs/*
 // @match        https://jobs.lever.co/*

@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Job Search Highlighting
 // @namespace    https://github.com/FiniteLooper/UserScripts
-// @version      0.95
+// @version      0.96
 // @description  Highlights key words and locations on many popular job sites
 // @author       Chris Barr
 // @homepageURL  https://github.com/FiniteLooper/UserScripts
@@ -21,6 +21,7 @@
 // @match        https://www.linkedin.com/jobs/*
 // @match        https://*.myworkdayjobs.com/*/job/*
 // @match        https://remote.co/job/*
+// @match        https://app.smartmatchjobs.com/smart_job_searches/job_vacancy_detail*
 // @match        https://startup.jobs/*
 // @match        https://app.testedrecruits.com/posting/*
 // @match        https://recruiting.ultipro.com/*/JobBoard/*
@@ -558,6 +559,12 @@
         waitForKeyElements(".opportunity > [data-automation='job-brief-description']", highlightJobDesc, false);
       }
     });
+  });
+
+  //===========
+  //SMART MATCH JOBS  (recruitment/application site some companies use)
+  runForHostname("smartmatchjobs.com", (path) => {
+    waitForKeyElements(".main-content-box", highlightJobDesc);
   });
 
   //===========

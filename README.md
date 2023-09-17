@@ -15,7 +15,7 @@ A few Tampermonkey/Greasemonkey scripts I've made
 *  Optional list of flagged terms in certain categories can be added
 *  Works on multiple websites:
    *  Job search sites: dice.com, glassdoor.com, indeed.com, linkedin.com, jobot.com, jobsfordevelopers.com, remote.co, startup.jobs, and ziprecruiter.com
-   *  Job application/recruitment sites used by many companies: applytojob.com, dejobs.org, greenhouse.io, jobs.lever.co, myworkdayjobs.com, testedrecruits.com, and ultipro.com
+   *  Job application/recruitment sites used by many companies: applytojob.com, dejobs.org, greenhouse.io, jobs.lever.co, myworkdayjobs.com, smartmatchjobs.com, testedrecruits.com, and ultipro.com
 
 #### Demo
 ![indeed](doc-img/job-indeed.gif)

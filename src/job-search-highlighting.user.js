@@ -67,7 +67,7 @@
     "Experienced in ", //intentional space here to avoid flagging part of "experience including" (for example)
     "deep understanding of",
     "deep knowledge of",
-    "mastry of",
+    "mastery of",
     "do not apply if",
     "encouraged to apply",
     "are encouraged to",

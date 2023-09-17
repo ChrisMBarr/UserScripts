@@ -423,6 +423,16 @@
       //static individual job details page
       waitForKeyElements("#jobDescriptionText", highlightJobDesc);
       waitForKeyElements(".jobsearch-CompanyInfoWithReview > div > div > div:nth-child(2)", highlightLocation);
+    } else if (path.includes("/indeedapply/")) {
+      //The final submit/confirm page - auto scroll to the button
+      //NOTE: Both INDEED and GLASSDOOR will use this page!
+      waitForKeyElements(".ia-continueButton", (node) => {
+        if ($(node).is('button:contains("Submit your application")')) {
+          setTimeout(() => {
+            node[0].scrollIntoView({ behavior: "smooth" });
+          }, 500);
+        }
+      });
     } else {
       //ajax job search page
       runOnInterval(() => {

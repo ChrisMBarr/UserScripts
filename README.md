@@ -6,6 +6,10 @@ A few Tampermonkey/Greasemonkey scripts I've made
 * Install the [Tampermonkey browser plugin](https://www.tampermonkey.net/) or [GreaseMonkey browser plugin](https://www.greasespot.net/)
 * Navigate to one of the scripts either in the `/src/` folder and click the "RAW" button, or click one of the install links below
 
+## Washington Post Paywall Remover
+**[📜 Install Washington Post Paywall Remover Script](https://raw.githubusercontent.com/FiniteLooper/UserScripts/main/src/washington-post-paywall-remover.user.js)**
+
+Exactly what you think it does. When you visit the Washington Post website it removes the paywall that blocks you from seeing the whole article. The full text of the article has already been downloaded, they just don't allow you to scroll down to read it. This removes those limitations.
 
 ## Job Search Highlighting
 **[📜 Install Job Search Highlighting Script](https://raw.githubusercontent.com/FiniteLooper/UserScripts/main/src/job-search-highlighting.user.js)**

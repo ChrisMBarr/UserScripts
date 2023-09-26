@@ -6,28 +6,28 @@
 // @author       Chris Barr
 // @homepageURL  https://github.com/FiniteLooper/UserScripts
 // @updateURL    https://github.com/FiniteLooper/UserScripts/raw/main/src/job-search-highlighting.user.js
-// @match        https://*.applytojob.com/*
-// @match        https://*.dejobs.org/*
-// @match        https://www.dice.com/job-detail/*
-// @match        https://www.dice.com/jobs*
-// @match        https://www.dice.com/dashboard/intellisearch-jobs/*
-// @match        https://www.glassdoor.com/Job/*
-// @match        https://www.glassdoor.com/job-listing/*
-// @match        https://boards.greenhouse.io/*/jobs/*
-// @match        https://www.indeed.com/*
-// @match        https://*.apply.indeed.com/form/*
-// @match        https://jobot.com/*
-// @match        https://jobsfordevelopers.com/jobs/*
-// @match        https://jobs.lever.co/*
-// @match        https://www.linkedin.com/jobs/*
-// @match        https://*.myworkdayjobs.com/*/job/*
-// @match        https://remote.co/job/*
-// @match        https://app.smartmatchjobs.com/smart_job_searches/job_vacancy_detail*
-// @match        https://startup.jobs/*
-// @match        https://app.testedrecruits.com/posting/*
-// @match        https://recruiting.ultipro.com/*/JobBoard/*
-// @match        https://www.ziprecruiter.com/jobs/*
-// @icon         https://www.indeed.com/images/favicon.ico
+// @match        *://*.applytojob.com/*
+// @match        *://*.dejobs.org/*
+// @match        *://www.dice.com/job-detail/*
+// @match        *://www.dice.com/jobs*
+// @match        *://www.dice.com/dashboard/intellisearch-jobs/*
+// @match        *://www.glassdoor.com/Job*
+// @match        *://www.glassdoor.com/job-listing/*
+// @match        *://boards.greenhouse.io/*/jobs/*
+// @match        *://www.indeed.com/*
+// @match        *://*.apply.indeed.com/form/*
+// @match        *://jobot.com/*
+// @match        *://jobsfordevelopers.com/jobs/*
+// @match        *://jobs.lever.co/*
+// @match        *://www.linkedin.com/jobs/*
+// @match        *://*.myworkdayjobs.com/*/job/*
+// @match        *://remote.co/job/*
+// @match        *://app.smartmatchjobs.com/smart_job_searches/job_vacancy_detail*
+// @match        *://startup.jobs/*
+// @match        *://app.testedrecruits.com/posting/*
+// @match        *://recruiting.ultipro.com/*/JobBoard/*
+// @match        *://www.ziprecruiter.com/jobs/*
+// @icon         *://www.indeed.com/images/favicon.ico
 // @grant        GM_addStyle
 // @require      http://code.jquery.com/jquery-3.4.1.min.js
 // @require      http://bartaz.github.io/sandbox.js/jquery.highlight.js
@@ -378,7 +378,7 @@
   //===========
   //GLASS DOOR
   runForHostname("glassdoor.com", (path) => {
-    if (path.startsWith("/job/")) {
+    if (path.startsWith("/job")) {
       //job search page
 
       searchParam = "sc.occupationParam";
@@ -388,8 +388,8 @@
         `[class^='JobDetails_jobDescription']{max-height:none; mask-image:none; -webkit-mask-image:none;}
         #JobDescriptionContainer > [id^='JobDesc']{max-height:none; overflow:visible;}
         .jobDescriptionContent{overflow:visible;}
-        #MainCol ul li .selected{box-shadow:inset 0 1px 0 #1861bf,inset 0 -1px 0 #1861bf, inset -1px 0 0 #1861bf, 0 0 10px #1861bf; z-index:1;}
-        #MainCol ul li .selected::before{background-color:#1861bf !important;}`
+        #left-column ul li .selected{box-shadow:inset 0 1px 0 var(--light-theme-color-green-300),inset 0 -1px 0 var(--light-theme-color-green-300), inset -1px 0 0 var(--light-theme-color-green-300), 0 0 10px var(--light-theme-color-green-300); z-index:1;}
+        #left-column ul li .selected::before{background-color:var(--light-theme-color-green-300) !important;}`
       );
 
       waitForKeyElements("[data-test='location'], [data-test='emp-location']", highlightLocation, false);

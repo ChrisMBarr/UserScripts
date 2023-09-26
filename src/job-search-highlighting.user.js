@@ -22,6 +22,7 @@
 // @match        *://www.linkedin.com/jobs/*
 // @match        *://*.myworkdayjobs.com/*/job/*
 // @match        *://remote.co/job/*
+// @match        *://remoteok.com/remote-jobs/*
 // @match        *://app.smartmatchjobs.com/smart_job_searches/job_vacancy_detail*
 // @match        *://startup.jobs/*
 // @match        *://app.testedrecruits.com/posting/*
@@ -534,6 +535,13 @@
   runForHostname("remote.co", (path) => {
     waitForKeyElements(".job_description", highlightJobDesc);
     waitForKeyElements(".location_sm", highlightLocation);
+  });
+
+  //===========
+  //REMOTEOK.COM
+  runForHostname("remoteok.com", (path) => {
+    GM_addStyle(`.jsh-mark{color:#000;}`); //dark site BG has white text normally, this makes the highlighting readable
+    waitForKeyElements("#jobsboard .active .description", highlightJobDesc);
   });
 
   //===========

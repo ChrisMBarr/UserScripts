@@ -9,6 +9,7 @@
 // @match        https://www.washingtonpost.com/*
 // @icon         https://www.washingtonpost.com/touch-icon-iphone.png
 // @grant        none
+// @noframes
 // ==/UserScript==
 
 (function () {

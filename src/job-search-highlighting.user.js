@@ -15,7 +15,7 @@
 // @match        *://www.glassdoor.com/job-listing/*
 // @match        *://boards.greenhouse.io/*/jobs/*
 // @match        *://www.indeed.com/*
-// @match        *://*.apply.indeed.com/form/*
+// @match        *://*.apply.indeed.com/*
 // @match        *://jobot.com/*
 // @match        *://jobsfordevelopers.com/jobs/*
 // @match        *://jobs.lever.co/*
@@ -30,6 +30,7 @@
 // @match        *://www.ziprecruiter.com/jobs/*
 // @icon         *://www.indeed.com/images/favicon.ico
 // @grant        GM_addStyle
+// @noframes
 // @require      http://code.jquery.com/jquery-3.4.1.min.js
 // @require      http://bartaz.github.io/sandbox.js/jquery.highlight.js
 // @require      https://gist.github.com/raw/2625891/waitForKeyElements.js

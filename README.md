@@ -75,3 +75,34 @@ After installing you will need to edit the configuration variables described abo
 
 After installing you can edit the configuration variables described above to match whatever your preferences are.
 
+## Washington Post Paywall Remover
+**[📜 Install Autofill MyWorkday Jobs Resume Script](https://raw.githubusercontent.com/FiniteLooper/UserScripts/main/src/autofill-myworkdayjobs-resume.user.js)**
+
+Applying for jobs via MyWorkday Jobs is cumbersome because many companies use them, but you have to create a new account for each company and re-enter your same resume for each company. It's the same website and yet they don't allow you to import a previously used resume.  This script allow you to store your resume in a JSON format and it puts some buttons in the UI at each step of the application. Just press the buttons and it will auto-fill your details for that step. It saves me a LOT of time if I am applying to many jobs.
+
+Note that options in dropdown menus can change between companies, I guess they can provide their own values. A good example is your gender or ethnicity for the demographic data.
+```
+ethnicity: [
+  "White",
+  "White (Not Hispanic or Latino)",
+  "White (United States of America)",
+  "White (Not Hispanic or Latino) (United States of America)",
+],
+```
+or the degree type for education
+```
+degreeType: [
+  "Bachelor of Science (B.S.)",
+  "Bachelors of Science",
+  "Bachelor's of Science",
+  "Bachelor of Science",
+  "BS",
+  "Bachelor's Degree",
+  "Bachelors Degree",
+  "Bachelor Degree",
+  "Bachelors",
+  "Bachelor",
+],
+```
+
+The script will do it's best to find a match, and if multiples are found it will select which ever one is first in the provided array.

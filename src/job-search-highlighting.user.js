@@ -7,28 +7,30 @@
 // @homepageURL  https://github.com/FiniteLooper/UserScripts
 // @updateURL    https://github.com/FiniteLooper/UserScripts/raw/main/src/job-search-highlighting.user.js
 // @match        *://*.applytojob.com/*
+// @match        *://*.avature.net/*/careers/JobDetail/*
 // @match        *://*.dejobs.org/*
-// @match        *://www.dice.com/job-detail/*
-// @match        *://www.dice.com/jobs*
-// @match        *://www.dice.com/dashboard/intellisearch-jobs/*
-// @match        *://www.glassdoor.com/Job*
-// @match        *://www.glassdoor.com/job-listing/*
+// @match        *://*.dice.com/job-detail/*
+// @match        *://*.dice.com/jobs*
+// @match        *://*.dice.com/dashboard/intellisearch-jobs/*
+// @match        *://*.glassdoor.com/Job*
+// @match        *://*.glassdoor.com/job-listing/*
 // @match        *://boards.greenhouse.io/*/jobs/*
-// @match        *://www.indeed.com/*
+// @match        *://app.honestjobs.com/job-seeker/dashboard/job-search
+// @match        *://*.indeed.com/*
 // @match        *://*.apply.indeed.com/*
-// @match        *://jobot.com/*
-// @match        *://jobsfordevelopers.com/jobs/*
-// @match        *://jobs.lever.co/*
-// @match        *://www.linkedin.com/jobs/*
+// @match        *://*.jobot.com/*
+// @match        *://*.jobsfordevelopers.com/jobs/*
+// @match        *://*.jobs.lever.co/*
+// @match        *://*.linkedin.com/jobs/*
 // @match        *://*.myworkdayjobs.com/*/job/*
-// @match        *://remote.co/job/*
+// @match        *://*.remote.co/job/*
 // @match        *://remoteok.com/remote-jobs/*
 // @match        *://app.smartmatchjobs.com/smart_job_searches/job_vacancy_detail*
-// @match        *://startup.jobs/*
+// @match        *://*.startup.jobs/*
 // @match        *://app.testedrecruits.com/posting/*
-// @match        *://recruiting.ultipro.com/*/JobBoard/*
-// @match        *://www.ziprecruiter.com/jobs/*
-// @icon         *://www.indeed.com/images/favicon.ico
+// @match        *://*.recruiting.ultipro.com/*/JobBoard/*
+// @match        *://*.ziprecruiter.com/jobs/*
+// @icon         https://www.indeed.com/images/favicon.ico
 // @grant        GM_addStyle
 // @noframes
 // @require      http://code.jquery.com/jquery-3.4.1.min.js
@@ -337,6 +339,11 @@
     waitForKeyElements('.job-attributes-container [title="Location"]', highlightLocation);
   });
 
+  //AVATURE (recruitment/application site some companies use, no job searching)
+  runForHostname("avature.net", (path) => {
+    waitForKeyElements(".article--details .article__content", highlightJobDesc);
+  });
+
   //===========
   //DEJOBS (recruitment/application site some companies, no job searching)
   runForHostname("dejobs.org", (path) => {
@@ -454,6 +461,15 @@
         );
       });
     }
+  });
+
+  //===========
+  //HONEST JOBS
+  runForHostname("honestjobs.com", (path) => {
+    //Fix the border width not to jump when hovered over
+    GM_addStyle(`.job-search-result-item{border-width:2px !important;}`);
+
+    waitForKeyElements(".mat-dialog-content .job-desc", highlightJobDesc, false);
   });
 
   //===========

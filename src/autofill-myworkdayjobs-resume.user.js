@@ -7,6 +7,7 @@
 // @homepageURL  https://github.com/FiniteLooper/UserScripts
 // @updateURL    https://github.com/FiniteLooper/UserScripts/raw/main/src/autofill-myworkdayjobs-resume.user.js
 // @match        *://*.myworkdayjobs.com/*/job/*
+// @match        *://*.wd1.myworkdayjobs.com/*/job/*
 // @icon         data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==
 // @grant        none
 // @noframes
@@ -79,19 +80,16 @@
           "Bachelors",
           "Bachelor",
         ],
-        startDate: "09/2005",
-        endDate: "08/2006",
+        startYear: 2005,
+        endYear: 2006,
         gpa: "3.45",
       },
     ],
     skills: ["Typescript", "JavaScript", "HTML", "CSS", "SCSS", "Angular", "RxJS"],
-    urls: [
-      "https://linkedin.com/in/my-name",
-      "https://github.com/my-name",
-    ],
+    urls: ["https://linkedin.com/in/my-name", "https://github.com/my-name"],
   };
-  const loopDelay = 200;
-  const waitDelay = 400;
+  const loopDelay = 400;
+  const waitDelay = 500;
   const currentYear = new Date().getFullYear();
   const $ = (s) => document.querySelector(s);
   const $id = (s) => $(`[data-automation-id="${s}"]`);
@@ -148,23 +146,10 @@
     }
   };
 
-  var fillDate = ($el, month, year) => {
-    const $inputMonth = $idCtx($el, "dateSectionMonth-input");
-    //increment the months
-    for (let m = 0; m < month; m++) {
-      $inputMonth.dispatchEvent(
-        new KeyboardEvent("keydown", {
-          bubbles: true,
-          code: "ArrowUp",
-          key: "ArrowUp",
-          keyCode: 38,
-        })
-      );
-    }
-
+  const fillYear = ($el, yearVal) => {
     const $inputYear = $idCtx($el, "dateSectionYear-input");
     //Decrease the years from the current year
-    const numYears = currentYear - year + 1;
+    const numYears = currentYear - yearVal + 1;
     for (let y = 0; y < numYears; y++) {
       $inputYear.dispatchEvent(
         new KeyboardEvent("keydown", {
@@ -177,6 +162,23 @@
     }
 
     $inputYear.dispatchEvent(new Event("focusout", { bubbles: true }));
+  };
+
+  const fillMonthAndYear = ($el, monthVal, year) => {
+    const $inputMonth = $idCtx($el, "dateSectionMonth-input");
+    //increment the months
+    for (let m = 0; m < monthVal; m++) {
+      $inputMonth.dispatchEvent(
+        new KeyboardEvent("keydown", {
+          bubbles: true,
+          code: "ArrowUp",
+          key: "ArrowUp",
+          keyCode: 38,
+        })
+      );
+    }
+
+    fillYear($el, year);
   };
 
   //-----------------------------------------------------
@@ -200,48 +202,81 @@
   //-----------------------------------------------------
   //Second Section
   const fillSecondSection = async () => {
-    //Work Experience
-    await resume.workHistory.forEach(async (job, i) => {
-      await setTimeout(async () => {
-        click($(`button[aria-label="Add Work Experience"], button[aria-label="Add Another Work Experience"]`));
-        await setTimeout(() => {
-          const $jobSection = $id(`workExperience-${i + 1}`);
-          fill($idCtx($jobSection, "jobTitle"), job.title);
-          fill($idCtx($jobSection, "company"), job.company);
-          fill($idCtx($jobSection, "location"), job.location);
-          fill($idCtx($jobSection, "currentlyWorkHere"), job.isCurrent);
-          fillDate($idCtx($jobSection, "formField-startDate"), job.startMonth, job.startYear);
-          if (!job.isCurrent) {
-            fillDate($idCtx($jobSection, "formField-endDate"), job.endMonth, job.endYear);
-          }
-          fill($idCtx($jobSection, "description"), job.description);
-        }, waitDelay);
-      }, loopDelay * i);
-    });
+    return new Promise((resolve) => {
+      //Work Experience
+      resume.workHistory.forEach((job, i) => {
+        setTimeout(() => {
+          click($(`button[aria-label="Add Work Experience"], button[aria-label="Add Another Work Experience"]`));
+          setTimeout(() => {
+            const $jobSection = $id(`workExperience-${i + 1}`);
+            fill($idCtx($jobSection, "jobTitle"), job.title);
+            fill($idCtx($jobSection, "company"), job.company);
+            fill($idCtx($jobSection, "location"), job.location);
+            fill($idCtx($jobSection, "currentlyWorkHere"), job.isCurrent);
+            fillMonthAndYear($idCtx($jobSection, "formField-startDate"), job.startMonth, job.startYear);
+            if (!job.isCurrent) {
+              fillMonthAndYear($idCtx($jobSection, "formField-endDate"), job.endMonth, job.endYear);
+            }
+            fill($idCtx($jobSection, "description"), job.description);
+            if (resume.workHistory.length - 1 === i) {
+              resolve();
+            }
+          }, waitDelay);
+        }, loopDelay * i);
+      });
+    })
+      .then(() => {
+        //Education but not the specific degree since they probably won't be in the list
+        return new Promise((resolve) => {
+          resume.education.forEach((edu, i) => {
+            ((edu, i) => {
+              setTimeout(() => {
+                click($(`button[aria-label="Add Education"], button[aria-label="Add Another Education"]`));
+                ((edu, i) => {
+                  setTimeout(() => {
+                    const $eduSection = $id(`education-${i + 1}`);
+                    fill($idCtx($eduSection, "school"), edu.schoolName);
+                    fill($idCtx($eduSection, "gpa"), edu.gpa);
+                    fill($idCtx($eduSection, "degree"), edu.degreeType);
 
-    //Education but not the specific degree since they probably won't be in the list
-    await resume.education.forEach(async (edu, i) => {
-      await setTimeout(async () => {
-        click($(`button[aria-label="Add Education"], button[aria-label="Add Another Education"]`));
-        await setTimeout(async () => {
-          const $eduSection = $id(`education-${i + 1}`);
-          fill($idCtx($eduSection, "school"), edu.schoolName);
-          fill($idCtx($eduSection, "gpa"), edu.gpa);
-          fill($idCtx($degree, "degree"), edu.degreeType);
-        }, waitDelay);
-      }, loopDelay * i);
-    });
+                    const $startDate = $idCtx($eduSection, "formField-startDate");
+                    if ($startDate) {
+                      fillYear($startDate, edu.startYear);
+                    }
 
-    //Websites/URLs
-    await resume.urls.forEach(async (url, i) => {
-      await setTimeout(async () => {
-        click($(`button[aria-label="Add Websites"], button[aria-label="Add Another Websites"]`));
-        await setTimeout(async () => {
-          const $urlSection = $id(`websitePanelSet-${i + 1}`);
-          fill($urlSection.querySelector("input"), url);
-        }, waitDelay);
-      }, loopDelay * i);
-    });
+                    const $endDate = $idCtx($eduSection, "formField-endDate");
+                    if ($endDate) {
+                      fillYear($endDate, edu.endYear);
+                    }
+
+                    if (resume.education.length - 1 === i) {
+                      resolve();
+                    }
+                  }, waitDelay);
+                })(edu, i);
+              }, loopDelay * i);
+            })(edu, i);
+          });
+        });
+      })
+      .then(() => {
+        //Websites/URLs
+        return new Promise((resolve) => {
+          resume.urls.forEach((url, i) => {
+            setTimeout(() => {
+              click($(`button[aria-label="Add Websites"], button[aria-label="Add Another Websites"]`));
+              setTimeout(() => {
+                const $urlSection = $id(`websitePanelSet-${i + 1}`);
+                fill($urlSection.querySelector("input"), url);
+
+                if (resume.urls.length - 1 === i) {
+                  resolve();
+                }
+              }, waitDelay);
+            }, loopDelay * i);
+          });
+        });
+      });
   };
 
   const fillDemographics = () => {

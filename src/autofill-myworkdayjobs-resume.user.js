@@ -39,7 +39,7 @@
       ],
       gender: ["Male", "Male (United States of America)"],
       hispanicOrLatino: "No",
-      veteran: ["I am not a protected veteran", "I AM NOT A VETERAN"],
+      veteran: ["I am not a protected veteran", "I am not a veteran", "I AM NOT A VETERAN"],
     },
     workHistory: [
       {

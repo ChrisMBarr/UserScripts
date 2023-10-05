@@ -1,13 +1,13 @@
 // ==UserScript==
 // @name         Auto-Fill MyWorkday Resume
 // @namespace    https://github.com/FiniteLooper/UserScripts
-// @version      0.1
+// @version      0.11
 // @description  Auto-Fill MyWorkday Resume
 // @author       Chris Barr
 // @homepageURL  https://github.com/FiniteLooper/UserScripts
 // @updateURL    https://github.com/FiniteLooper/UserScripts/raw/main/src/autofill-myworkdayjobs-resume.user.js
 // @match        *://*.myworkdayjobs.com/*/job/*
-// @match        *://*.wd1.myworkdayjobs.com/*/job/*
+// @match        *://*.*.myworkdayjobs.com/*/job/*
 // @icon         data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==
 // @grant        none
 // @noframes
@@ -83,6 +83,17 @@
         startYear: 2005,
         endYear: 2006,
         gpa: "3.45",
+      },
+    ],
+    languages: [
+      {
+        name: "English",
+        isFluent: true,
+        comprehension: "5 - Fluent",
+        overall: "5 - Fluent",
+        reading: "5 - Fluent",
+        speaking: "5 - Fluent",
+        writing: "5 - Fluent",
       },
     ],
     skills: ["Typescript", "JavaScript", "HTML", "CSS", "SCSS", "Angular", "RxJS"],
@@ -202,81 +213,116 @@
   //-----------------------------------------------------
   //Second Section
   const fillSecondSection = async () => {
-    return new Promise((resolve) => {
-      //Work Experience
-      resume.workHistory.forEach((job, i) => {
-        setTimeout(() => {
-          click($(`button[aria-label="Add Work Experience"], button[aria-label="Add Another Work Experience"]`));
+    return (
+      new Promise((resolve) => {
+        //Work Experience
+        resume.workHistory.forEach((job, i) => {
           setTimeout(() => {
-            const $jobSection = $id(`workExperience-${i + 1}`);
-            fill($idCtx($jobSection, "jobTitle"), job.title);
-            fill($idCtx($jobSection, "company"), job.company);
-            fill($idCtx($jobSection, "location"), job.location);
-            fill($idCtx($jobSection, "currentlyWorkHere"), job.isCurrent);
-            fillMonthAndYear($idCtx($jobSection, "formField-startDate"), job.startMonth, job.startYear);
-            if (!job.isCurrent) {
-              fillMonthAndYear($idCtx($jobSection, "formField-endDate"), job.endMonth, job.endYear);
-            }
-            fill($idCtx($jobSection, "description"), job.description);
-            if (resume.workHistory.length - 1 === i) {
-              resolve();
-            }
-          }, waitDelay);
-        }, loopDelay * i);
-      });
-    })
-      .then(() => {
-        //Education but not the specific degree since they probably won't be in the list
-        return new Promise((resolve) => {
-          resume.education.forEach((edu, i) => {
-            ((edu, i) => {
-              setTimeout(() => {
-                click($(`button[aria-label="Add Education"], button[aria-label="Add Another Education"]`));
-                ((edu, i) => {
-                  setTimeout(() => {
-                    const $eduSection = $id(`education-${i + 1}`);
-                    fill($idCtx($eduSection, "school"), edu.schoolName);
-                    fill($idCtx($eduSection, "gpa"), edu.gpa);
-                    fill($idCtx($eduSection, "degree"), edu.degreeType);
-
-                    const $startDate = $idCtx($eduSection, "formField-startDate");
-                    if ($startDate) {
-                      fillYear($startDate, edu.startYear);
-                    }
-
-                    const $endDate = $idCtx($eduSection, "formField-endDate");
-                    if ($endDate) {
-                      fillYear($endDate, edu.endYear);
-                    }
-
-                    if (resume.education.length - 1 === i) {
-                      resolve();
-                    }
-                  }, waitDelay);
-                })(edu, i);
-              }, loopDelay * i);
-            })(edu, i);
-          });
+            click($(`button[aria-label="Add Work Experience"], button[aria-label="Add Another Work Experience"]`));
+            setTimeout(() => {
+              const $jobSection = $id(`workExperience-${i + 1}`);
+              fill($idCtx($jobSection, "jobTitle"), job.title);
+              fill($idCtx($jobSection, "company"), job.company);
+              fill($idCtx($jobSection, "location"), job.location);
+              fill($idCtx($jobSection, "currentlyWorkHere"), job.isCurrent);
+              fillMonthAndYear($idCtx($jobSection, "formField-startDate"), job.startMonth, job.startYear);
+              if (!job.isCurrent) {
+                fillMonthAndYear($idCtx($jobSection, "formField-endDate"), job.endMonth, job.endYear);
+              }
+              fill($idCtx($jobSection, "description"), job.description);
+              if (resume.workHistory.length - 1 === i) {
+                resolve();
+              }
+            }, waitDelay);
+          }, loopDelay * i);
         });
       })
-      .then(() => {
-        //Websites/URLs
-        return new Promise((resolve) => {
-          resume.urls.forEach((url, i) => {
-            setTimeout(() => {
-              click($(`button[aria-label="Add Websites"], button[aria-label="Add Another Websites"]`));
-              setTimeout(() => {
-                const $urlSection = $id(`websitePanelSet-${i + 1}`);
-                fill($urlSection.querySelector("input"), url);
+        .then(() => {
+          //Education but not the specific degree since they probably won't be in the list
+          return new Promise((resolve) => {
+            resume.education.forEach((edu, i) => {
+              ((edu, i) => {
+                setTimeout(() => {
+                  click($(`button[aria-label="Add Education"], button[aria-label="Add Another Education"]`));
+                  ((edu, i) => {
+                    setTimeout(() => {
+                      const $eduSection = $id(`education-${i + 1}`);
+                      fill($idCtx($eduSection, "school"), edu.schoolName);
+                      fill($idCtx($eduSection, "gpa"), edu.gpa);
+                      fill($idCtx($eduSection, "degree"), edu.degreeType);
 
-                if (resume.urls.length - 1 === i) {
-                  resolve();
-                }
-              }, waitDelay);
-            }, loopDelay * i);
+                      const $startDate = $idCtx($eduSection, "formField-startDate");
+                      if ($startDate) {
+                        fillYear($startDate, edu.startYear);
+                      }
+
+                      const $endDate = $idCtx($eduSection, "formField-endDate");
+                      if ($endDate) {
+                        fillYear($endDate, edu.endYear);
+                      }
+
+                      if (resume.education.length - 1 === i) {
+                        resolve();
+                      }
+                    }, waitDelay);
+                  })(edu, i);
+                }, loopDelay * i);
+              })(edu, i);
+            });
           });
-        });
-      });
+        })
+        .then(() => {
+          //Languages
+          return new Promise((resolve) => {
+            const $addLangBtn = $(`button[aria-label="Add Languages"], button[aria-label="Add Another Languages"]`);
+            if ($addLangBtn) {
+              resume.languages.forEach((lang, i) => {
+                ((lang, i) => {
+                  setTimeout(() => {
+                    click($addLangBtn);
+                    ((lang, i) => {
+                      setTimeout(() => {
+                        const $eduSection = $id(`language-${i + 1}`);
+                        fill($idCtx($eduSection, "language"), lang.name);
+                        fill($idCtx($eduSection, "nativeLanguage"), lang.isFluent);
+                        fill($idCtx($eduSection, "languageProficiency-0"), lang.comprehension);
+                        fill($idCtx($eduSection, "languageProficiency-1"), lang.overall);
+                        fill($idCtx($eduSection, "languageProficiency-2"), lang.reading);
+                        fill($idCtx($eduSection, "languageProficiency-3"), lang.speaking);
+                        fill($idCtx($eduSection, "languageProficiency-4"), lang.writing);
+
+                        if (resume.languages.length - 1 === i) {
+                          resolve();
+                        }
+                      }, waitDelay);
+                    })(lang, i);
+                  }, loopDelay * i);
+                })(lang, i);
+              });
+            } else {
+              resolve();
+            }
+          });
+        })
+        .then(() => {
+          //Websites/URLs
+          return new Promise((resolve) => {
+            resume.urls.forEach((url, i) => {
+              setTimeout(() => {
+                click($(`button[aria-label="Add Websites"], button[aria-label="Add Another Websites"]`));
+                setTimeout(() => {
+                  const $urlSection = $id(`websitePanelSet-${i + 1}`);
+                  fill($urlSection.querySelector("input"), url);
+
+                  if (resume.urls.length - 1 === i) {
+                    resolve();
+                  }
+                }, waitDelay);
+              }, loopDelay * i);
+            });
+          });
+        })
+    );
   };
 
   const fillDemographics = () => {

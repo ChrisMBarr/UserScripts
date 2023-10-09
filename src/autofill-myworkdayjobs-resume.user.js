@@ -36,6 +36,7 @@
         "White (Not Hispanic or Latino)",
         "White (United States of America)",
         "White (Not Hispanic or Latino) (United States of America)",
+        "White (Not Hispanic) Region specific: (United States of America)",
       ],
       gender: ["Male", "Male (United States of America)"],
       hispanicOrLatino: "No",

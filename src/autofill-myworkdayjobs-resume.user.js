@@ -69,7 +69,9 @@
       {
         schoolName: "Harvard",
         degreeType: [
+          "Bachelor of Science (BS or B.Sc)",
           "Bachelor of Science (B.S.)",
+          "Bachelor of Science (BS)",
           "Bachelors of Science",
           "Bachelor's of Science",
           "Bachelor of Science",
@@ -89,11 +91,11 @@
       {
         name: "English",
         isFluent: true,
-        comprehension: "5 - Fluent",
-        overall: "5 - Fluent",
-        reading: "5 - Fluent",
-        speaking: "5 - Fluent",
-        writing: "5 - Fluent",
+        comprehension: ["5 - Fluent", "Fluent"],
+        overall: ["5 - Fluent", "Fluent"],
+        reading: ["5 - Fluent", "Fluent"],
+        speaking: ["5 - Fluent", "Fluent"],
+        writing: ["5 - Fluent", "Fluent"],
       },
     ],
     skills: ["Typescript", "JavaScript", "HTML", "CSS", "SCSS", "Angular", "RxJS"],

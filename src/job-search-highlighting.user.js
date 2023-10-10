@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Job Search Highlighting
 // @namespace    https://github.com/FiniteLooper/UserScripts
-// @version      0.96
+// @version      0.97
 // @description  Highlights key words and locations on many popular job sites
 // @author       Chris Barr
 // @homepageURL  https://github.com/FiniteLooper/UserScripts
@@ -28,6 +28,7 @@
 // @match        *://app.smartmatchjobs.com/smart_job_searches/job_vacancy_detail*
 // @match        *://*.startup.jobs/*
 // @match        *://app.testedrecruits.com/posting/*
+// @match        *://*.themuse.com/jobs/*
 // @match        *://*.recruiting.ultipro.com/*/JobBoard/*
 // @match        *://*.ziprecruiter.com/jobs/*
 // @icon         https://www.indeed.com/images/favicon.ico
@@ -565,6 +566,13 @@
   //TESTED RECRUITS (recruitment/application site some companies use, no job searching)
   runForHostname("testedrecruits.com", (path) => {
     waitForKeyElements(".description", highlightJobDesc);
+  });
+
+  //===========
+  //THE MUSE
+  runForHostname("themuse.com", (path) => {
+    waitForKeyElements("[class^=JobIndividualHeader_jobHeaderLocation__]", highlightLocation);
+    waitForKeyElements("[class^=JobIndividualBody_jobBodyDescription__] > *:not([class^=JobAlert])", highlightJobDesc);
   });
 
   //===========

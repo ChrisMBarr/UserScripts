@@ -30,6 +30,7 @@
 // @match        *://app.testedrecruits.com/posting/*
 // @match        *://*.themuse.com/jobs/*
 // @match        *://*.recruiting.ultipro.com/*/JobBoard/*
+// @match        *://*.workatastartup.com/jobs/*
 // @match        *://*.ziprecruiter.com/jobs/*
 // @icon         https://www.indeed.com/images/favicon.ico
 // @grant        GM_addStyle
@@ -152,7 +153,7 @@
   //Just "remote" or any location that includes specific words like "remote in Charlotte, NC"
   //This way we don't highlight results like "Remote from Las Vegas, NM" - although it is remote, you don't live there
   const locationHighlightPattern =
-    /(^remote(, US.?)?$)|(^U.?S.?\s|-remote$)|(^remote[;–\- ]*united states$)|(^remote or.+)|United States;? \(?Remote\)?|(^hybrid remote$)|charlotte|, nc|north carolina/i;
+    /(^remote(,? \(?US.?\)?)?$)|(^U.?S.?\s|-remote$)|(^remote[;–\- ]*united states$)|(^remote or.+)|United States;? \(?Remote\)?|(^hybrid remote$)|charlotte|, nc|north carolina/i;
 
   //Matches mentions of currency or currency ranges
   //Ex: "$65" "$65.00" "$65K" "$65,000" "$1B" "$50/hr" "$50 per hour" "$40 - 50 per hour" "$75K per year"
@@ -609,6 +610,13 @@
 
     //Location highlighting for the ajax search
     waitForKeyElements(".content-wrapper [data-post-template-target='location']", highlightLocation, false);
+  });
+
+  //===========
+  //WORK AT A STARTUP (Y COMBINATOR)
+  runForHostname("workatastartup.com", (path) => {
+    waitForKeyElements(".company-details > div:first-child > div", highlightLocation);
+    waitForKeyElements(".company-details .prose", highlightJobDesc);
   });
 
   //===========

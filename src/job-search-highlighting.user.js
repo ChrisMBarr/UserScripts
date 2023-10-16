@@ -26,6 +26,7 @@
 // @match        *://*.remote.co/job/*
 // @match        *://remoteok.com/remote-jobs/*
 // @match        *://app.smartmatchjobs.com/smart_job_searches/job_vacancy_detail*
+// @match        *://jobs.smartrecruiters.com/*/*
 // @match        *://*.startup.jobs/*
 // @match        *://app.testedrecruits.com/posting/*
 // @match        *://*.themuse.com/jobs/*
@@ -604,10 +605,17 @@
   });
 
   //===========
+  //SMART RECRUITERS  (recruitment/application site some companies use)
+  runForHostname("smartrecruiters.com", (path) => {
+    waitForKeyElements(".c-spl-job-location__place", highlightLocation);
+    waitForKeyElements(".job-sections", highlightJobDesc);
+  });
+
+  //===========
   //STARTUP.JOBS
   runForHostname("startup.jobs", (path) => {
-    waitForKeyElements(".jobListing__main__text", highlightJobDesc);
     waitForKeyElements(".jobListing__main__meta__remote", highlightLocation);
+    waitForKeyElements(".jobListing__main__text", highlightJobDesc);
 
     //Location highlighting for the ajax search
     waitForKeyElements(".content-wrapper [data-post-template-target='location']", highlightLocation, false);

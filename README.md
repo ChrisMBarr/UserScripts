@@ -19,7 +19,7 @@ Exactly what you think it does. When you visit the Washington Post website it re
 *  Optional list of flagged terms in certain categories can be added
 *  Works on multiple websites:
    *  Job search sites: dice.com, glassdoor.com, indeed.com, honestjobs.com, linkedin.com, jobot.com, jobsfordevelopers.com, remote.co, remoteok.com startup.jobs, themuse.com, workatastartup.com, workingnomads.com, and ziprecruiter.com
-   *  Job application/recruitment sites used by many companies: applytojob.com, avature.net, dejobs.org, greenhouse.io, jobs.lever.co, myworkdayjobs.com, smartmatchjobs.com, testedrecruits.com, and ultipro.com
+   *  Job application/recruitment sites used by many companies: applytojob.com, avature.net, dejobs.org, greenhouse.io, jobs.lever.co, myworkdayjobs.com, smartmatchjobs.com, smartrecruiters.com, testedrecruits.com, and ultipro.com
 
 #### Demo
 ![indeed](doc-img/job-indeed.gif)

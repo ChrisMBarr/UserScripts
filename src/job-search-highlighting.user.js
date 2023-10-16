@@ -31,6 +31,7 @@
 // @match        *://*.themuse.com/jobs/*
 // @match        *://*.recruiting.ultipro.com/*/JobBoard/*
 // @match        *://*.workatastartup.com/jobs/*
+// @match        *://*.workingnomads.com/*
 // @match        *://*.ziprecruiter.com/jobs/*
 // @icon         https://www.indeed.com/images/favicon.ico
 // @grant        GM_addStyle
@@ -617,6 +618,13 @@
   runForHostname("workatastartup.com", (path) => {
     waitForKeyElements(".company-details > div:first-child > div", highlightLocation);
     waitForKeyElements(".company-details .prose", highlightJobDesc);
+  });
+
+  //===========
+  //WORKING NOMADS
+  runForHostname("workingnomads.com", (path) => {
+      waitForKeyElements("#mobile-job-detail .detailRows .detailRow:nth-child(2) span, #div-item-data .about-job-lines .about-job-line:nth-child(2) .about-job-line-text", highlightLocation);
+      waitForKeyElements("#mobile-job-detail .jobDescription ~ *, #div-item-data .job-desktop-description ~ *", highlightJobDesc);
   });
 
   //===========

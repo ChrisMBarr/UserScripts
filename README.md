@@ -76,8 +76,8 @@ After installing you will need to edit the configuration variables described abo
 After installing you can edit the configuration variables described above to match whatever your preferences are.
 
 ## Autofill Lever Jobs EEO Information
-**[📜 Install Autofill Lever Jobs EEO Information Script](https://raw.githubusercontent.com/FiniteLooper/UserScripts/main/src/autofill-lever-information.user.js)**
-A simple script that adds a button to the UI for Lever.co job applications, when pressed it auto-fills the EEO dropdowns with whatever values you have specified
+**[📜 Install Autofill Lever Jobs Information Script](https://raw.githubusercontent.com/FiniteLooper/UserScripts/main/src/autofill-lever-information.user.js)**
+A simple script that adds a button to the UI for Lever.co job applications, when pressed it auto-fills the dropdowns, etc. with whatever values you have specified
 
 
 ## Autofill MyWorkday Jobs Resume

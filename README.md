@@ -75,7 +75,12 @@ After installing you will need to edit the configuration variables described abo
 
 After installing you can edit the configuration variables described above to match whatever your preferences are.
 
-## Washington Post Paywall Remover
+## Autofill Lever Jobs EEO Information
+**[📜 Install Autofill Lever Jobs EEO Information Script](https://raw.githubusercontent.com/FiniteLooper/UserScripts/main/src/autofill-lever-information.user.js)**
+A simple script that adds a button to the UI for Lever.co job applications, when pressed it auto-fills the EEO dropdowns with whatever values you have specified
+
+
+## Autofill MyWorkday Jobs Resume
 **[📜 Install Autofill MyWorkday Jobs Resume Script](https://raw.githubusercontent.com/FiniteLooper/UserScripts/main/src/autofill-myworkdayjobs-resume.user.js)**
 
 Applying for jobs via MyWorkday Jobs is cumbersome because many companies use them, but you have to create a new account for each company and re-enter your same resume for each company. It's the same website and yet they don't allow you to import a previously used resume.  This script allow you to store your resume in a JSON format and it puts some buttons in the UI at each step of the application. Just press the buttons and it will auto-fill your details for that step. It saves me a LOT of time if I am applying to many jobs.

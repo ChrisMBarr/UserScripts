@@ -16,6 +16,7 @@
 // @match        *://*.glassdoor.com/job-listing/*
 // @match        *://boards.greenhouse.io/*/jobs/*
 // @match        *://app.honestjobs.com/job-seeker/dashboard/job-search
+// @match        *://*.icims.com/jobs/*
 // @match        *://*.indeed.com/*
 // @match        *://*.apply.indeed.com/*
 // @match        *://*.jobot.com/*
@@ -23,6 +24,7 @@
 // @match        *://*.jobs.lever.co/*
 // @match        *://*.linkedin.com/jobs/*
 // @match        *://*.myworkdayjobs.com/*/job/*
+// @match        *://*.nowhiteboard.org/jobs/*
 // @match        *://*.remote.co/job/*
 // @match        *://remoteok.com/remote-jobs/*
 // @match        *://app.smartmatchjobs.com/smart_job_searches/job_vacancy_detail*
@@ -31,9 +33,11 @@
 // @match        *://app.testedrecruits.com/posting/*
 // @match        *://*.themuse.com/jobs/*
 // @match        *://*.recruiting.ultipro.com/*/JobBoard/*
+// @match        *://*.wellfound.com/*
 // @match        *://*.workatastartup.com/jobs/*
 // @match        *://*.workingnomads.com/*
 // @match        *://*.ziprecruiter.com/jobs/*
+// @match        *://*.ziprecruiter.com/ojob/*
 // @icon         https://www.indeed.com/images/favicon.ico
 // @grant        GM_addStyle
 // @noframes
@@ -82,6 +86,7 @@
     "encouraged to apply",
     "are encouraged to",
     "encourage you to",
+    "must be located in",
   ];
 
   if (flagSecurityClearances) {
@@ -150,6 +155,11 @@
     "contract",
     "w2",
     "1099",
+    "100% remote",
+    "completely remote",
+    "entirely remote",
+    "totally remote",
+    "fully remote",
   ];
 
   //Just "remote" or any location that includes specific words like "remote in Charlotte, NC"
@@ -426,6 +436,21 @@
   });
 
   //===========
+  //ICIMS (recruitment/application site some companies, no job searching)
+  runForHostname("icims.com", (path) => {
+    runAfterDelay(() => {
+      //Insert styles and highlight within the iframe
+      const iframeDoc = document.querySelector("#icims_content_iframe").contentWindow.document;
+      const iframeStyles = iframeDoc.createElement("style");
+      iframeStyles.innerText = highlightStyles;
+      iframeDoc.body.appendChild(iframeStyles);
+
+      highlightLocation(iframeDoc.querySelectorAll(".iCIMS_JobsTable .header.left span:nth-child(2)"));
+      highlightJobDesc(iframeDoc.querySelectorAll(".iCIMS_InfoMsg_Job"));
+    });
+  });
+
+  //===========
   //INDEED
   runForHostname("indeed.com", (path) => {
     searchParam = "q";
@@ -547,15 +572,22 @@
   //===========
   //MY WORKDAY JOBS (recruitment/application site some companies use, no job searching)
   runForHostname("myworkdayjobs.com", (path) => {
-    waitForKeyElements("#mainContent [data-automation-id='jobPostingDescription']", highlightJobDesc);
     waitForKeyElements("#mainContent [data-automation-id='locations'] dd", highlightLocation);
+    waitForKeyElements("#mainContent [data-automation-id='jobPostingDescription']", highlightJobDesc);
+  });
+
+  //===========
+  //NO WHITEBOARD
+  runForHostname("nowhiteboard.org", (path) => {
+    waitForKeyElements(".job-header-info h3:nth-child(2)", highlightLocation);
+    waitForKeyElements(".job-important-info, .job-description", highlightJobDesc);
   });
 
   //===========
   //REMOTE.CO
   runForHostname("remote.co", (path) => {
-    waitForKeyElements(".job_description", highlightJobDesc);
     waitForKeyElements(".location_sm", highlightLocation);
+    waitForKeyElements(".job_description", highlightJobDesc);
   });
 
   //===========
@@ -614,11 +646,17 @@
   //===========
   //STARTUP.JOBS
   runForHostname("startup.jobs", (path) => {
-    waitForKeyElements(".jobListing__main__meta__remote", highlightLocation);
     waitForKeyElements(".jobListing__main__text", highlightJobDesc);
+    waitForKeyElements(".jobListing__main__meta__remote", highlightLocation);
 
     //Location highlighting for the ajax search
     waitForKeyElements(".content-wrapper [data-post-template-target='location']", highlightLocation, false);
+  });
+
+  //===========
+  //WELL FOUND
+  runForHostname("wellfound.com", (path) => {
+    waitForKeyElements("[class^='styles_description__']", highlightJobDesc);
   });
 
   //===========
@@ -631,8 +669,11 @@
   //===========
   //WORKING NOMADS
   runForHostname("workingnomads.com", (path) => {
-      waitForKeyElements("#mobile-job-detail .detailRows .detailRow:nth-child(2) span, #div-item-data .about-job-lines .about-job-line:nth-child(2) .about-job-line-text", highlightLocation);
-      waitForKeyElements("#mobile-job-detail .jobDescription ~ *, #div-item-data .job-desktop-description ~ *", highlightJobDesc);
+    waitForKeyElements(
+      "#mobile-job-detail .detailRows .detailRow:nth-child(2) span, #div-item-data .about-job-lines .about-job-line:nth-child(2) .about-job-line-text",
+      highlightLocation
+    );
+    waitForKeyElements("#mobile-job-detail .jobDescription ~ *, #div-item-data .job-desktop-description ~ *", highlightJobDesc);
   });
 
   //===========

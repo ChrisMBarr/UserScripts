@@ -18,8 +18,8 @@ Exactly what you think it does. When you visit the Washington Post website it re
 *  Highlight key words, locations, all mentions of money/currency, and your search terms if they are found within job descriptions
 *  Optional list of flagged terms in certain categories can be added
 *  Works on multiple websites:
-   *  Job search sites: dice.com, glassdoor.com, indeed.com, honestjobs.com, linkedin.com, jobot.com, jobsfordevelopers.com, remote.co, remoteok.com startup.jobs, themuse.com, workatastartup.com, workingnomads.com, and ziprecruiter.com
-   *  Job application/recruitment sites used by many companies: applytojob.com, avature.net, dejobs.org, greenhouse.io, jobs.lever.co, myworkdayjobs.com, smartmatchjobs.com, smartrecruiters.com, testedrecruits.com, and ultipro.com
+   *  Job search sites: dice.com, glassdoor.com, indeed.com, honestjobs.com, linkedin.com, jobot.com, jobsfordevelopers.com, nowhiteboard.org, remote.co, remoteok.com startup.jobs, themuse.com, wellfound.com, workatastartup.com, workingnomads.com, and ziprecruiter.com
+   *  Job application/recruitment sites used by many companies: applytojob.com, avature.net, dejobs.org, greenhouse.io, icims.com, jobs.lever.co, myworkdayjobs.com, smartmatchjobs.com, smartrecruiters.com, testedrecruits.com, and ultipro.com
 
 #### Demo
 ![indeed](doc-img/job-indeed.gif)

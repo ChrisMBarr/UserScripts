@@ -26,7 +26,8 @@
 // @match        *://*.myworkdayjobs.com/*/job/*
 // @match        *://*.nowhiteboard.org/jobs/*
 // @match        *://*.remote.co/job/*
-// @match        *://remoteok.com/remote-jobs/*
+// @match        *://*.remoteok.com/remote-jobs/*
+// @match        *://*.roberthalf.com/*/*/jobs/*
 // @match        *://app.smartmatchjobs.com/smart_job_searches/job_vacancy_detail*
 // @match        *://jobs.smartrecruiters.com/*/*
 // @match        *://*.startup.jobs/*
@@ -87,6 +88,8 @@
     "are encouraged to",
     "encourage you to",
     "must be located in",
+    "must reside in",
+    "must live in",
   ];
 
   if (flagSecurityClearances) {
@@ -160,6 +163,7 @@
     "entirely remote",
     "totally remote",
     "fully remote",
+    "remote position",
   ];
 
   //Just "remote" or any location that includes specific words like "remote in Charlotte, NC"
@@ -595,6 +599,34 @@
   runForHostname("remoteok.com", (path) => {
     GM_addStyle(`.jsh-mark{color:#000;}`); //dark site BG has white text normally, this makes the highlighting readable
     waitForKeyElements("#jobsboard .active .description", highlightJobDesc);
+  });
+
+  //===========
+  //ROBERT HALF
+  runForHostname("roberthalf.com", (path) => {
+    waitForKeyElements(
+      "rhcl-job-card [data-testid='job-details-description'], rhcl-job-card [data-testid='job-details-requirements']",
+      highlightJobDesc
+    );
+
+    //Add a link to each card to add a link to open the job application in a new window - their current site is awful for applying to multiple jobs!
+    waitForKeyElements("rhcl-job-card", (node) => {
+      const jobId = node[0].attributes["job-id"].value;
+      const applyUrl = `https://www.roberthalf.com/us/en/apply/app?jobId=${jobId}`;
+
+      let applyLink = node[0].querySelector(".helper-apply-link");
+      if (applyLink) {
+        applyLink.setAttribute("href", applyUrl);
+      } else {
+        applyLink = document.createElement("a");
+        applyLink.setAttribute("class", "helper-apply-link");
+        applyLink.setAttribute("href", applyUrl);
+        applyLink.setAttribute("target", "_blank");
+        applyLink.setAttribute("style", "display: inline-block;padding: .5rem 0;");
+        applyLink.innerText = "Apply on new page";
+        node[0].parentElement.prepend(applyLink);
+      }
+    });
   });
 
   //===========

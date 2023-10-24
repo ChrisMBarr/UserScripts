@@ -614,7 +614,7 @@
       const jobId = node[0].attributes["job-id"].value;
       const applyUrl = `https://www.roberthalf.com/us/en/apply/app?jobId=${jobId}`;
 
-      let applyLink = node[0].querySelector(".helper-apply-link");
+      let applyLink = node[0].parentElement.querySelector(".helper-apply-link");
       if (applyLink) {
         applyLink.setAttribute("href", applyUrl);
       } else {

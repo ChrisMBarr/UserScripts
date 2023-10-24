@@ -27,7 +27,7 @@
 // @match        *://*.nowhiteboard.org/jobs/*
 // @match        *://*.remote.co/job/*
 // @match        *://*.remoteok.com/remote-jobs/*
-// @match        *://*.roberthalf.com/*/*/jobs/*
+// @match        *://*.roberthalf.com/*/*/job*
 // @match        *://app.smartmatchjobs.com/smart_job_searches/job_vacancy_detail*
 // @match        *://jobs.smartrecruiters.com/*/*
 // @match        *://*.startup.jobs/*

@@ -26,7 +26,7 @@
 // @match        *://*.myworkdayjobs.com/*/job/*
 // @match        *://*.nowhiteboard.org/jobs/*
 // @match        *://*.remote.co/job/*
-// @match        *://*.remotejobs.com/job/*
+// @match        *://*.remotejobs.com/*
 // @match        *://*.remoteok.com/remote-jobs/*
 // @match        *://*.roberthalf.com/*/*/job*
 // @match        *://app.smartmatchjobs.com/smart_job_searches/job_vacancy_detail*
@@ -600,7 +600,7 @@
   //REMOTE JOBS
   runForHostname("remotejobs.com", (path) => {
     GM_addStyle(`.dark .jsh-mark{color:#000;}`); //dark site BG has white text normally, this makes the highlighting readable
-    waitForKeyElements("main", highlightJobDesc);
+    waitForKeyElements("main.notion-page", highlightJobDesc);
   });
 
   //===========

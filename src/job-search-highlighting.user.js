@@ -26,6 +26,7 @@
 // @match        *://*.myworkdayjobs.com/*/job/*
 // @match        *://*.nowhiteboard.org/jobs/*
 // @match        *://*.remote.co/job/*
+// @match        *://*.remotejobs.com/job/*
 // @match        *://*.remoteok.com/remote-jobs/*
 // @match        *://*.roberthalf.com/*/*/job*
 // @match        *://app.smartmatchjobs.com/smart_job_searches/job_vacancy_detail*
@@ -594,8 +595,16 @@
     waitForKeyElements(".job_description", highlightJobDesc);
   });
 
+
   //===========
-  //REMOTEOK.COM
+  //REMOTE JOBS
+  runForHostname("remotejobs.com", (path) => {
+    GM_addStyle(`.dark .jsh-mark{color:#000;}`); //dark site BG has white text normally, this makes the highlighting readable
+    waitForKeyElements("main", highlightJobDesc);
+  });
+
+  //===========
+  //REMOTE OK
   runForHostname("remoteok.com", (path) => {
     GM_addStyle(`.jsh-mark{color:#000;}`); //dark site BG has white text normally, this makes the highlighting readable
     waitForKeyElements("#jobsboard .active .description", highlightJobDesc);

@@ -69,7 +69,6 @@ After installing you will need to edit the configuration variables described abo
 | `sidebarHideBlogs`               | `boolean`    | hides the yellow **"The Overflow Blog"** from the right sidebar                                              |
 | `sidebarHideCollectives`         | `boolean`    | hides the **"Collectives"** from the right sidebar                                                           |
 | `sidebarHideAds`                 | `boolean`    | hides the **ads** from the right sidebar                                                                     |
-| `sidebarHideHotNetworkQuestions` | `boolean`    | hides the **"Hot Network Questions"** from the right sidebar                                                 |
 | `editorIndentSpaces`             | `number`     | number of spaces to use when indenting code.                                                                 |
 | `commentSnippets`                | `object[]`   | Each comment snippet has a display `name` property and a `text` property which contains the actual comment   |
 

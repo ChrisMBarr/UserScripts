@@ -34,7 +34,6 @@
   const sidebarHideBlogs = true;
   const sidebarHideCollectives = true;
   const sidebarHideAds = true;
-  const sidebarHideHotNetworkQuestions = false;
 
   //The number of spaces to use when indenting text in the question/answer editor (not the snippet editor)
   const editorIndentSpaces = 2;
@@ -81,10 +80,10 @@
   GM_addStyle(
     //Note that the CSS rule order matters here for when certain things should be overridden by others
     [
-      `.${classNameClosedQuestion} {background-color:var(--powder-050)!important;--_ps-state-fc:var(--powder-500)!important;--_ps-stats-fc:var(--powder-500)!important;--_ps-meta-tags-tag-bg:var(--powder-200)!important;--theme-post-title-color:var(--powder-500);--theme-post-title-color-visited:var(--powder-500);--theme-post-title-color-hover:var(--powder-600);}`,
-      `.${classNameClosedQuestion} .post-tag{color:var(--powder-500) !important}`,
-      `.${classNameTagCurrentlyViewing} > .post-tag{background-color:var(--green-100)!important;color:var(--green-900)!important;border-color:var(--green-300)!important;}`,
-      `.${classNameTagComboFlag} > .post-tag{background-color:var(--red-100)!important;color:var(--red-900)!important;border-color:var(--red-300)!important;}`,
+      `.${classNameClosedQuestion} {--_ps-state-fc:var(--black-300)!important;--_ps-stats-fc:var(--black-300)!important;--_ps-content-title-a-fc:var(--black-300)!important;}`,
+      `.${classNameClosedQuestion} .post-tag{color:var(--black-500) !important;--theme-tag-background-color:var(--black-150)!important;}`,
+      `.${classNameTagCurrentlyViewing} > .post-tag{background-color:var(--green-100)!important;color:var(--green-600)!important;border-color:var(--green-200)!important;}`,
+      `.${classNameTagComboFlag} > .post-tag{background-color:var(--red-100)!important;color:var(--red-600)!important;border-color:var(--red-200)!important;}`,
     ].join("")
   );
 
@@ -93,7 +92,6 @@
   //------------------------------------------------------------------------------------------------------------
   const $sidebar = $("#sidebar");
   const $mainContent = $("#mainbar");
-  const $questionsList = $("#questions");
   const $sidebarItems = $sidebar.children();
   const $questionTags = $mainContent.find(".js-post-tag-list-wrapper");
 
@@ -107,9 +105,6 @@
   }
   if (sidebarHideAds) {
     $sidebarItems.filter(".js-sidebar-zone").remove();
-  }
-  if (sidebarHideHotNetworkQuestions) {
-    $("#hot-network-questions").hide();
   }
 
   //------------------------------------------------------------------------------------------------------------

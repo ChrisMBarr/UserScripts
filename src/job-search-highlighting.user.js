@@ -415,9 +415,7 @@
       GM_addStyle(
         `[class^='JobDetails_jobDescription']{max-height:none; mask-image:none; -webkit-mask-image:none;}
         #JobDescriptionContainer > [id^='JobDesc']{max-height:none; overflow:visible;}
-        .jobDescriptionContent{overflow:visible;}
-        #left-column ul li .selected{box-shadow:inset 0 1px 0 var(--light-theme-color-green-300),inset 0 -1px 0 var(--light-theme-color-green-300), inset -1px 0 0 var(--light-theme-color-green-300), 0 0 10px var(--light-theme-color-green-300); z-index:1;}
-        #left-column ul li .selected::before{background-color:var(--light-theme-color-green-300) !important;}`
+        .jobDescriptionContent{overflow:visible;}`
       );
 
       waitForKeyElements("[data-test='location'], [data-test='emp-location']", highlightLocation, false);

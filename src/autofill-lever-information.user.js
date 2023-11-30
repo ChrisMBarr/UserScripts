@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Auto-Fill Lever.co Information
 // @namespace    https://github.com/FiniteLooper/UserScripts
-// @version      0.1
+// @version      0.1.1
 // @description  Auto-Fill Some Information on Lever.co  job applications
 // @author       Chris Barr
 // @homepageURL  https://github.com/FiniteLooper/UserScripts
@@ -29,7 +29,7 @@
 
   //----------------------------------------------------------------------------
   //The actual auto-filling
-  const $eeoQuestions = document.querySelectorAll("#eeoSurvey .application-question");
+  const $eeoQuestions = document.querySelectorAll(".eeo-section .application-question");
   const $pronouns = document.querySelectorAll("#candidatePronounsCheckboxes input");
   function autoFill() {
     if ($eeoQuestions.length) {

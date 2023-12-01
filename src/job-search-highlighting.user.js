@@ -482,7 +482,7 @@
         highlightJobDesc($("#jobDescriptionText"));
         highlightLocation(
           $(
-            "#mosaic-provider-jobcards .company_location, #mosaic-provider-jobcards .company_location span:not(.companyLocation--extras)"
+            "#mosaic-provider-jobcards .company_location [data-testid='text-location'], #mosaic-provider-jobcards .company_location [data-testid='text-location'] span"
           ),
           true
         );

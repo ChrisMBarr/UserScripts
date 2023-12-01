@@ -333,6 +333,12 @@
     fill($id("gender"), resume.demographics.gender);
     fill($id("hispanicOrLatino"), resume.demographics.hispanicOrLatino);
     fill($id("veteranStatus"), resume.demographics.veteran);
+
+    //These might be on another page
+    fill($id("name"), `${resume.info.preferredFirstName} ${resume.info.preferredLastName}`);
+    //Click the calendar icon and then the current date button
+    click($idCtx($id("formField-todaysDate"), "dateIcon"));
+    click($id("datePickerSelectedToday"));
   };
 
   //-----------------------------------------------------

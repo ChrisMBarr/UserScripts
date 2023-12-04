@@ -6,6 +6,13 @@ A few Tampermonkey/Greasemonkey scripts I've made
 * Install the [Tampermonkey browser plugin](https://www.tampermonkey.net/) or [GreaseMonkey browser plugin](https://www.greasespot.net/)
 * Navigate to one of the scripts either in the `/src/` folder and click the "RAW" button, or click one of the install links below
 
+## Amazon Vine Enhancer
+**[📜 Install Amazon Vine Enhancer Script](https://raw.githubusercontent.com/FiniteLooper/UserScripts/main/src/amazon-vine-enhancer.user.js)**
+
+Minor UI improvements to browsing items on Amazon Vine. This will cause the top bar and the side bar with the categories to stick to the page as you scroll. However, if the categories are taller than your browser window then only the top bar will stick and the categories will scroll as they do by default.
+
+![](doc-img/amazon-vine.gif)
+
 ## Washington Post Paywall Remover
 **[📜 Install Washington Post Paywall Remover Script](https://raw.githubusercontent.com/FiniteLooper/UserScripts/main/src/washington-post-paywall-remover.user.js)**
 

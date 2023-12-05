@@ -13,6 +13,7 @@ Minor UI improvements to browsing items on Amazon Vine:
 * The top bar with the search and the footer with the pagination will stick to stick to the page as you scroll
 * The side bar with the categories will also stick as you scroll, unless the categories are taller than your browser window
 * Pressing the left and right arrow keys on your keyboard will navigate to the previous and next pages of whatever you are viewing
+* The "see details" modal popup is made slightly larger so that the ETV is always visible for items with longer descriptions
 
 ![](doc-img/amazon-vine.gif)
 

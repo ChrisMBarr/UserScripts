@@ -9,7 +9,10 @@ A few Tampermonkey/Greasemonkey scripts I've made
 ## Amazon Vine Enhancer
 **[📜 Install Amazon Vine Enhancer Script](https://raw.githubusercontent.com/FiniteLooper/UserScripts/main/src/amazon-vine-enhancer.user.js)**
 
-Minor UI improvements to browsing items on Amazon Vine. This will cause the top bar and the side bar with the categories to stick to the page as you scroll. However, if the categories are taller than your browser window then only the top bar will stick and the categories will scroll as they do by default.
+Minor UI improvements to browsing items on Amazon Vine:
+* The top bar with the search and the footer with the pagination will stick to stick to the page as you scroll
+* The side bar with the categories will also stick as you scroll, unless the categories are taller than your browser window
+* Pressing the left and right arrow keys on your keyboard will navigate to the previous and next pages of whatever you are viewing
 
 ![](doc-img/amazon-vine.gif)
 

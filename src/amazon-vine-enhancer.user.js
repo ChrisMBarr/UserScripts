@@ -25,6 +25,18 @@
   GM_addStyle(`.a-popover-modal-fixed-height{height: 550px !important;} .a-popover-inner{padding-bottom: 112px !important;}`);
 
   //=========================================================================
+  //Side categories: bolded selected items and show nesting better ==========
+  GM_addStyle(`
+  a.selectedNode{font-weight: bold;}
+  a.selectedNode:hover{color: inherit !important;}
+  .child-node{
+    padding-left: 10px;
+    margin-left: 0;
+    border-left: ${border};
+  }
+  `);
+
+  //=========================================================================
   //Sticky footer pagination ================================================
   GM_addStyle(`#vvp-items-grid-container > [role="navigation"] {
     position:sticky;

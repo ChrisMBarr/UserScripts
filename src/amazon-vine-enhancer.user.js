@@ -49,6 +49,7 @@
     padding-top: 5px;
     background-color: ${bodyBgColor};
     border-top: ${border};
+    z-index: 30;
   }`);
 
   //=========================================================================

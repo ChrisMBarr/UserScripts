@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Amazon Vine UI Enhancer
 // @namespace    https://github.com/FiniteLooper/UserScripts
-// @version      0.2
+// @version      0.3
 // @description  Minor UI improvements to browsing items on Amazon Vine
 // @author       Chris Barr
 // @homepageURL  https://github.com/FiniteLooper/UserScripts
@@ -17,6 +17,9 @@
   //Grab the body BG color in case any custom themes are applied to the site
   const bodyBgColor = getComputedStyle(document.body).backgroundColor;
 
+  //grab the border color, style, and size
+  const border = getComputedStyle(document.querySelector('[data-a-name="vine-items"]')).border;
+
   //=========================================================================
   //Slightly taller popup modal window to the ETV is always visible =========
   GM_addStyle(`.a-popover-modal-fixed-height{height: 550px !important;} .a-popover-inner{padding-bottom: 112px !important;}`);
@@ -28,6 +31,7 @@
     bottom:0;
     padding-top: 5px;
     background-color: ${bodyBgColor};
+    border-top: ${border};
   }`);
 
   //=========================================================================
@@ -39,6 +43,7 @@
     top: 0;
     z-index: 1;
     background-color: ${bodyBgColor};
+    border-bottom: ${border};
   }`);
 
   //Steal the margin value and use it as padding instead for the header so we can have a colored BG

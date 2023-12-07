@@ -21,6 +21,11 @@
   const border = getComputedStyle(document.querySelector('[data-a-name="vine-items"]')).border;
 
   //=========================================================================
+  //Hide the "recently viewed items" and the footer underneath all the vine items
+  //This make the page easier to scroll around on and speeds up the page since it will never load the data dynamically now
+  GM_addStyle(`#rhf, #navFooter{display: none !important;}`);
+
+  //=========================================================================
   //Slightly taller popup modal window to the ETV is always visible =========
   GM_addStyle(`.a-popover-modal-fixed-height{height: 550px !important;} .a-popover-inner{padding-bottom: 112px !important;}`);
 

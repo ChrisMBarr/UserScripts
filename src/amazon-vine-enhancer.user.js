@@ -86,7 +86,7 @@
 
   //=========================================================================
   //After searching, pressing "show all" will return you to the AI section instead of RFY
-  if (document.location.search.includes("?search=")) {
+  if (document.location.search.includes("search=")) {
     const showAllLink = document.querySelector("#vvp-browse-nodes-container>p>a");
     showAllLink.href = showAllLink.href.replace(/\?queue=\w+$/, "?queue=encore");
   }

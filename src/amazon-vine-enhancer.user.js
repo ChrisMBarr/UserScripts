@@ -62,6 +62,7 @@
     z-index: 1;
     background-color: ${bodyBgColor};
     border-bottom: ${border};
+    z-index: 30;
   }`);
 
   //Steal the margin value and use it as padding instead for the header so we can have a colored BG

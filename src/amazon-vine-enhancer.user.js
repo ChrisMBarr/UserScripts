@@ -94,14 +94,17 @@
   //=========================================================================
   //Pagination when left/right arrow keys are pressed =======================
   document.body.addEventListener("keyup", (ev) => {
-    if (ev.key === "ArrowLeft") {
-      const el = document.querySelector(".a-pagination li:first-child a");
-      el.focus();
-      el.click();
-    } else if (ev.key === "ArrowRight") {
-      const el = document.querySelector(".a-pagination li:last-child a");
-      el.focus();
-      el.click();
+    if (document.activeElement.tagName.toLowerCase() !== "input") {
+      //Only do this if you are not currently in an input field
+      if (ev.key === "ArrowLeft") {
+        const el = document.querySelector(".a-pagination li:first-child a");
+        el.focus();
+        el.click();
+      } else if (ev.key === "ArrowRight") {
+        const el = document.querySelector(".a-pagination li:last-child a");
+        el.focus();
+        el.click();
+      }
     }
   });
 })();

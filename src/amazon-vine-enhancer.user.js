@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Amazon Vine UI Enhancer
 // @namespace    https://github.com/FiniteLooper/UserScripts
-// @version      0.3
+// @version      0.4
 // @description  Minor UI improvements to browsing items on Amazon Vine
 // @author       Chris Barr
 // @homepageURL  https://github.com/FiniteLooper/UserScripts
@@ -14,6 +14,13 @@
 
 (function () {
   "use strict";
+
+  //=========================================================================
+  //User configurable variables =============================================
+  const dimmedItemWordList = ["cake topper", "hair extension", "dreadlock extension", "castor oil", "wig",];
+
+  //=========================================================================
+  //Variables used for multiple sections ====================================
   //Grab the body BG color in case any custom themes are applied to the site
   const bodyBgColor = getComputedStyle(document.body).backgroundColor;
 
@@ -106,6 +113,21 @@
         el.focus();
         el.click();
       }
+    }
+  });
+
+  //=========================================================================
+  //Fade/Dim items with descriptions that match something in the word list defined at the top
+  GM_addStyle(`.dimmed-tile {
+    opacity: .25;
+    transition: opacity 300ms;
+  }
+  .dimmed-tile:hover { opacity: 1; }`);
+
+  document.querySelectorAll("#vvp-items-grid > .vvp-item-tile").forEach((itemEl) => {
+    const description = itemEl.querySelector(".vvp-item-product-title-container .a-truncate-full").innerText.toLowerCase();
+    if (dimmedItemWordList.some((listItem) => description.includes(listItem))) {
+      itemEl.classList.add("dimmed-tile");
     }
   });
 })();

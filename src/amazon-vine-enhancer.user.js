@@ -17,7 +17,16 @@
 
   //=========================================================================
   //User configurable variables =============================================
-  const dimmedItemWordList = ["cake topper", "hair extension", "dreadlock extension", "castor oil", "wig",];
+  const dimmedItemWordList = [
+    "cake topper",
+    "hair extension",
+    "dreadlock extension",
+    "castor oil",
+    "wig",
+    "ink cartridge",
+    "ink refill",
+    "toner",
+  ];
 
   //=========================================================================
   //Variables used for multiple sections ====================================

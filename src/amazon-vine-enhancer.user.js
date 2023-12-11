@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Amazon Vine UI Enhancer
 // @namespace    https://github.com/FiniteLooper/UserScripts
-// @version      0.4
+// @version      0.4.1
 // @description  Minor UI improvements to browsing items on Amazon Vine
 // @author       Chris Barr
 // @homepageURL  https://github.com/FiniteLooper/UserScripts
@@ -18,14 +18,25 @@
   //=========================================================================
   //User configurable variables =============================================
   const dimmedItemWordList = [
-    "cake topper",
+    //Hair
+    "wig",
     "hair extension",
     "dreadlock extension",
-    "castor oil",
-    "wig",
+    "ponytail extension",
+    "crochet hair",
+    "baby hair",
+    "braiding hair",
+    "eyelash extension",
+    "false eyelash",
+
+    //Printer ink/toner
     "ink cartridge",
     "ink refill",
     "toner",
+
+    //Misc.
+    "cake topper",
+    "castor oil",
   ];
 
   //=========================================================================

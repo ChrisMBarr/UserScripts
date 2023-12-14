@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Amazon Vine UI Enhancer
 // @namespace    https://github.com/FiniteLooper/UserScripts
-// @version      0.4.1
+// @version      0.4.2
 // @description  Minor UI improvements to browsing items on Amazon Vine
 // @author       Chris Barr
 // @homepageURL  https://github.com/FiniteLooper/UserScripts
@@ -18,7 +18,7 @@
   //=========================================================================
   //User configurable variables =============================================
   const dimmedItemWordList = [
-    //Hair
+    //Hair stuff
     "wig",
     "hair extension",
     "dreadlock extension",
@@ -113,8 +113,18 @@
   }
 
   //=========================================================================
-  //After searching, pressing "show all" will return you to the AI section instead of RFY
+  //When searching...
   if (document.location.search.includes("search=")) {
+      //Put the RFY/AFA/AI area buttons back - why are they hidden during a search anyway?
+     const areaButtonContainer = document.querySelector('#vvp-items-button-container');
+     if(areaButtonContainer.innerHTML.trim()===''){
+      areaButtonContainer.innerHTML = `
+      <span id="vvp-items-button--recommended" class="a-button a-button-normal a-button-toggle" role="radio"><span class="a-button-inner"><a href="vine-items?queue=potluck" class="a-button-text">Recommended for you</a></span></span>
+      <span id="vvp-items-button--all" class="a-button a-button-normal a-button-toggle" role="radio"><span class="a-button-inner"><a href="vine-items?queue=last_chance" class="a-button-text">Available for all</a></span></span>
+      <span id="vvp-items-button--seller" class="a-button a-button-normal a-button-toggle" role="radio"><span class="a-button-inner"><a href="vine-items?queue=encore" class="a-button-text">Additional items</a></span></span>`;
+     }
+
+    //pressing "show all" will return you to the AI section instead of RFY
     const showAllLink = document.querySelector("#vvp-browse-nodes-container>p>a");
     showAllLink.href = showAllLink.href.replace(/\?queue=\w+$/, "?queue=encore");
   }

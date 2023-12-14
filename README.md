@@ -10,12 +10,16 @@ A few Tampermonkey/Greasemonkey scripts I've made
 **[📜 Install Amazon Vine Enhancer Script](https://raw.githubusercontent.com/FiniteLooper/UserScripts/main/src/amazon-vine-enhancer.user.js)**
 
 Minor UI improvements to browsing items on Amazon Vine:
-* The top bar with the search and the footer with the pagination will stick to stick to the page as you scroll
-* The side bar with the categories will also stick as you scroll, unless the categories are taller than your browser window
+* Sticky UI as you scroll:
+  * The top bar and the pagination is stuck as you scroll
+  * The categories side bar is stuck as you scroll, unless the categories are taller than your browser window
 * Pressing the left and right arrow keys on your keyboard will navigate to the previous and next pages of whatever you are viewing
-* Hides the "recently viewed products" and the Amazon footer underneath all the Vine items. This makes scrolling down the page easier since you now cannot scroll pas the Vine items. The page will also not make AJAX requests for this data since it will never come into the view
+* Hides the "recently viewed products" and the Amazon footer underneath all the Vine items. This makes scrolling down the page easier since you now cannot scroll past the Vine items. The page will also not make AJAX requests for this data since it will never come into the view
 * The "see details" modal popup is made slightly larger so that the ETV is always visible for items with longer descriptions
-* Will dim items with descriptions that match anything in an array defined at the top (example: hide "cake toppers")
+* Dims items with descriptions that match anything in an array defined at the top (example: hides "cake toppers")
+* When performing a search:
+  * The RFY/AFA/AI area buttons are normally hidden, this will restore them
+  * Pressing the "show all" link will send you to the AI area instead of RFY
 
 ![](doc-img/amazon-vine.gif)
 

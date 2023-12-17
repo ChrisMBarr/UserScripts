@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Amazon Vine UI Enhancer
 // @namespace    https://github.com/FiniteLooper/UserScripts
-// @version      0.4.2
+// @version      0.5.0
 // @description  Minor UI improvements to browsing items on Amazon Vine
 // @author       Chris Barr
 // @homepageURL  https://github.com/FiniteLooper/UserScripts
@@ -37,6 +37,8 @@
     //Misc.
     "cake topper",
     "castor oil",
+    "shower pan liner",
+    "anti-colic bottle",
   ];
 
   //=========================================================================
@@ -115,14 +117,14 @@
   //=========================================================================
   //When searching...
   if (document.location.search.includes("search=")) {
-      //Put the RFY/AFA/AI area buttons back - why are they hidden during a search anyway?
-     const areaButtonContainer = document.querySelector('#vvp-items-button-container');
-     if(areaButtonContainer.innerHTML.trim()===''){
+    //Put the RFY/AFA/AI area buttons back - why are they hidden during a search anyway?
+    const areaButtonContainer = document.querySelector("#vvp-items-button-container");
+    if (areaButtonContainer.innerHTML.trim() === "") {
       areaButtonContainer.innerHTML = `
       <span id="vvp-items-button--recommended" class="a-button a-button-normal a-button-toggle" role="radio"><span class="a-button-inner"><a href="vine-items?queue=potluck" class="a-button-text">Recommended for you</a></span></span>
       <span id="vvp-items-button--all" class="a-button a-button-normal a-button-toggle" role="radio"><span class="a-button-inner"><a href="vine-items?queue=last_chance" class="a-button-text">Available for all</a></span></span>
       <span id="vvp-items-button--seller" class="a-button a-button-normal a-button-toggle" role="radio"><span class="a-button-inner"><a href="vine-items?queue=encore" class="a-button-text">Additional items</a></span></span>`;
-     }
+    }
 
     //pressing "show all" will return you to the AI section instead of RFY
     const showAllLink = document.querySelector("#vvp-browse-nodes-container>p>a");
@@ -154,10 +156,49 @@
   }
   .dimmed-tile:hover { opacity: 1; }`);
 
-  document.querySelectorAll("#vvp-items-grid > .vvp-item-tile").forEach((itemEl) => {
-    const description = itemEl.querySelector(".vvp-item-product-title-container .a-truncate-full").innerText.toLowerCase();
+  function dimTileWithDescriptionWordInList(itemElement) {
+    const description = itemElement.querySelector(".vvp-item-product-title-container .a-truncate-full").innerText.toLowerCase();
     if (dimmedItemWordList.some((listItem) => description.includes(listItem))) {
-      itemEl.classList.add("dimmed-tile");
+      itemElement.classList.add("dimmed-tile");
     }
+  }
+
+  //=========================================================================
+  //Add link to replace ASIN number for products that are broken with infinite spinners
+  //Found via this comment: https://www.reddit.com/r/AmazonVine/comments/18jyxz8/comment/kdnp0oz
+  GM_addStyle(`.vvp-item-tile-content{ position: relative; }
+    .vvp-details-btn{ width: 85% !important; }
+    .fix-asin-link {
+      width: 13% !important;
+      height: auto !important;
+      position: absolute;
+      bottom:0;
+      right:0;
+    }`);
+
+  function addFixASINLink(itemElement) {
+    const tileContentEl = itemElement.querySelector(".vvp-item-tile-content");
+    const fixLink = document.createElement("a");
+    fixLink.setAttribute("class", "fix-asin-link a-button a-button-primary");
+    fixLink.innerText = "🔃";
+    fixLink.title = "Fix infinite spinner error";
+    tileContentEl.append(fixLink);
+
+    fixLink.addEventListener("click", (ev) => {
+      const newASIN = prompt("Open the product page, copy the ASIN number, and put it here...");
+      if (newASIN !== "") {
+        const inputEl = tileContentEl.querySelector("input.a-button-input");
+        inputEl.setAttribute("data-is-parent-asin", "false");
+        inputEl.setAttribute("data-asin", newASIN);
+        inputEl.focus();
+      }
+    });
+  }
+
+  //=========================================================================
+  //Loop over each product tile and run functions for each one
+  document.querySelectorAll("#vvp-items-grid > .vvp-item-tile").forEach((itemElement) => {
+    dimTileWithDescriptionWordInList(itemElement);
+    addFixASINLink(itemElement);
   });
 })();

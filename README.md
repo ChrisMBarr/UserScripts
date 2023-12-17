@@ -10,6 +10,7 @@ A few Tampermonkey/Greasemonkey scripts I've made
 **[📜 Install Amazon Vine Enhancer Script](https://raw.githubusercontent.com/FiniteLooper/UserScripts/main/src/amazon-vine-enhancer.user.js)**
 
 Minor UI improvements to browsing items on Amazon Vine:
+* Adds a button to just display the ETV inline without having to see the full details (helpful when comparing prices or searching for a 0ETV!)
 * Adds a button to help fix products with an infinite spinner
 * Sticky UI as you scroll:
   * The top bar and the pagination is stuck as you scroll

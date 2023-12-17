@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Amazon Vine UI Enhancer
 // @namespace    https://github.com/FiniteLooper/UserScripts
-// @version      0.5.0
+// @version      0.5.2
 // @description  Minor UI improvements to browsing items on Amazon Vine
 // @author       Chris Barr
 // @homepageURL  https://github.com/FiniteLooper/UserScripts
@@ -164,27 +164,91 @@
   }
 
   //=========================================================================
-  //Add link to replace ASIN number for products that are broken with infinite spinners
-  //Found via this comment: https://www.reddit.com/r/AmazonVine/comments/18jyxz8/comment/kdnp0oz
+  //Add links/buttons to replace ASIN number for products that are broken with infinite spinners
   GM_addStyle(`.vvp-item-tile-content{ position: relative; }
-    .vvp-details-btn{ width: 85% !important; }
-    .fix-asin-link {
-      width: 13% !important;
+    .vvp-details-btn{
+      border-top-right-radius:0 !important;
+      border-bottom-right-radius:0 !important;
+    }
+    .get-etv-link, .fix-asin-link {
       height: auto !important;
       position: absolute;
       bottom:0;
+    }
+    .get-etv-link {
+      border-radius:0 !important;
+      right:17%;
+    }
+    .fix-asin-link {
+      border-top-left-radius:0 !important;
+      border-bottom-left-radius:0 !important;
       right:0;
+    }
+    .get-etv-link .a-button-text, .fix-asin-link .a-button-text{
+      padding:0;
+    }
+    .etv-display{
+      position:absolute;
+      right: 17%;
+      bottom: 55px;
+      font-size: 12px;
+      margin: 0 !important;
+      width: auto !important;
     }`);
 
-  function addFixASINLink(itemElement) {
+  function addTileLinks(itemElement) {
     const tileContentEl = itemElement.querySelector(".vvp-item-tile-content");
+
+    //Use an Amazon grid class to size the "see details" button
+    itemElement.querySelector(".vvp-details-btn").classList.add("a-button-span8");
+
+    //Add a link to check the ETV
+    const getEtvLink = document.createElement("a");
+    getEtvLink.setAttribute("class", "get-etv-link a-button a-button-primary a-button-span2");
+    getEtvLink.innerHTML = `<span class='a-button-text'>💵</span>`;
+    getEtvLink.title = "Get ETV";
+    tileContentEl.append(getEtvLink);
+
+    const etvLinkClickFn = async (ev) => {
+      ev.preventDefault();
+
+      //Only one click per button
+      getEtvLink.classList.remove('a-button-primary');
+      getEtvLink.classList.add('a-button-disabled');
+      getEtvLink.removeEventListener('click', etvLinkClickFn);
+
+      const etvDisplayEl = document.createElement("span");
+      etvDisplayEl.className = "etv-display";
+      etvDisplayEl.innerText = 'loading...';
+      tileContentEl.append(etvDisplayEl);
+
+      const inputEl = tileContentEl.querySelector("input.a-button-input");
+      const recommendationId = encodeURIComponent(inputEl.getAttribute("data-recommendation-id"));
+      const asin = inputEl.getAttribute("data-asin");
+      const url = `https://www.amazon.com/vine/api/recommendations/${recommendationId}/item/${asin}?imageSize=180`;
+      const req = await fetch(url);
+      const response = await req.json();
+      const data = response.result;
+
+      if(data){
+        const currencyFormatter = new Intl.NumberFormat("en-US", { style: "currency", currency: data.taxCurrency });
+        etvDisplayEl.innerText = `ETV: ${currencyFormatter.format(data.taxValue)}`;
+      } else {
+        etvDisplayEl.innerText = 'Error getting ETV!';
+      }
+    }
+
+    getEtvLink.addEventListener("click", etvLinkClickFn);
+
+    //Add a link to fix the infinite load issue
     const fixLink = document.createElement("a");
-    fixLink.setAttribute("class", "fix-asin-link a-button a-button-primary");
-    fixLink.innerText = "🔃";
+    fixLink.className = "fix-asin-link a-button a-button-primary a-button-span2";
+    fixLink.innerHTML = `<span class='a-button-text'>🔃</span>`;
     fixLink.title = "Fix infinite spinner error";
     tileContentEl.append(fixLink);
 
     fixLink.addEventListener("click", (ev) => {
+      ev.preventDefault();
       const newASIN = prompt("Open the product page, copy the ASIN number, and put it here...");
       if (newASIN !== "") {
         const inputEl = tileContentEl.querySelector("input.a-button-input");
@@ -199,6 +263,6 @@
   //Loop over each product tile and run functions for each one
   document.querySelectorAll("#vvp-items-grid > .vvp-item-tile").forEach((itemElement) => {
     dimTileWithDescriptionWordInList(itemElement);
-    addFixASINLink(itemElement);
+    addTileLinks(itemElement);
   });
 })();

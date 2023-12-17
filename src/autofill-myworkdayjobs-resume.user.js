@@ -307,6 +307,48 @@
             }
           });
         })
+        // .then(() => {
+        //   //Skills
+        //   return new Promise((resolve) => {
+        //     const $skillsSection = $id("skillsSection");
+        //     if ($skillsSection) {
+        //       const $skillInput = $skillsSection.querySelector("input");
+        //       const menuId = $skillInput.getAttribute("data-uxi-multiselect-id");
+        //       const $menu = $(`[data-uxi-popup-anchor="${menuId}"`);
+
+        //       resume.skills.forEach((skill, i) => {
+        //         setTimeout(() => {
+        //           $skillInput.click();
+        //           $skillInput.focus();
+        //           $skillInput.value = skill;
+        //           $skillInput.dispatchEvent(
+        //             new KeyboardEvent("keydown", {
+        //               bubbles: true,
+        //               code: "t",
+        //               key: "t",
+        //               keyCode: 116,
+        //             })
+        //           );
+        //           $skillInput.dispatchEvent(
+        //             new Event("input", {
+        //               bubbles: true,
+        //             })
+        //           );
+        //           $skillInput.dispatchEvent(
+        //             new KeyboardEvent("keydown", {
+        //               bubbles: true,
+        //               code: "Enter",
+        //               key: "Enter",
+        //               keyCode: 13,
+        //             })
+        //           );
+        //         }, loopDelay * i);
+        //       });
+        //     } else {
+        //       resolve();
+        //     }
+        //   });
+        // })
         .then(() => {
           //Websites/URLs
           return new Promise((resolve) => {

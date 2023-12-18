@@ -238,7 +238,7 @@
 
       const recommendationId = encodeURIComponent(inputEl.getAttribute("data-recommendation-id"));
       const asin = inputEl.getAttribute("data-asin");
-      let url = `https://www.amazon.com/vine/api/recommendations/${recommendationId}/item/${asin}?imageSize=180`;
+      let url = `${location.origin}/vine/api/recommendations/${recommendationId}/item/${asin}?imageSize=180`;
       const req = await fetch(url);
       const response = await req.json();
       const data = response.result;

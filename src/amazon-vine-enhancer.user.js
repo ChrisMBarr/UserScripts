@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Amazon Vine UI Enhancer
 // @namespace    https://github.com/FiniteLooper/UserScripts
-// @version      0.5.2
+// @version      0.5.3
 // @description  Minor UI improvements to browsing items on Amazon Vine
 // @author       Chris Barr
 // @homepageURL  https://github.com/FiniteLooper/UserScripts
@@ -34,11 +34,17 @@
     "ink refill",
     "toner",
 
-    //Misc.
+    //Cakes & party decorations
     "cake topper",
+    "cupcake wrapper",
+    "cake decoration",
+    "party decoration",
+
+    //Misc.
     "castor oil",
     "shower pan liner",
     "anti-colic bottle",
+    "tub spout",
   ];
 
   //=========================================================================
@@ -187,6 +193,10 @@
     .get-etv-link .a-button-text, .fix-asin-link .a-button-text{
       padding:0;
     }
+    .get-etv-link.a-button-disabled, .get-etv-link.a-button-disabled .a-button-text{
+      cursor: not-allowed !important;
+      filter: saturate(50%);
+    }
     .etv-display{
       position:absolute;
       right: 17%;
@@ -198,50 +208,61 @@
 
   function addTileLinks(itemElement) {
     const tileContentEl = itemElement.querySelector(".vvp-item-tile-content");
+    const inputEl = tileContentEl.querySelector("input.a-button-input");
+    const isParent = /true/i.test(inputEl.getAttribute("data-is-parent-asin"));
 
     //Use an Amazon grid class to size the "see details" button
     itemElement.querySelector(".vvp-details-btn").classList.add("a-button-span8");
 
     //Add a link to check the ETV
-    const getEtvLink = document.createElement("a");
+    const getEtvLink = document.createElement("button");
+    getEtvLink.setAttribute("type", "button");
     getEtvLink.setAttribute("class", "get-etv-link a-button a-button-primary a-button-span2");
     getEtvLink.innerHTML = `<span class='a-button-text'>💵</span>`;
-    getEtvLink.title = "Get ETV";
-    tileContentEl.append(getEtvLink);
 
     const etvLinkClickFn = async (ev) => {
       ev.preventDefault();
 
       //Only one click per button
-      getEtvLink.classList.remove('a-button-primary');
-      getEtvLink.classList.add('a-button-disabled');
-      getEtvLink.removeEventListener('click', etvLinkClickFn);
+      getEtvLink.classList.remove("a-button-primary");
+      getEtvLink.classList.add("a-button-disabled");
+      getEtvLink.removeEventListener("click", etvLinkClickFn);
 
       const etvDisplayEl = document.createElement("span");
       etvDisplayEl.className = "etv-display";
-      etvDisplayEl.innerText = 'loading...';
+      etvDisplayEl.innerText = "loading...";
       tileContentEl.append(etvDisplayEl);
 
-      const inputEl = tileContentEl.querySelector("input.a-button-input");
       const recommendationId = encodeURIComponent(inputEl.getAttribute("data-recommendation-id"));
       const asin = inputEl.getAttribute("data-asin");
-      const url = `https://www.amazon.com/vine/api/recommendations/${recommendationId}/item/${asin}?imageSize=180`;
+      let url = `https://www.amazon.com/vine/api/recommendations/${recommendationId}/item/${asin}?imageSize=180`;
       const req = await fetch(url);
       const response = await req.json();
       const data = response.result;
 
-      if(data){
+      if (data) {
         const currencyFormatter = new Intl.NumberFormat("en-US", { style: "currency", currency: data.taxCurrency });
         etvDisplayEl.innerText = `ETV: ${currencyFormatter.format(data.taxValue)}`;
       } else {
-        etvDisplayEl.innerText = 'Error getting ETV!';
+        etvDisplayEl.innerText = "Error getting ETV!";
       }
+    };
+
+    if (isParent) {
+      getEtvLink.title = "Has variations, see the details";
+      getEtvLink.classList.remove("a-button-primary");
+      getEtvLink.classList.add("a-button-disabled");
+      getEtvLink.setAttribute("disabled", "");
+    } else {
+      getEtvLink.title = "Get ETV";
+      getEtvLink.addEventListener("click", etvLinkClickFn);
     }
 
-    getEtvLink.addEventListener("click", etvLinkClickFn);
+    tileContentEl.append(getEtvLink);
 
     //Add a link to fix the infinite load issue
-    const fixLink = document.createElement("a");
+    const fixLink = document.createElement("button");
+    fixLink.setAttribute("type", "button");
     fixLink.className = "fix-asin-link a-button a-button-primary a-button-span2";
     fixLink.innerHTML = `<span class='a-button-text'>🔃</span>`;
     fixLink.title = "Fix infinite spinner error";
@@ -251,7 +272,6 @@
       ev.preventDefault();
       const newASIN = prompt("Open the product page, copy the ASIN number, and put it here...");
       if (newASIN !== "") {
-        const inputEl = tileContentEl.querySelector("input.a-button-input");
         inputEl.setAttribute("data-is-parent-asin", "false");
         inputEl.setAttribute("data-asin", newASIN);
         inputEl.focus();

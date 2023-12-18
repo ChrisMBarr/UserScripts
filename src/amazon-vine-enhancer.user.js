@@ -1,12 +1,15 @@
 // ==UserScript==
 // @name         Amazon Vine UI Enhancer
 // @namespace    https://github.com/FiniteLooper/UserScripts
-// @version      0.5.3
+// @version      0.5.4
 // @description  Minor UI improvements to browsing items on Amazon Vine
 // @author       Chris Barr
 // @homepageURL  https://github.com/FiniteLooper/UserScripts
 // @updateURL    https://github.com/FiniteLooper/UserScripts/raw/main/src/amazon-vine-enhancer.user.js
 // @match        https://www.amazon.com/vine/vine-items*
+// @match        https://www.amazon.ca/vine/vine-items*
+// @match        https://www.amazon.co.uk/vine/vine-items*
+// @match        https://www.amazon.de/vine/vine-items*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=amazon.com
 // @grant        unsafeWindow
 // @grant        GM_addStyle

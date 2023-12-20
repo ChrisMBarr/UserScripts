@@ -59,6 +59,12 @@ TODO:
 
   //=========================================================================
   //Variables used for multiple sections ====================================
+
+  //Detect if any StyleBot styles are being injected,
+  //for Amazon Vine users this typically means they are using Thorvarium's styles: https://github.com/Thorvarium/vine-styling
+  //if so we may want to do a few things differently for compatibility between these two things
+  const clientAlsoUsingStyleBot = !!document.querySelector('style[id^="stylebot-"]');
+
   //Grab the body BG color in case any custom themes are applied to the site
   const bodyBgColor = getComputedStyle(document.body).backgroundColor;
 
@@ -111,7 +117,7 @@ TODO:
         transition: opacity 300ms;
       }
       .dimmed-tile:hover { opacity: 1; }`,
-    ].join()
+    ].join("")
   );
 
   //=========================================================================
@@ -178,54 +184,79 @@ TODO:
 
   //=========================================================================
   //Add links/buttons to replace ASIN number for products that are broken with infinite spinners
-  GM_addStyle(`.vvp-item-tile-content{ position: relative; }
-    .vvp-details-btn{
-      border-top-right-radius:0 !important;
-      border-bottom-right-radius:0 !important;
-    }
-    .get-etv-link, .fix-asin-link {
-      height: auto !important;
-      position: absolute;
-      bottom:0;
-    }
-    .get-etv-link {
-      border-radius:0 !important;
-      right:17%;
-    }
-    .fix-asin-link {
-      border-top-left-radius:0 !important;
-      border-bottom-left-radius:0 !important;
-      right:0;
-    }
-    .get-etv-link .a-button-text, .fix-asin-link .a-button-text{
-      padding:0;
-    }
-    .get-etv-link.a-button-disabled, .get-etv-link.a-button-disabled .a-button-text{
-      cursor: not-allowed !important;
-      filter: saturate(50%);
-    }
-    .etv-display{
-      position:absolute;
-      right: 17%;
-      bottom: 55px;
-      font-size: 12px;
-      margin: 0 !important;
-      width: auto !important;
-    }`);
+
+  const detailsButtonGridSize = clientAlsoUsingStyleBot ? 6 : 8;
+  const extraButtonGridSize = clientAlsoUsingStyleBot ? 3 : 2;
+  const extraButtonWidth = clientAlsoUsingStyleBot ? "25%" : "17%"; //match the amazon grid system sizes
+
+  GM_addStyle(
+    [
+      `.vvp-item-tile-content{ position: relative; }
+      .vvp-details-btn{
+        border-top-right-radius:0 !important;
+        border-bottom-right-radius:0 !important;
+      }
+      .get-etv-link, .fix-asin-link {
+        height: auto !important;
+        position: absolute;
+        bottom:0;
+      }
+      .get-etv-link {
+        border-radius:0 !important;
+        right: ${extraButtonWidth};
+      }
+      .fix-asin-link {
+        border-top-left-radius: 0 !important;
+        border-bottom-left-radius: 0 !important;
+        right:0;
+      }
+      .get-etv-link .a-button-text, .fix-asin-link .a-button-text{
+        padding:0;
+      }
+      .get-etv-link.a-button-disabled, .get-etv-link.a-button-disabled .a-button-text{
+        cursor: not-allowed !important;
+        filter: saturate(50%);
+      }`,
+      `.etv-display{
+        font-size: 12px;
+        margin: 0 !important;
+      }`,
+
+      clientAlsoUsingStyleBot
+        ? `.a-button-inner{height: auto !important}`
+        : `
+        .etv-display{
+          position: absolute;
+          right: ${extraButtonWidth};
+          bottom: 55px;
+          width: auto !important;
+        }`,
+    ].join("")
+  );
+
+  if (clientAlsoUsingStyleBot) {
+    //When also using StyleBot, the all buttons need less padding so they can fit
+    GM_addStyle(".vvp-item-tile .a-button-text{padding:5px 2px;}");
+  }
 
   function addTileLinks(itemElement) {
     const tileContentEl = itemElement.querySelector(".vvp-item-tile-content");
-    const inputEl = tileContentEl.querySelector("input.a-button-input");
+    const detailsButtonEl = itemElement.querySelector(".vvp-details-btn");
+    const inputEl = detailsButtonEl.querySelector("input.a-button-input");
     const isParent = /true/i.test(inputEl.getAttribute("data-is-parent-asin"));
 
     //Use an Amazon grid class to size the "see details" button
-    itemElement.querySelector(".vvp-details-btn").classList.add("a-button-span8");
+    detailsButtonEl.classList.add(`a-button-span${detailsButtonGridSize}`);
+    if (clientAlsoUsingStyleBot) {
+      //less text in the details button when using StyleBot styles so the extra buttons can fit better
+      detailsButtonEl.querySelector(".a-button-text").innerText = "details";
+    }
 
     //Add a link to check the ETV
     const getEtvLink = document.createElement("button");
     getEtvLink.setAttribute("type", "button");
-    getEtvLink.setAttribute("class", "get-etv-link a-button a-button-primary a-button-span2");
-    getEtvLink.innerHTML = `<span class='a-button-text'>💵</span>`;
+    getEtvLink.setAttribute("class", `get-etv-link a-button a-button-primary a-button-span${extraButtonGridSize}`);
+    getEtvLink.innerHTML = `<div class='a-button-text'>💵</div>`;
 
     const etvLinkClickFn = async (ev) => {
       ev.preventDefault();
@@ -235,10 +266,10 @@ TODO:
       getEtvLink.classList.add("a-button-disabled");
       getEtvLink.removeEventListener("click", etvLinkClickFn);
 
-      const etvDisplayEl = document.createElement("span");
+      const etvDisplayEl = document.createElement("div");
       etvDisplayEl.className = "etv-display";
       etvDisplayEl.innerText = "loading...";
-      tileContentEl.append(etvDisplayEl);
+      tileContentEl.insertBefore(etvDisplayEl, detailsButtonEl);
 
       const recommendationId = encodeURIComponent(inputEl.getAttribute("data-recommendation-id"));
       const asin = inputEl.getAttribute("data-asin");
@@ -270,7 +301,7 @@ TODO:
     //Add a link to fix the infinite load issue
     const fixLink = document.createElement("button");
     fixLink.setAttribute("type", "button");
-    fixLink.className = "fix-asin-link a-button a-button-primary a-button-span2";
+    fixLink.className = `fix-asin-link a-button a-button-primary a-button-span${extraButtonGridSize}`;
     fixLink.innerHTML = `<span class='a-button-text'>🔃</span>`;
     fixLink.title = "Fix infinite spinner error";
     tileContentEl.append(fixLink);

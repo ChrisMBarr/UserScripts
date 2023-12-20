@@ -6,14 +6,21 @@
 // @author       Chris Barr
 // @homepageURL  https://github.com/FiniteLooper/UserScripts
 // @updateURL    https://github.com/FiniteLooper/UserScripts/raw/main/src/amazon-vine-enhancer.user.js
-// @match        https://www.amazon.com/vine/vine-items*
-// @match        https://www.amazon.ca/vine/vine-items*
-// @match        https://www.amazon.co.uk/vine/vine-items*
-// @match        https://www.amazon.de/vine/vine-items*
+// @match        https://*.amazon.com/vine/vine-items*
+// @match        https://*.amazon.ca/vine/vine-items*
+// @match        https://*.amazon.co.uk/vine/vine-items*
+// @match        https://*.amazon.de/vine/vine-items*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=amazon.com
 // @grant        unsafeWindow
 // @grant        GM_addStyle
 // ==/UserScript==
+
+/*
+TODO:
+ * Customizable dim list
+ * customizable highlight list
+ * Customizable grid size
+*/
 
 (function () {
   "use strict";
@@ -59,49 +66,57 @@
   const border = getComputedStyle(document.querySelector('[data-a-name="vine-items"]')).border;
 
   //=========================================================================
-  //Hide the "recently viewed items" and the footer underneath all the vine items
-  //This make the page easier to scroll around on and speeds up the page since it will never load the data dynamically now
-  GM_addStyle(`#rhf, #navFooter{display: none !important;}`);
-
-  //=========================================================================
-  //Slightly taller popup modal window to the ETV is always visible =========
-  GM_addStyle(`.a-popover-modal-fixed-height{height: 550px !important;} .a-popover-inner{padding-bottom: 112px !important;}`);
-
-  //=========================================================================
-  //Side categories: bolded selected items and show nesting better ==========
-  GM_addStyle(`
-  a.selectedNode{font-weight: bold;}
-  a.selectedNode:hover{color: inherit !important;}
-  .child-node{
-    padding-left: 10px;
-    margin-left: 0;
-    border-left: ${border};
-  }
-  `);
-
-  //=========================================================================
-  //Sticky footer pagination ================================================
-  GM_addStyle(`#vvp-items-grid-container > [role="navigation"] {
-    position:sticky;
-    bottom:0;
-    padding-top: 5px;
-    background-color: ${bodyBgColor};
-    border-top: ${border};
-    z-index: 30;
-  }`);
+  //Styles needed for various features
+  GM_addStyle(
+    [
+      //Hide the "recently viewed items" and the footer underneath all the vine items
+      //This make the page easier to scroll around on and speeds up the page since it will never load the data dynamically now
+      `#rhf, #navFooter{display: none !important;}`,
+      //Slightly taller popup modal window to the ETV is always visible =========
+      `.a-popover-modal-fixed-height{height: 550px !important;} .a-popover-inner{padding-bottom: 112px !important;}`,
+      //Side categories: bolded selected items and show nesting better ==========
+      `a.selectedNode{font-weight: bold;}
+      a.selectedNode:hover{color: inherit !important;}
+      .child-node{
+        padding-left: 10px;
+        margin-left: 0;
+        border-left: ${border};
+      }`,
+      //Sticky footer pagination
+      `#vvp-items-grid-container > [role="navigation"] {
+        position:sticky;
+        bottom:0;
+        padding-top: 5px;
+        background-color: ${bodyBgColor};
+        border-top: ${border};
+        z-index: 30;
+      }`,
+      //Sticky top bar with search
+      `[data-a-name="vine-items"] .vvp-items-button-and-search-container {
+        position: sticky;
+        top: 0;
+        z-index: 1;
+        background-color: ${bodyBgColor};
+        border-bottom: ${border};
+        z-index: 30;
+      }`,
+      //Sticky side bar with categories
+      `#vvp-browse-nodes-container {
+        align-self: start;
+        position: sticky;
+      }`,
+      //Fade/Dim tiles
+      `.dimmed-tile {
+        opacity: .25;
+        transition: opacity 300ms;
+      }
+      .dimmed-tile:hover { opacity: 1; }`,
+    ].join()
+  );
 
   //=========================================================================
   //Sticky top bar with search ==============================================
-  const selBtnAndSearch = `[data-a-name="vine-items"] .vvp-items-button-and-search-container`;
-  const elBtnAndSearch = document.querySelector(selBtnAndSearch);
-  GM_addStyle(`${selBtnAndSearch} {
-    position: sticky;
-    top: 0;
-    z-index: 1;
-    background-color: ${bodyBgColor};
-    border-bottom: ${border};
-    z-index: 30;
-  }`);
+  const elBtnAndSearch = document.querySelector('[data-a-name="vine-items"] .vvp-items-button-and-search-container');
 
   //Steal the margin value and use it as padding instead for the header so we can have a colored BG
   const btnAndSearchStyles = getComputedStyle(elBtnAndSearch);
@@ -110,12 +125,7 @@
 
   //=========================================================================
   //Sticky side bar with categories =========================================
-  const selCategories = `#vvp-browse-nodes-container`;
-  const elCategories = document.querySelector(selCategories);
-  GM_addStyle(`${selCategories} {
-    align-self: start;
-    position: sticky;
-  }`);
+  const elCategories = document.querySelector("#vvp-browse-nodes-container");
 
   //Set the sticky top position of the categories to the height of the top bar
   //unless the categories are taller than the screen
@@ -159,12 +169,6 @@
 
   //=========================================================================
   //Fade/Dim items with descriptions that match something in the word list defined at the top
-  GM_addStyle(`.dimmed-tile {
-    opacity: .25;
-    transition: opacity 300ms;
-  }
-  .dimmed-tile:hover { opacity: 1; }`);
-
   function dimTileWithDescriptionWordInList(itemElement) {
     const description = itemElement.querySelector(".vvp-item-product-title-container .a-truncate-full").innerText.toLowerCase();
     if (dimmedItemWordList.some((listItem) => description.includes(listItem))) {

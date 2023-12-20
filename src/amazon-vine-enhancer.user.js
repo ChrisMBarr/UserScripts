@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Amazon Vine UI Enhancer
 // @namespace    https://github.com/FiniteLooper/UserScripts
-// @version      0.5.5
+// @version      0.6.0
 // @description  Minor UI improvements to browsing items on Amazon Vine
 // @author       Chris Barr
 // @homepageURL  https://github.com/FiniteLooper/UserScripts
@@ -17,7 +17,6 @@
 
 /*
 TODO:
- * Customizable dim list
  * customizable highlight list
  * Customizable grid size
 */
@@ -26,39 +25,48 @@ TODO:
   "use strict";
 
   //=========================================================================
-  //User configurable variables =============================================
-  const dimmedItemWordList = [
-    //Hair stuff
-    "wig",
-    "hair extension",
-    "dreadlock extension",
-    "ponytail extension",
-    "crochet hair",
-    "baby hair",
-    "braiding hair",
-    "eyelash extension",
-    "false eyelash",
-
-    //Printer ink/toner
-    "ink cartridge",
-    "ink refill",
-    "toner",
-
-    //Cakes & party decorations
-    "cake topper",
-    "cupcake wrapper",
-    "cake decoration",
-    "party decoration",
-
-    //Misc.
-    "castor oil",
-    "shower pan liner",
-    "anti-colic bottle",
-    "tub spout",
-  ];
-
-  //=========================================================================
   //Variables used for multiple sections ====================================
+
+  //Stuff for local storage of words to dim when an item description contains them
+  const storageKeyWordList = "VINE_UI_ENHANCER_DIMMED_WORD_LIST";
+  let wordList = [];
+
+  const storedWords = localStorage.getItem(storageKeyWordList);
+  if (storedWords === null) {
+    [
+      //Hair stuff
+      "wig",
+      "hair extension",
+      "dreadlock extension",
+      "ponytail extension",
+      "crochet hair",
+      "baby hair",
+      "braiding hair",
+      "eyelash extension",
+      "false eyelash",
+
+      //Printer ink/toner
+      "ink cartridge",
+      "ink refill",
+      "toner",
+
+      //Cakes & party decorations
+      "cake topper",
+      "cupcake wrapper",
+      "cake decoration",
+      "party decoration",
+
+      //Misc.
+      "castor oil",
+      "shower pan liner",
+      "anti-colic bottle",
+      "tub spout",
+    ]
+      .reverse()
+      .forEach((w) => addWordToList(w));
+  } else {
+    wordList = JSON.parse(storedWords);
+  }
 
   //Detect if any StyleBot styles are being injected,
   //for Amazon Vine users this typically means they are using Thorvarium's styles: https://github.com/Thorvarium/vine-styling
@@ -70,6 +78,9 @@ TODO:
 
   //grab the border color, style, and size
   const border = getComputedStyle(document.querySelector('[data-a-name="vine-items"]')).border;
+
+  //The top bar with the buttons and the search
+  const btnAndSearchEl = document.querySelector('[data-a-name="vine-items"] .vvp-items-button-and-search-container');
 
   //=========================================================================
   //Styles needed for various features
@@ -117,17 +128,43 @@ TODO:
         transition: opacity 300ms;
       }
       .dimmed-tile:hover { opacity: 1; }`,
+      //Settings
+      `.btn-open-settings {
+        position:absolute;
+        bottom: 1px;
+        right: 0;
+      }
+      .btn-open-settings .a-btn-text{padding: 0 6px;}
+      #settings-dialog{
+        padding-top: 32px;
+      }
+      #btn-close-settings{
+        position: absolute;
+        top: 2px;
+        right: 2px;
+      }
+      #word-list-display{
+        margin: 0 0 1rem 0;
+        padding: 0;
+        list-style: none;
+        overflow-y: scroll;
+        max-height: 150px;
+        border: 1px solid #EEE;
+      }
+      #word-list-display li{padding: 2px;}
+      #word-list-display li:nth-child(odd) {background-color: #F9F9F9;}
+      #word-list-display li .a-button-text{line-height: 1.25rem; padding: 0 0.25rem;}
+      `,
     ].join("")
   );
 
   //=========================================================================
   //Sticky top bar with search ==============================================
-  const elBtnAndSearch = document.querySelector('[data-a-name="vine-items"] .vvp-items-button-and-search-container');
 
   //Steal the margin value and use it as padding instead for the header so we can have a colored BG
-  const btnAndSearchStyles = getComputedStyle(elBtnAndSearch);
-  elBtnAndSearch.style.padding = btnAndSearchStyles.margin;
-  elBtnAndSearch.style.margin = "0 !important";
+  const btnAndSearchStyles = getComputedStyle(btnAndSearchEl);
+  btnAndSearchEl.style.padding = btnAndSearchStyles.margin;
+  btnAndSearchEl.style.margin = "0 !important";
 
   //=========================================================================
   //Sticky side bar with categories =========================================
@@ -135,8 +172,8 @@ TODO:
 
   //Set the sticky top position of the categories to the height of the top bar
   //unless the categories are taller than the screen
-  if (elCategories.offsetHeight + elBtnAndSearch.offsetHeight <= document.documentElement.clientHeight) {
-    elCategories.style.top = `${elBtnAndSearch.offsetHeight}px`;
+  if (elCategories.offsetHeight + btnAndSearchEl.offsetHeight <= document.documentElement.clientHeight) {
+    elCategories.style.top = `${btnAndSearchEl.offsetHeight}px`;
   }
 
   //=========================================================================
@@ -177,7 +214,7 @@ TODO:
   //Fade/Dim items with descriptions that match something in the word list defined at the top
   function dimTileWithDescriptionWordInList(itemElement) {
     const description = itemElement.querySelector(".vvp-item-product-title-container .a-truncate-full").innerText.toLowerCase();
-    if (dimmedItemWordList.some((listItem) => description.includes(listItem))) {
+    if (wordList.some((listItem) => description.includes(listItem))) {
       itemElement.classList.add("dimmed-tile");
     }
   }
@@ -316,6 +353,105 @@ TODO:
       }
     });
   }
+
+  //=========================================================================
+  //=========================================================================
+  //Settings Dialog
+  const showSettingsBtnEl = document.createElement("button");
+  showSettingsBtnEl.type = "button";
+  showSettingsBtnEl.title = "Vine UI Enhancer Settings";
+  showSettingsBtnEl.className = "btn-open-settings a-button";
+  showSettingsBtnEl.innerHTML = `<div class='a-button-text'>⚙️</div>`;
+  btnAndSearchEl.appendChild(showSettingsBtnEl);
+  showSettingsBtnEl.addEventListener("click", (ev) => {
+    ev.preventDefault();
+    settingsDialog.showModal();
+    renderList();
+  });
+
+  const settingsDialog = document.createElement("dialog");
+  settingsDialog.id = "settings-dialog";
+  settingsDialog.innerHTML = `
+    <button type="button" class="a-button" id="btn-close-settings"><div class='a-button-text'>&times;</div></button>
+    <h1>Vine UI Enhancer Settings</h1>
+    <h3>Dim Items Containing these words/phrases</h3>
+    <small>(reload page to see changes)</small>
+    <ul id="word-list-display"></ul>
+    <input type="text" id="txt-add-word-list">
+    <button type="button" class="a-button a-button-primary" id="btn-add-word-list"><div class='a-button-text'>Add Word</div></button>
+    <br><br>
+    <button type="button" class="a-button" id="btn-show-top-words"><div class='a-button-text'>Show the top 10 words on this page</div></button>
+  `;
+  document.body.append(settingsDialog);
+  settingsDialog.querySelector("#btn-close-settings").addEventListener("click", () => {
+    settingsDialog.close();
+  });
+
+  const ulWordListEl = settingsDialog.querySelector("#word-list-display");
+  const txtWordListEl = settingsDialog.querySelector("#txt-add-word-list");
+
+  function addWordFromUI() {
+    const word = txtWordListEl.value.trim().toLowerCase();
+    if (word.length > 0 && !wordList.includes(word)) {
+      addWordToList(word);
+      txtWordListEl.value = "";
+    }
+  }
+  settingsDialog.querySelector("#btn-add-word-list").addEventListener("click", addWordFromUI);
+  txtWordListEl.addEventListener("keyup", (ev) => {
+    if (ev.key === "Enter") addWordFromUI();
+  });
+
+  function renderList() {
+    ulWordListEl.innerHTML = wordList
+      .map(
+        (w) =>
+          `<li><button type="button" class="a-button" title="Remove '${w}'" data-word="${w}"><div class='a-button-text'>X</div></button> ${w}</li>`
+      )
+      .join("\n");
+    ulWordListEl.querySelectorAll("button").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        removeWordFromList(btn.getAttribute("data-word"));
+      });
+    });
+  }
+  function addWordToList(word) {
+    wordList.unshift(word);
+    renderList();
+    localStorage.setItem(storageKeyWordList, JSON.stringify(wordList));
+  }
+  function removeWordFromList(word) {
+    const idx = wordList.indexOf(word);
+    wordList.splice(idx, 1);
+    renderList();
+    localStorage.setItem(storageKeyWordList, JSON.stringify(wordList));
+  }
+
+  //Show the top most common words
+  settingsDialog.querySelector("#btn-show-top-words").addEventListener("click", (ev) => {
+    ev.preventDefault();
+    const ignoreWords = ["the", "and", "for", "with", "to", "of", "in", "-", "&"];
+    const allWords = [...document.querySelectorAll(".a-truncate-full")]
+      //Split anything with space, commas, dashes, semicolons into any array
+      .flatMap((el) => el.innerText.toLowerCase().split(/[,;\s-]/g))
+      //remove anything from the ignore list, anything that is just a number, or anything 1 character long
+      .filter((w) => !ignoreWords.includes(w) && w.length > 1 && !/^\d+(\.\d+)?$/.test(w));
+
+    const wordMap = {};
+    allWords.forEach((i) => (wordMap[i] = (wordMap[i] || 0) + 1));
+    const topWords = Object.keys(wordMap)
+      .map((k) => ({ word: k, count: wordMap[k] }))
+      .sort((a, b) => a.count - b.count) //sort by count
+      .reverse() //largest numbers at the top
+      .slice(0, 10);
+
+    let displayString = "";
+    topWords.forEach((x) => {
+      displayString += `[${x.count}] - ${x.word}\n`;
+    });
+
+    alert(displayString);
+  });
 
   //=========================================================================
   //Loop over each product tile and run functions for each one

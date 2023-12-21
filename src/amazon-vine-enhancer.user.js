@@ -56,6 +56,10 @@ TODO:
   //if so we may want to do a few things differently for compatibility between these two things
   const clientAlsoUsingStyleBot = !!document.querySelector('style[id^="stylebot-"]');
 
+  //If not the default yellow color, then it's using the customized mobile styles
+  const clientAlsoUsingMobileStyles =
+    getComputedStyle(document.querySelector("#vvp-items-grid .a-button-primary")).backgroundColor !== "rgb(255, 216, 20)";
+
   //Grab the body BG color in case any custom themes are applied to the site
   const bodyBgColor = getComputedStyle(document.body).backgroundColor;
 
@@ -86,9 +90,11 @@ TODO:
     .dimmed-tile:hover { opacity: 1; }`,
     //Settings
     `.btn-open-settings {
-      position:absolute;
-      bottom: ${userPrefs.stickyTopBar ? "1px" : "-20px"};
-      right: 0;
+      ${
+        clientAlsoUsingMobileStyles
+          ? "width: 50px;"
+          : `position:absolute; right: 0; bottom: ${userPrefs.stickyTopBar ? "1px" : "-20px"};`
+      }
     }
     .btn-open-settings .a-btn-text{padding: 0 6px;}
     #settings-dialog{
@@ -104,6 +110,7 @@ TODO:
       right: 7px;
     }
     #settings-dialog h1{padding:0;}
+    #settings-dialog .a-button { display: inline-block}
     #settings-dialog .settings-dialog-section {
       margin-top: .5rem;
       padding-top: .5rem;
@@ -116,9 +123,10 @@ TODO:
       overflow-y: scroll;
       height: 150px;
       border: 1px solid #EEE;
+      background-color: ${bodyBgColor};
     }
     #word-list-display li{padding: 2px;}
-    #word-list-display li:nth-child(odd) {background-color: #F9F9F9;}
+    #word-list-display li:nth-child(odd) {background-color: rgba(128, 128, 128, 0.1);}
     #word-list-display li .a-button-text{line-height: 1.25rem; padding: 0 0.25rem;}
     `,
   ];
@@ -129,8 +137,8 @@ TODO:
     addedPageStyles.push(`#rhf, #navFooter{display: none !important;}`);
   }
 
-  if (userPrefs.stickyTopBar) {
-    //Sticky top bar with search
+  //Sticky top bar - but not with custom mobile styles
+  if (!clientAlsoUsingMobileStyles && userPrefs.stickyTopBar) {
     addedPageStyles.push(
       `[data-a-name="vine-items"] .vvp-items-button-and-search-container {
       position: sticky;
@@ -148,8 +156,8 @@ TODO:
     );
   }
 
-  if (userPrefs.stickySidebar) {
-    //Sticky side bar with categories
+  //Sticky side bar with categories - but not with custom mobile styles
+  if (!clientAlsoUsingMobileStyles && userPrefs.stickySidebar) {
     addedPageStyles.push(
       `#vvp-browse-nodes-container {
         align-self: start;
@@ -158,8 +166,8 @@ TODO:
     );
   }
 
-  if (userPrefs.stickyPagination) {
-    //Sticky footer pagination
+  //Sticky footer pagination - but not with custom mobile styles
+  if (!clientAlsoUsingMobileStyles && userPrefs.stickyPagination) {
     addedPageStyles.push(
       `#vvp-items-grid-container > [role="navigation"] {
       position:sticky;
@@ -179,7 +187,7 @@ TODO:
 
   //Steal the margin value and use it as padding instead for the header so we can have a colored BG
   const btnAndSearchStyles = getComputedStyle(btnAndSearchEl);
-  if (userPrefs.stickyTopBar) {
+  if (!clientAlsoUsingMobileStyles && userPrefs.stickyTopBar) {
     btnAndSearchEl.style.padding = btnAndSearchStyles.margin;
     btnAndSearchEl.style.margin = "0 !important";
   }
@@ -191,6 +199,7 @@ TODO:
   //Set the sticky top position of the categories to the height of the top bar
   //unless the categories are taller than the screen
   if (
+    !clientAlsoUsingMobileStyles &&
     userPrefs.stickySidebar &&
     elCategories.offsetHeight + btnAndSearchEl.offsetHeight <= document.documentElement.clientHeight
   ) {
@@ -243,59 +252,73 @@ TODO:
   //=========================================================================
   //Add links/buttons to replace ASIN number for products that are broken with infinite spinners
 
-  const detailsButtonGridSize = clientAlsoUsingStyleBot ? 6 : 8;
-  const extraButtonGridSize = clientAlsoUsingStyleBot ? 3 : 2;
+  let detailsButtonGridClass = "a-button-span" + (clientAlsoUsingStyleBot ? 6 : 8);
+  let extraButtonGridClass = "a-button-span" + (clientAlsoUsingStyleBot ? 3 : 2);
+  if (clientAlsoUsingMobileStyles) {
+    detailsButtonGridClass = "";
+    extraButtonGridClass = "";
+  }
+
   const extraButtonWidth = clientAlsoUsingStyleBot ? "25%" : "17%"; //match the amazon grid system sizes
 
-  GM_addStyle(
-    [
-      `.vvp-item-tile-content{ position: relative; }
-      .vvp-details-btn{
-        border-top-right-radius:0 !important;
-        border-bottom-right-radius:0 !important;
-      }
-      .get-etv-link, .fix-asin-link {
-        height: auto !important;
-        position: absolute;
-        bottom:0;
-      }
-      .get-etv-link {
-        border-radius:0 !important;
-        right: ${extraButtonWidth};
-      }
-      .fix-asin-link {
-        border-top-left-radius: 0 !important;
-        border-bottom-left-radius: 0 !important;
-        right:0;
-      }
-      .get-etv-link .a-button-text, .fix-asin-link .a-button-text{
-        padding:0;
-      }
-      .get-etv-link.a-button-disabled, .get-etv-link.a-button-disabled .a-button-text{
-        cursor: not-allowed !important;
-        filter: saturate(50%);
-      }`,
-      `.etv-display{
-        font-size: 12px;
-        margin: 0 !important;
-      }`,
-
-      clientAlsoUsingStyleBot
-        ? `.a-button-inner{height: auto !important}`
-        : `
-        .etv-display{
-          position: absolute;
-          right: ${extraButtonWidth};
-          bottom: 55px;
-          width: auto !important;
-        }`,
-    ].join("")
-  );
+  const addedTileButtonStyles = [
+    `.vvp-details-btn{
+      border-top-right-radius:0 !important;
+      border-bottom-right-radius:0 !important;
+    }
+    .get-etv-link, .fix-asin-link {
+      height: auto !important;
+    }
+    .get-etv-link {
+      border-radius:0 !important;
+    }
+    .fix-asin-link {
+      border-top-left-radius: 0 !important;
+      border-bottom-left-radius: 0 !important;
+    }
+    .get-etv-link .a-button-text, .fix-asin-link .a-button-text{
+      padding:0;
+    }
+    .get-etv-link.a-button-disabled, .get-etv-link.a-button-disabled .a-button-text{
+      cursor: not-allowed !important;
+      filter: saturate(50%);
+    }
+    .etv-display{
+      font-size: 12px;
+      margin: 0 !important;
+    }`,
+  ];
 
   if (clientAlsoUsingStyleBot) {
     //When also using StyleBot, the all buttons need less padding so they can fit
-    GM_addStyle(".vvp-item-tile .a-button-text{padding:5px 2px;}");
+    addedTileButtonStyles.push(
+      `.a-button-inner{height: auto !important}
+      .vvp-item-tile .a-button-text{padding:5px 2px;}`
+    );
+  } else {
+    addedTileButtonStyles.push(
+      `.etv-display{
+        position: absolute;
+        right: ${extraButtonWidth};
+        bottom: 55px;
+        width: auto !important;
+      }`
+    );
   }
+
+  if (!clientAlsoUsingMobileStyles) {
+    addedTileButtonStyles.push(
+      `.vvp-item-tile-content{ position: relative; }
+      .get-etv-link, .fix-asin-link {
+        position: absolute;
+        bottom:0;
+      }
+      .get-etv-link { right: ${extraButtonWidth}; }
+      .fix-asin-link { right:0; }`
+    );
+  }
+
+  GM_addStyle(addedTileButtonStyles.join(""));
 
   function addTileLinks(itemElement) {
     const tileContentEl = itemElement.querySelector(".vvp-item-tile-content");
@@ -304,7 +327,7 @@ TODO:
     const isParent = /true/i.test(inputEl.getAttribute("data-is-parent-asin"));
 
     //Use an Amazon grid class to size the "see details" button
-    detailsButtonEl.classList.add(`a-button-span${detailsButtonGridSize}`);
+    if (detailsButtonGridClass !== "") detailsButtonEl.classList.add(detailsButtonGridClass);
     if (clientAlsoUsingStyleBot) {
       //less text in the details button when using StyleBot styles so the extra buttons can fit better
       detailsButtonEl.querySelector(".a-button-text").innerText = "details";
@@ -313,7 +336,7 @@ TODO:
     //Add a link to check the ETV
     const getEtvLink = document.createElement("button");
     getEtvLink.setAttribute("type", "button");
-    getEtvLink.setAttribute("class", `get-etv-link a-button a-button-primary a-button-span${extraButtonGridSize}`);
+    getEtvLink.setAttribute("class", `get-etv-link a-button a-button-primary ${extraButtonGridClass}`);
     getEtvLink.innerHTML = `<div class='a-button-text'>💵</div>`;
 
     const etvLinkClickFn = async (ev) => {
@@ -362,7 +385,7 @@ TODO:
     //Add a link to fix the infinite load issue
     const fixLink = document.createElement("button");
     fixLink.setAttribute("type", "button");
-    fixLink.className = `fix-asin-link a-button a-button-primary a-button-span${extraButtonGridSize}`;
+    fixLink.className = `fix-asin-link a-button a-button-primary ${extraButtonGridClass}`;
     fixLink.innerHTML = `<span class='a-button-text'>🔃</span>`;
     fixLink.title = "Fix infinite spinner error";
     tileContentEl.append(fixLink);
@@ -395,6 +418,7 @@ TODO:
 
   const settingsDialog = document.createElement("dialog");
   settingsDialog.id = "settings-dialog";
+  const disabledCheckboxPrefHtml = clientAlsoUsingMobileStyles ? " disabled title='Not allowed with custom mobile styles'" : "";
   settingsDialog.innerHTML = `
     <button type="button" class="a-button" id="btn-close-settings"><div class='a-button-text'>&times;</div></button>
     <h1>Vine UI Enhancer Settings</h1>
@@ -407,15 +431,17 @@ TODO:
         Hide Amazon Page Footer
       </label>
       <label>
-        <input type="checkbox" data-pref="stickyTopBar"${userPrefs.stickyTopBar ? " checked" : ""}>
+        <input type="checkbox" data-pref="stickyTopBar"${userPrefs.stickyTopBar ? " checked" : ""}${disabledCheckboxPrefHtml}>
         Sticky Top Bar
       </label>
       <label>
-        <input type="checkbox" data-pref="stickySidebar"${userPrefs.stickySidebar ? " checked" : ""}>
+        <input type="checkbox" data-pref="stickySidebar"${userPrefs.stickySidebar ? " checked" : ""}${disabledCheckboxPrefHtml}>
         Sticky Sidebar
       </label>
       <label>
-        <input type="checkbox" data-pref="stickyPagination"${userPrefs.stickyPagination ? " checked" : ""}>
+        <input type="checkbox" data-pref="stickyPagination"${
+          userPrefs.stickyPagination ? " checked" : ""
+        }${disabledCheckboxPrefHtml}>
         Sticky Pagination
       </label>
     </div>

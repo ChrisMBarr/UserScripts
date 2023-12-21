@@ -33,39 +33,22 @@ TODO:
 
   const storedWords = localStorage.getItem(storageKeyWordList);
   if (storedWords === null) {
-    [
-      //Hair stuff
-      "wig",
-      "hair extension",
-      "dreadlock extension",
-      "ponytail extension",
-      "crochet hair",
-      "baby hair",
-      "braiding hair",
-      "eyelash extension",
-      "false eyelash",
-
-      //Printer ink/toner
-      "ink cartridge",
-      "ink refill",
-      "toner",
-
-      //Cakes & party decorations
-      "cake topper",
-      "cupcake wrapper",
-      "cake decoration",
-      "party decoration",
-
-      //Misc.
-      "castor oil",
-      "shower pan liner",
-      "anti-colic bottle",
-      "tub spout",
-    ]
-      .reverse()
-      .forEach((w) => addWordToList(w));
+    addDefaultWordList();
   } else {
     wordList = JSON.parse(storedWords);
+  }
+
+  const storageKeyUserPrefs = "VINE_UI_ENHANCER_PREFERENCES";
+  const storedPrefs = localStorage.getItem(storageKeyUserPrefs);
+  let userPrefs = {
+    //default preferences if nothing is stored yet
+    hideAmazonPageFooter: true,
+    stickySidebar: true,
+    stickyTopBar: true,
+    stickyPagination: true,
+  };
+  if (storedPrefs !== null) {
+    userPrefs = JSON.parse(storedPrefs);
   }
 
   //Detect if any StyleBot styles are being injected,
@@ -84,87 +67,122 @@ TODO:
 
   //=========================================================================
   //Styles needed for various features
-  GM_addStyle(
-    [
-      //Hide the "recently viewed items" and the footer underneath all the vine items
-      //This make the page easier to scroll around on and speeds up the page since it will never load the data dynamically now
-      `#rhf, #navFooter{display: none !important;}`,
-      //Slightly taller popup modal window to the ETV is always visible =========
-      `.a-popover-modal-fixed-height{height: 550px !important;} .a-popover-inner{padding-bottom: 112px !important;}`,
-      //Side categories: bolded selected items and show nesting better ==========
-      `a.selectedNode{font-weight: bold;}
-      a.selectedNode:hover{color: inherit !important;}
-      .child-node{
-        padding-left: 10px;
-        margin-left: 0;
-        border-left: ${border};
-      }`,
-      //Sticky footer pagination
-      `#vvp-items-grid-container > [role="navigation"] {
-        position:sticky;
-        bottom:0;
-        padding-top: 5px;
-        background-color: ${bodyBgColor};
-        border-top: ${border};
-        z-index: 30;
-      }`,
-      //Sticky top bar with search
+  const addedPageStyles = [
+    //Slightly taller popup modal window to the ETV is always visible =========
+    `.a-popover-modal-fixed-height{height: 550px !important;} .a-popover-inner{padding-bottom: 112px !important;}`,
+    //Side categories: bolded selected items and show nesting better ==========
+    `a.selectedNode{font-weight: bold;}
+    a.selectedNode:hover{color: inherit !important;}
+    .child-node{
+      padding-left: 10px;
+      margin-left: 0;
+      border-left: ${border};
+    }`,
+    //Fade/Dim tiles
+    `.dimmed-tile {
+      opacity: .25;
+      transition: opacity 300ms;
+    }
+    .dimmed-tile:hover { opacity: 1; }`,
+    //Settings
+    `.btn-open-settings {
+      position:absolute;
+      bottom: ${userPrefs.stickyTopBar ? "1px" : "-20px"};
+      right: 0;
+    }
+    .btn-open-settings .a-btn-text{padding: 0 6px;}
+    #settings-dialog{
+      width: 530px;
+    }
+    #settings-dialog::backdrop{
+      background-color: #0F1111;
+      opacity: .5;
+    }
+    #btn-close-settings{
+      position: absolute;
+      top: 7px;
+      right: 7px;
+    }
+    #settings-dialog h1{padding:0;}
+    #settings-dialog .settings-dialog-section {
+      margin-top: .5rem;
+      padding-top: .5rem;
+      border-top: 1px solid #E9E9E9;
+    }
+    #word-list-display{
+      margin: 0 0 1rem 0;
+      padding: 0;
+      list-style: none;
+      overflow-y: scroll;
+      height: 150px;
+      border: 1px solid #EEE;
+    }
+    #word-list-display li{padding: 2px;}
+    #word-list-display li:nth-child(odd) {background-color: #F9F9F9;}
+    #word-list-display li .a-button-text{line-height: 1.25rem; padding: 0 0.25rem;}
+    `,
+  ];
+
+  if (userPrefs.hideAmazonPageFooter) {
+    //Hide the "recently viewed items" and the footer underneath all the vine items
+    //This make the page easier to scroll around on and speeds up the page since it will never load the data dynamically now
+    addedPageStyles.push(`#rhf, #navFooter{display: none !important;}`);
+  }
+
+  if (userPrefs.stickyTopBar) {
+    //Sticky top bar with search
+    addedPageStyles.push(
       `[data-a-name="vine-items"] .vvp-items-button-and-search-container {
-        position: sticky;
-        top: 0;
-        z-index: 1;
-        background-color: ${bodyBgColor};
-        border-bottom: ${border};
-        z-index: 30;
-      }`,
-      //Sticky side bar with categories
+      position: sticky;
+      top: 0;
+      background-color: ${bodyBgColor};
+      border-bottom: ${border};
+      z-index: 30;
+    }`
+    );
+  } else {
+    addedPageStyles.push(
+      `[data-a-name="vine-items"] .vvp-items-button-and-search-container {
+        position: relative;
+      }`
+    );
+  }
+
+  if (userPrefs.stickySidebar) {
+    //Sticky side bar with categories
+    addedPageStyles.push(
       `#vvp-browse-nodes-container {
         align-self: start;
         position: sticky;
-      }`,
-      //Fade/Dim tiles
-      `.dimmed-tile {
-        opacity: .25;
-        transition: opacity 300ms;
-      }
-      .dimmed-tile:hover { opacity: 1; }`,
-      //Settings
-      `.btn-open-settings {
-        position:absolute;
-        bottom: 1px;
-        right: 0;
-      }
-      .btn-open-settings .a-btn-text{padding: 0 6px;}
-      #settings-dialog{
-        padding-top: 32px;
-      }
-      #btn-close-settings{
-        position: absolute;
-        top: 2px;
-        right: 2px;
-      }
-      #word-list-display{
-        margin: 0 0 1rem 0;
-        padding: 0;
-        list-style: none;
-        overflow-y: scroll;
-        max-height: 150px;
-        border: 1px solid #EEE;
-      }
-      #word-list-display li{padding: 2px;}
-      #word-list-display li:nth-child(odd) {background-color: #F9F9F9;}
-      #word-list-display li .a-button-text{line-height: 1.25rem; padding: 0 0.25rem;}
-      `,
-    ].join("")
-  );
+      }`
+    );
+  }
+
+  if (userPrefs.stickyPagination) {
+    //Sticky footer pagination
+    addedPageStyles.push(
+      `#vvp-items-grid-container > [role="navigation"] {
+      position:sticky;
+      bottom:0;
+      padding-top: 5px;
+      background-color: ${bodyBgColor};
+      border-top: ${border};
+      z-index: 30;
+    }`
+    );
+  }
+
+  GM_addStyle(addedPageStyles.join(""));
 
   //=========================================================================
   //Sticky top bar with search ==============================================
 
   //Steal the margin value and use it as padding instead for the header so we can have a colored BG
   const btnAndSearchStyles = getComputedStyle(btnAndSearchEl);
-  btnAndSearchEl.style.padding = btnAndSearchStyles.margin;
-  btnAndSearchEl.style.margin = "0 !important";
+  if (userPrefs.stickyTopBar) {
+    btnAndSearchEl.style.padding = btnAndSearchStyles.margin;
+    btnAndSearchEl.style.margin = "0 !important";
+  }
 
   //=========================================================================
   //Sticky side bar with categories =========================================
@@ -172,7 +190,10 @@ TODO:
 
   //Set the sticky top position of the categories to the height of the top bar
   //unless the categories are taller than the screen
-  if (elCategories.offsetHeight + btnAndSearchEl.offsetHeight <= document.documentElement.clientHeight) {
+  if (
+    userPrefs.stickySidebar &&
+    elCategories.offsetHeight + btnAndSearchEl.offsetHeight <= document.documentElement.clientHeight
+  ) {
     elCategories.style.top = `${btnAndSearchEl.offsetHeight}px`;
   }
 
@@ -321,6 +342,9 @@ TODO:
       } else {
         etvDisplayEl.innerText = "Error getting ETV!";
       }
+
+      //Remove focus from the element so keyboard navigation can easily resume
+      document.activeElement.blur();
     };
 
     if (isParent) {
@@ -374,21 +398,108 @@ TODO:
   settingsDialog.innerHTML = `
     <button type="button" class="a-button" id="btn-close-settings"><div class='a-button-text'>&times;</div></button>
     <h1>Vine UI Enhancer Settings</h1>
-    <h3>Dim Items Containing these words/phrases</h3>
     <small>(reload page to see changes)</small>
-    <ul id="word-list-display"></ul>
-    <input type="text" id="txt-add-word-list">
-    <button type="button" class="a-button a-button-primary" id="btn-add-word-list"><div class='a-button-text'>Add Word</div></button>
-    <br><br>
-    <button type="button" class="a-button" id="btn-show-top-words"><div class='a-button-text'>Show the top 10 words on this page</div></button>
+
+    <div class="settings-dialog-section">
+      <h3>Page Options</h3>
+      <label>
+        <input type="checkbox" data-pref="hideAmazonPageFooter"${userPrefs.hideAmazonPageFooter ? " checked" : ""}>
+        Hide Amazon Page Footer
+      </label>
+      <label>
+        <input type="checkbox" data-pref="stickyTopBar"${userPrefs.stickyTopBar ? " checked" : ""}>
+        Sticky Top Bar
+      </label>
+      <label>
+        <input type="checkbox" data-pref="stickySidebar"${userPrefs.stickySidebar ? " checked" : ""}>
+        Sticky Sidebar
+      </label>
+      <label>
+        <input type="checkbox" data-pref="stickyPagination"${userPrefs.stickyPagination ? " checked" : ""}>
+        Sticky Pagination
+      </label>
+    </div>
+
+    <div class="settings-dialog-section">
+      <h3>Dim Items Containing these words/phrases</h3>
+
+      <ul id="word-list-display"></ul>
+      <input type="text" id="txt-add-word-list">
+      <button type="button" class="a-button a-button-primary" id="btn-add-word-list"><div class='a-button-text'>Add Word</div></button>
+      <button type="button" class="a-button" id="btn-show-top-words"><div class='a-button-text'>Show top words on this page</div></button>
+    </div>
   `;
   document.body.append(settingsDialog);
   settingsDialog.querySelector("#btn-close-settings").addEventListener("click", () => {
     settingsDialog.close();
   });
 
+  settingsDialog.addEventListener("click", function (event) {
+    //Close dialog when clicking on backdrop - https://stackoverflow.com/a/26984690/79677
+    var rect = settingsDialog.getBoundingClientRect();
+    var isInDialog =
+      rect.top <= event.clientY &&
+      event.clientY <= rect.top + rect.height &&
+      rect.left <= event.clientX &&
+      event.clientX <= rect.left + rect.width;
+    if (!isInDialog) {
+      settingsDialog.close();
+    }
+  });
+
+  settingsDialog.querySelectorAll("input[type=checkbox]").forEach((check) => {
+    check.addEventListener("change", () => {
+      const pref = check.getAttribute("data-pref");
+      const isChecked = check.checked;
+
+      userPrefs[pref] = isChecked;
+
+      localStorage.setItem(storageKeyUserPrefs, JSON.stringify(userPrefs));
+    });
+  });
+
   const ulWordListEl = settingsDialog.querySelector("#word-list-display");
   const txtWordListEl = settingsDialog.querySelector("#txt-add-word-list");
+
+  settingsDialog.querySelector("#btn-add-word-list").addEventListener("click", addWordFromUI);
+  txtWordListEl.addEventListener("keyup", (ev) => {
+    if (ev.key === "Enter") addWordFromUI();
+  });
+
+  function renderList() {
+    let wordListHtml = wordList
+      .map(
+        (w) =>
+          `<li>
+          <button type="button" class="a-button" title="Remove '${w}'" data-word="${w}">
+            <div class='a-button-text'>X</div>
+          </button>
+          ${w}
+        </li>`
+      )
+      .join("\n")
+      .trim();
+    if (wordListHtml === "") {
+      wordListHtml = `<li>
+        (empty!)
+        <button type="button" class="a-button a-button-primary" data-default-list="true">
+          <div class='a-button-text'>Restore default word list</div>
+        </button>
+      </li>`;
+    }
+    ulWordListEl.innerHTML = wordListHtml;
+    ulWordListEl.querySelectorAll("button").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const word = btn.getAttribute("data-word");
+        const shouldAddDefaultList = !!btn.getAttribute("data-default-list");
+        if (word) {
+          removeWordFromList(word);
+        } else if (shouldAddDefaultList) {
+          addDefaultWordList();
+        }
+      });
+    });
+  }
 
   function addWordFromUI() {
     const word = txtWordListEl.value.trim().toLowerCase();
@@ -397,29 +508,48 @@ TODO:
       txtWordListEl.value = "";
     }
   }
-  settingsDialog.querySelector("#btn-add-word-list").addEventListener("click", addWordFromUI);
-  txtWordListEl.addEventListener("keyup", (ev) => {
-    if (ev.key === "Enter") addWordFromUI();
-  });
 
-  function renderList() {
-    ulWordListEl.innerHTML = wordList
-      .map(
-        (w) =>
-          `<li><button type="button" class="a-button" title="Remove '${w}'" data-word="${w}"><div class='a-button-text'>X</div></button> ${w}</li>`
-      )
-      .join("\n");
-    ulWordListEl.querySelectorAll("button").forEach((btn) => {
-      btn.addEventListener("click", () => {
-        removeWordFromList(btn.getAttribute("data-word"));
-      });
-    });
+  function addDefaultWordList() {
+    [
+      //Hair stuff
+      "wig",
+      "hair extension",
+      "dreadlock extension",
+      "ponytail extension",
+      "crochet hair",
+      "baby hair",
+      "braiding hair",
+      "eyelash extension",
+      "false eyelash",
+
+      //Printer ink/toner
+      "ink cartridge",
+      "ink refill",
+      "toner",
+
+      //Cakes & party decorations
+      "cake topper",
+      "cupcake wrapper",
+      "cake decoration",
+      "party decoration",
+
+      //Misc.
+      "castor oil",
+      "pulling oil",
+      "shower pan liner",
+      "anti-colic bottle",
+      "tub spout",
+    ]
+      .reverse()
+      .forEach((w) => addWordToList(w));
   }
+
   function addWordToList(word) {
     wordList.unshift(word);
     renderList();
     localStorage.setItem(storageKeyWordList, JSON.stringify(wordList));
   }
+
   function removeWordFromList(word) {
     const idx = wordList.indexOf(word);
     wordList.splice(idx, 1);
@@ -432,8 +562,8 @@ TODO:
     ev.preventDefault();
     const ignoreWords = ["the", "and", "for", "with", "to", "of", "in", "-", "&"];
     const allWords = [...document.querySelectorAll(".a-truncate-full")]
-      //Split anything with space, commas, dashes, semicolons into any array
-      .flatMap((el) => el.innerText.toLowerCase().split(/[,;\s-]/g))
+      //Split anything with space, commas, dashes, semicolons, parenthesis into any array
+      .flatMap((el) => el.innerText.toLowerCase().split(/[,;\s-\(\)]/g))
       //remove anything from the ignore list, anything that is just a number, or anything 1 character long
       .filter((w) => !ignoreWords.includes(w) && w.length > 1 && !/^\d+(\.\d+)?$/.test(w));
 

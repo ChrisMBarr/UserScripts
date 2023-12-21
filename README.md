@@ -6,7 +6,7 @@ A few Tampermonkey/Greasemonkey scripts I've made
 * Install the [Tampermonkey browser plugin](https://www.tampermonkey.net/) or [GreaseMonkey browser plugin](https://www.greasespot.net/)
 * Navigate to one of the scripts either in the `/src/` folder and click the "RAW" button, or click one of the install links below
 
-## Amazon Vine Enhancer
+## Amazon Vine UI Enhancer
 **[📜 Install Amazon Vine Enhancer Script](https://raw.githubusercontent.com/FiniteLooper/UserScripts/main/src/amazon-vine-enhancer.user.js)**
 
 Minor UI improvements to browsing items on Amazon Vine:
@@ -24,6 +24,13 @@ Minor UI improvements to browsing items on Amazon Vine:
   * Pressing the "show all" link will send you to the AI area instead of RFY
 
 ![](doc-img/amazon-vine.gif)
+
+## Amazon Vine Order Info
+**[📜 Install Amazon Order Info Script](https://raw.githubusercontent.com/FiniteLooper/UserScripts/main/src/amazon-vine-order-info.user.js)**
+
+Adds a button on each item on the "Orders" page to show all the info about it in an `alert` for easy copy/paste into a spreadsheet or something like that.
+
+![](doc-img/amazon-vine-order-info.png)
 
 ## Washington Post Paywall Remover
 **[📜 Install Washington Post Paywall Remover Script](https://raw.githubusercontent.com/FiniteLooper/UserScripts/main/src/washington-post-paywall-remover.user.js)**

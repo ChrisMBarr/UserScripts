@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Amazon Vine UI Enhancer
 // @namespace    https://github.com/FiniteLooper/UserScripts
-// @version      0.6.0
+// @version      0.6.1
 // @description  Minor UI improvements to browsing items on Amazon Vine
 // @author       Chris Barr
 // @homepageURL  https://github.com/FiniteLooper/UserScripts
@@ -46,9 +46,19 @@ TODO:
     stickySidebar: true,
     stickyTopBar: true,
     stickyPagination: true,
+    addUiButtons: true,
   };
   if (storedPrefs !== null) {
-    userPrefs = JSON.parse(storedPrefs);
+    const parsedPrefs = JSON.parse(storedPrefs);
+
+    //Update any missing preferences with the default values
+    Object.keys(userPrefs).forEach((prefKey) => {
+      if (typeof parsedPrefs[prefKey] === "undefined") {
+        parsedPrefs[prefKey] = userPrefs[prefKey];
+      }
+    });
+
+    userPrefs = parsedPrefs;
   }
 
   //Detect if any StyleBot styles are being injected,
@@ -183,30 +193,6 @@ TODO:
   GM_addStyle(addedPageStyles.join(""));
 
   //=========================================================================
-  //Sticky top bar with search ==============================================
-
-  //Steal the margin value and use it as padding instead for the header so we can have a colored BG
-  const btnAndSearchStyles = getComputedStyle(btnAndSearchEl);
-  if (!clientAlsoUsingMobileStyles && userPrefs.stickyTopBar) {
-    btnAndSearchEl.style.padding = btnAndSearchStyles.margin;
-    btnAndSearchEl.style.margin = "0 !important";
-  }
-
-  //=========================================================================
-  //Sticky side bar with categories =========================================
-  const elCategories = document.querySelector("#vvp-browse-nodes-container");
-
-  //Set the sticky top position of the categories to the height of the top bar
-  //unless the categories are taller than the screen
-  if (
-    !clientAlsoUsingMobileStyles &&
-    userPrefs.stickySidebar &&
-    elCategories.offsetHeight + btnAndSearchEl.offsetHeight <= document.documentElement.clientHeight
-  ) {
-    elCategories.style.top = `${btnAndSearchEl.offsetHeight}px`;
-  }
-
-  //=========================================================================
   //When searching...
   if (document.location.search.includes("search=")) {
     //Put the RFY/AFA/AI area buttons back - why are they hidden during a search anyway?
@@ -252,17 +238,18 @@ TODO:
   //=========================================================================
   //Add links/buttons to replace ASIN number for products that are broken with infinite spinners
 
-  let detailsButtonGridClass = "a-button-span" + (clientAlsoUsingStyleBot ? 6 : 8);
-  let extraButtonGridClass = "a-button-span" + (clientAlsoUsingStyleBot ? 3 : 2);
-  if (clientAlsoUsingMobileStyles) {
-    detailsButtonGridClass = "";
-    extraButtonGridClass = "";
-  }
+  let detailsButtonGridClass = "";
+  let extraButtonGridClass = "";
+  if (userPrefs.addUiButtons) {
+    if (!clientAlsoUsingMobileStyles) {
+      detailsButtonGridClass = "a-button-span" + (clientAlsoUsingStyleBot ? 6 : 8);
+      extraButtonGridClass = "a-button-span" + (clientAlsoUsingStyleBot ? 3 : 2);
+    }
 
-  const extraButtonWidth = clientAlsoUsingStyleBot ? "25%" : "17%"; //match the amazon grid system sizes
+    const extraButtonWidth = clientAlsoUsingStyleBot ? "25%" : "17%"; //match the amazon grid system sizes
 
-  const addedTileButtonStyles = [
-    `.vvp-details-btn{
+    const addedTileButtonStyles = [
+      `.vvp-details-btn{
       border-top-right-radius:0 !important;
       border-bottom-right-radius:0 !important;
     }
@@ -287,38 +274,39 @@ TODO:
       font-size: 12px;
       margin: 0 !important;
     }`,
-  ];
+    ];
 
-  if (clientAlsoUsingStyleBot) {
-    //When also using StyleBot, the all buttons need less padding so they can fit
-    addedTileButtonStyles.push(
-      `.a-button-inner{height: auto !important}
+    if (clientAlsoUsingStyleBot) {
+      //When also using StyleBot, the all buttons need less padding so they can fit
+      addedTileButtonStyles.push(
+        `.a-button-inner{height: auto !important}
       .vvp-item-tile .a-button-text{padding:5px 2px;}`
-    );
-  } else {
-    addedTileButtonStyles.push(
-      `.etv-display{
+      );
+    } else {
+      addedTileButtonStyles.push(
+        `.etv-display{
         position: absolute;
         right: ${extraButtonWidth};
         bottom: 55px;
         width: auto !important;
       }`
-    );
-  }
+      );
+    }
 
-  if (!clientAlsoUsingMobileStyles) {
-    addedTileButtonStyles.push(
-      `.vvp-item-tile-content{ position: relative; }
+    if (!clientAlsoUsingMobileStyles) {
+      addedTileButtonStyles.push(
+        `.vvp-item-tile-content{ position: relative; }
       .get-etv-link, .fix-asin-link {
         position: absolute;
         bottom:0;
       }
       .get-etv-link { right: ${extraButtonWidth}; }
       .fix-asin-link { right:0; }`
-    );
-  }
+      );
+    }
 
-  GM_addStyle(addedTileButtonStyles.join(""));
+    GM_addStyle(addedTileButtonStyles.join(""));
+  }
 
   function addTileLinks(itemElement) {
     const tileContentEl = itemElement.querySelector(".vvp-item-tile-content");
@@ -443,6 +431,10 @@ TODO:
           userPrefs.stickyPagination ? " checked" : ""
         }${disabledCheckboxPrefHtml}>
         Sticky Pagination
+      </label>
+      <label>
+        <input type="checkbox" data-pref="addUiButtons"${userPrefs.addUiButtons ? " checked" : ""}>
+        Add "Get ETV" and "fix infinite spinner" buttons to the UI
       </label>
     </div>
 
@@ -610,9 +602,35 @@ TODO:
   });
 
   //=========================================================================
+  //Sticky top bar with search ==============================================
+
+  //Steal the margin value and use it as padding instead for the header so we can have a colored BG
+  const btnAndSearchStyles = getComputedStyle(btnAndSearchEl);
+  if (!clientAlsoUsingMobileStyles && userPrefs.stickyTopBar) {
+    btnAndSearchEl.style.padding = btnAndSearchStyles.margin;
+    btnAndSearchEl.style.margin = "0 !important";
+  }
+
+  //=========================================================================
+  //Sticky side bar with categories =========================================
+  const elCategories = document.querySelector("#vvp-browse-nodes-container");
+
+  //Set the sticky top position of the categories to the height of the top bar
+  //unless the categories are taller than the screen
+  if (
+    !clientAlsoUsingMobileStyles &&
+    userPrefs.stickySidebar &&
+    elCategories.offsetHeight + btnAndSearchEl.offsetHeight <= document.documentElement.clientHeight
+  ) {
+    elCategories.style.top = `${btnAndSearchEl.offsetHeight}px`;
+  }
+
+  //=========================================================================
   //Loop over each product tile and run functions for each one
   document.querySelectorAll("#vvp-items-grid > .vvp-item-tile").forEach((itemElement) => {
     dimTileWithDescriptionWordInList(itemElement);
-    addTileLinks(itemElement);
+    if (userPrefs.addUiButtons) {
+      addTileLinks(itemElement);
+    }
   });
 })();

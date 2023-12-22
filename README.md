@@ -11,7 +11,7 @@ A few Tampermonkey/Greasemonkey scripts I've made
 
 Minor UI improvements to browsing items on Amazon Vine:
 * Adds a button to just display the ETV inline without having to see the full details (helpful when comparing prices or searching for a 0ETV!)
-* Adds a button to help fix products with an infinite spinner
+* Adds a button to help fix products with the "infinite spinner" error
 * Sticky UI as you scroll:
   * The top bar and the pagination is stuck as you scroll
   * The categories side bar is stuck as you scroll, unless the categories are taller than your browser window
@@ -22,8 +22,9 @@ Minor UI improvements to browsing items on Amazon Vine:
 * When performing a search:
   * The RFY/AFA/AI area buttons are normally hidden, this will restore them
   * Pressing the "show all" link will send you to the AI area instead of RFY
+* Plays nice with [Thorvarium's Vine Styling](https://github.com/Thorvarium/vine-styling) when installed via StyleBot
 
-![](doc-img/amazon-vine.gif)
+![](doc-img/amazon-vine-enhancer.gif)
 
 ## Amazon Vine Order Info
 **[📜 Install Amazon Order Info Script](https://raw.githubusercontent.com/FiniteLooper/UserScripts/main/src/amazon-vine-order-info.user.js)**

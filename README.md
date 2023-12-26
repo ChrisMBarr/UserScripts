@@ -8,30 +8,43 @@ A few Tampermonkey/Greasemonkey scripts I've made
 
 ## Amazon Vine UI Enhancer
 **[📜 Install Amazon Vine Enhancer Script](https://raw.githubusercontent.com/FiniteLooper/UserScripts/main/src/amazon-vine-enhancer.user.js)**
+Minor UI improvements to using Amazon Vine:
 
-Minor UI improvements to browsing items on Amazon Vine:
-* Adds a button to just display the ETV inline without having to see the full details (helpful when comparing prices or searching for a 0ETV!)
-* Adds a button to help fix products with the "infinite spinner" error
-* Sticky UI as you scroll:
-  * The top bar and the pagination is stuck as you scroll
-  * The categories side bar is stuck as you scroll, unless the categories are taller than your browser window
-* Pressing the left and right arrow keys on your keyboard will navigate to the previous and next pages of whatever you are viewing
-* Hides the "recently viewed products" and the Amazon footer underneath all the Vine items. This makes scrolling down the page easier since you now cannot scroll past the Vine items. The page will also not make AJAX requests for this data since it will never come into the view
-* The "see details" modal popup is made slightly larger so that the ETV is always visible for items with longer descriptions
-* Dims items with descriptions that match anything in an array defined at the top (example: hides "cake toppers")
-* When performing a search:
-  * The RFY/AFA/AI area buttons are normally hidden, this will restore them
-  * Pressing the "show all" link will send you to the AI area instead of RFY
-* Plays nice with [Thorvarium's Vine Styling](https://github.com/Thorvarium/vine-styling) when installed via StyleBot
+* On all pages, adds a "close" button to any alert/message from vine. This will remember the last alert you've closed
+* On the "Orders" page, a button is added on each item that shows all the info about it in an `alert` for easy copy/paste into a spreadsheet or something like that.
+* On the "Account" page it will add the specific time that a reevaluation will occur on the reevaluation date
+* On the "Vine Items" pages:
+  * Adds a ⚙️ icon button for user-customizable settings for most everything below
+  * Adds a 💵 button to just display the ETV inline without having to see the full details (helpful when comparing prices or searching for a 0ETV!)
+  * Adds a 🔃 button to help fix products with the "infinite spinner" error
+    * To use: click the product, copy the ASIN, and paste it after pressing this button. Not 100% effective, but works in some cases.
+  * Sticky UI as you scroll:
+    * The top bar
+    * The pagination at the bottom
+    * The categories side bar is stuck as you scroll, unless the categories are taller than your browser window
+  * Pressing the left and right arrow keys on your keyboard will navigate to the previous and next pages of whatever you are viewing
+  * Hides the "recently viewed products" and the Amazon footer underneath all the Vine items. This makes scrolling down the page easier since you now cannot scroll past the Vine items. The page will also not make AJAX requests for this data since it will never come into the view
+  * The "see details" modal popup is made slightly larger so that the ETV is always visible for items with longer descriptions
+  * Dims items with descriptions that match anything in an array defined at the top (example: hides "cake toppers")
+  * When performing a search:
+    * The RFY/AFA/AI area buttons are normally hidden, this will restore them
+    * Pressing the "show all" link will send you to the AI area instead of RFY
+  * Plays nice with [Thorvarium's Vine Styling](https://github.com/Thorvarium/vine-styling) when installed via StyleBot
+
+Here's what the settings and most features look like
 
 ![](doc-img/amazon-vine-enhancer.gif)
 
-## Amazon Vine Order Info
-**[📜 Install Amazon Order Info Script](https://raw.githubusercontent.com/FiniteLooper/UserScripts/main/src/amazon-vine-order-info.user.js)**
 
-Adds a button on each item on the "Orders" page to show all the info about it in an `alert` for easy copy/paste into a spreadsheet or something like that.
+Here's what the alert hiding looks like
 
-![](doc-img/amazon-vine-order-info.png)
+![](doc-img/amazon-vine-hide-alert.gif)
+
+
+Here's what the added reevaluation time looks like
+
+![](doc-img/amazon-vine-eval-time.png)
+
 
 ## Washington Post Paywall Remover
 **[📜 Install Washington Post Paywall Remover Script](https://raw.githubusercontent.com/FiniteLooper/UserScripts/main/src/washington-post-paywall-remover.user.js)**

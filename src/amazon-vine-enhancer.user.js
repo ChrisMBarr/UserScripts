@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Amazon Vine UI Enhancer
 // @namespace    https://github.com/FiniteLooper/UserScripts
-// @version      0.7.0
+// @version      0.7.1
 // @description  Minor UI improvements to browsing items on Amazon Vine
 // @author       Chris Barr
 // @homepageURL  https://github.com/FiniteLooper/UserScripts
@@ -597,13 +597,22 @@ ETV:          ${etv}`);
     function addWordFromUI() {
       const word = txtWordListEl.value.trim().toLowerCase();
       if (word.length > 0 && !wordList.includes(word)) {
-        addWordToList(word);
+        wordList.unshift(word);
+        localStorage.setItem(storageKeyWordList, JSON.stringify(wordList));
+        renderList();
         txtWordListEl.value = "";
       }
     }
 
+    function removeWordFromList(word) {
+      const idx = wordList.indexOf(word);
+      wordList.splice(idx, 1);
+      renderList();
+      localStorage.setItem(storageKeyWordList, JSON.stringify(wordList));
+    }
+
     function addDefaultWordList() {
-      [
+      const defaultList = [
         //Hair stuff
         "wig",
         "hair extension",
@@ -632,22 +641,13 @@ ETV:          ${etv}`);
         "shower pan liner",
         "anti-colic bottle",
         "tub spout",
-      ]
-        .reverse()
-        .forEach((w) => addWordToList(w));
-    }
+      ];
 
-    function addWordToList(word) {
-      wordList.unshift(word);
-      renderList();
-      localStorage.setItem(storageKeyWordList, JSON.stringify(wordList));
-    }
+      defaultList.reverse().forEach((w) => wordList.unshift(w));
 
-    function removeWordFromList(word) {
-      const idx = wordList.indexOf(word);
-      wordList.splice(idx, 1);
-      renderList();
+      //Save list and render the HTML once
       localStorage.setItem(storageKeyWordList, JSON.stringify(wordList));
+      renderList();
     }
 
     //Show the top most common words

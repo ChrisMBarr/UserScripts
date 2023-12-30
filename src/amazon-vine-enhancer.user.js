@@ -54,6 +54,55 @@ TODO:
     }
   }
 
+  //Dialogs - all created dialogs will share the same basic styles
+  GM_addStyle(
+    `.VINE-UIE-dialog{
+    width: 530px;
+  }
+  .VINE-UIE-dialog::backdrop{
+    background-color: #0F1111;
+    opacity: .5;
+  }
+  .VINE-UIE-close-dialog-btn{
+    position: absolute;
+    top: 7px;
+    right: 7px;
+  }`
+  );
+
+  //Generic function to create a reusable and closable dialog
+  function createDialog(id, bodyHtml) {
+    const dialog = document.createElement("dialog");
+    dialog.id = id;
+    dialog.className = "VINE-UIE-dialog";
+    dialog.innerHTML = `
+    <button type="button" class="a-button VINE-UIE-close-dialog-btn"><div class='a-button-text'>&times;</div></button>
+    ${bodyHtml}
+  `;
+    document.body.append(dialog);
+
+    // Click the close button to close dialog
+    dialog.querySelector(".VINE-UIE-close-dialog-btn").addEventListener("click", () => {
+      dialog.close();
+    });
+
+    //Click the backdrop to close dialog
+    dialog.addEventListener("click", function (event) {
+      //Close dialog when clicking on backdrop - https://stackoverflow.com/a/26984690/79677
+      var rect = dialog.getBoundingClientRect();
+      var isInDialog =
+        rect.top <= event.clientY &&
+        event.clientY <= rect.top + rect.height &&
+        rect.left <= event.clientX &&
+        event.clientX <= rect.left + rect.width;
+      if (!isInDialog) {
+        dialog.close();
+      }
+    });
+
+    return dialog;
+  }
+
   //Different tasks for the different pages - Smaller/easier pages listed first
   if (location.pathname.startsWith("/vine/account")) {
     //=========================================================================
@@ -182,18 +231,6 @@ ETV:          ${etv}`);
       }
     }
     .VINE-UIE-open-settings-btn .a-btn-text{padding: 0 6px;}
-    #VINE-UIE-settings-dialog{
-      width: 530px;
-    }
-    #VINE-UIE-settings-dialog::backdrop{
-      background-color: #0F1111;
-      opacity: .5;
-    }
-    #VINE-UIE-close-settings-btn{
-      position: absolute;
-      top: 7px;
-      right: 7px;
-    }
     #VINE-UIE-settings-dialog h1{padding:0;}
     #VINE-UIE-settings-dialog .a-button { display: inline-block}
     #VINE-UIE-settings-dialog .VINE-UIE-settings-dialog-section {
@@ -479,11 +516,8 @@ ETV:          ${etv}`);
       renderList();
     });
 
-    const settingsDialog = document.createElement("dialog");
-    settingsDialog.id = "VINE-UIE-settings-dialog";
     const disabledCheckboxPrefHtml = clientAlsoUsingMobileStyles ? " disabled title='Not allowed with custom mobile styles'" : "";
-    settingsDialog.innerHTML = `
-    <button type="button" class="a-button" id="VINE-UIE-close-settings-btn"><div class='a-button-text'>&times;</div></button>
+    const settingsDialogHtml = `
     <h1>Vine UI Enhancer Settings</h1>
     <small>(reload page to see changes)</small>
 
@@ -520,25 +554,8 @@ ETV:          ${etv}`);
       <input type="text" id="VINE-UIE-add-word-list-txt">
       <button type="button" class="a-button a-button-primary" id="VINE-UIE-add-word-list-btn"><div class='a-button-text'>Add Word</div></button>
       <button type="button" class="a-button" id="VINE-UIE-show-top-words-btn"><div class='a-button-text'>Show top words on this page</div></button>
-    </div>
-  `;
-    document.body.append(settingsDialog);
-    settingsDialog.querySelector("#VINE-UIE-close-settings-btn").addEventListener("click", () => {
-      settingsDialog.close();
-    });
-
-    settingsDialog.addEventListener("click", function (event) {
-      //Close dialog when clicking on backdrop - https://stackoverflow.com/a/26984690/79677
-      var rect = settingsDialog.getBoundingClientRect();
-      var isInDialog =
-        rect.top <= event.clientY &&
-        event.clientY <= rect.top + rect.height &&
-        rect.left <= event.clientX &&
-        event.clientX <= rect.left + rect.width;
-      if (!isInDialog) {
-        settingsDialog.close();
-      }
-    });
+    </div>`;
+    const settingsDialog = createDialog("VINE-UIE-settings-dialog", settingsDialogHtml);
 
     settingsDialog.querySelectorAll("input[type=checkbox]").forEach((check) => {
       check.addEventListener("change", () => {

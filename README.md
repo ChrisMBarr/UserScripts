@@ -3,8 +3,13 @@ A few Tampermonkey/Greasemonkey scripts I've made
 
 
 # How to use
-* Install the [Tampermonkey browser plugin](https://www.tampermonkey.net/) or [GreaseMonkey browser plugin](https://www.greasespot.net/)
-* Navigate to one of the scripts either in the `/src/` folder and click the "RAW" button, or click one of the install links below
+* Windows/Mac/Linux web browsers:
+  1. Install the [Tampermonkey browser plugin](https://www.tampermonkey.net/) or [GreaseMonkey browser plugin](https://www.greasespot.net/)
+  2. click one of the install links below
+* iOS (Hyperweb)
+  1. Install [Hyperweb](https://apps.apple.com/us/app/hyperweb/id1581824571)(App Store link)
+  2. From this page press and hold on the **Install ...** script link and choose **Copy Link**
+  3. Open the Hyperweb app, go to the **Essentials** tab > **Custom Scripts** > **Local** > press **Add script from URL** and paste in the URL of the script you copied in the last step
 
 ## Amazon Vine UI Enhancer
 **[📜 Install Amazon Vine Enhancer Script](https://raw.githubusercontent.com/FiniteLooper/UserScripts/main/src/amazon-vine-enhancer.user.js)**

@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Amazon Vine UI Enhancer
 // @namespace    https://github.com/FiniteLooper/UserScripts
-// @version      0.7.1
+// @version      0.7.2
 // @description  Minor UI improvements to browsing items on Amazon Vine
 // @author       Chris Barr
 // @homepageURL  https://github.com/FiniteLooper/UserScripts
@@ -127,6 +127,21 @@ TODO:
       orderInfoBtn.querySelector("button").addEventListener("click", () => showOrderInfo(row));
     });
 
+    GM_addStyle(
+      `#VINE-UIE-order-info-display h3{ padding-right: 25px; }
+      #VINE-UIE-order-info-display .order-item-label{
+        display: inline-block;
+        width: 65px;
+        text-align: right;
+        margin-right: 5px;
+        user-select: none;
+      }
+      #VINE-UIE-order-info-display .order-item-value{
+        user-select: all;
+      }`
+    );
+    const orderInfoDialog = createDialog("VINE-UIE-order-info-dialog", `<div id="VINE-UIE-order-info-display"></div>`);
+
     function showOrderInfo(row) {
       const productName = row.querySelector("td:nth-child(2) .a-truncate-full").innerText.trim();
       const orderDate = row.querySelector("td:nth-child(3)").innerText.trim();
@@ -134,13 +149,14 @@ TODO:
       const asin = row.querySelector("td:nth-child(2) a").href.match(/[A-Z0-9]+$/i)[0];
       const id = row.querySelector("td:nth-child(5) a").href.match(/[-0-9]+$/)[0];
 
-      //Alerts aren't monospaced, so the spacing here makes it all line up when rendered
-      alert(`${productName}
+      orderInfoDialog.querySelector("#VINE-UIE-order-info-display").innerHTML = `
+      <h3>${productName}</h3>
+      <strong class='order-item-label'>ID:</strong>      <code class='order-item-value'>${id}</code> <br>
+      <strong class='order-item-label'>ASIN:</strong>    <code class='order-item-value'>${asin}</code> <br>
+      <strong class='order-item-label'>Ordered:</strong> <span class='order-item-value'>${orderDate}</span> <br>
+      <strong class='order-item-label'>ETV:</strong>     <span class='order-item-value'>${etv}</span>`;
 
-ID:            ${id}
-ASIN:       ${asin}
-Ordered: ${orderDate}
-ETV:          ${etv}`);
+      orderInfoDialog.showModal();
     }
   } else if (location.pathname.startsWith("/vine/vine-items")) {
     //=========================================================================

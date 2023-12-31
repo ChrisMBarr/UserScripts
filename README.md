@@ -37,7 +37,6 @@ Minor UI improvements to using Amazon Vine:
     * The pagination at the bottom
     * The categories side bar is stuck as you scroll, unless the categories are taller than your browser window
   * Pressing the left and right arrow keys on your keyboard will navigate to the previous and next pages of whatever you are viewing
-  * Hides the "recently viewed products" and the Amazon footer underneath all the Vine items. This makes scrolling down the page easier since you now cannot scroll past the Vine items. The page will also not make AJAX requests for this data since it will never come into the view
   * The "see details" modal popup is made slightly larger so that the ETV is always visible for items with longer descriptions
   * Dims items with descriptions that match anything in an array defined at the top (example: hides "cake toppers")
   * When performing a search:

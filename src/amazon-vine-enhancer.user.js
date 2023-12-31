@@ -182,7 +182,6 @@ TODO:
     const storedPrefs = localStorage.getItem(storageKeyUserPrefs);
     let userPrefs = {
       //default preferences if nothing is stored yet
-      hideAmazonPageFooter: true,
       stickySidebar: true,
       stickyTopBar: true,
       stickyPagination: true,
@@ -269,12 +268,6 @@ TODO:
     #VINE-UIE-word-list-display li .a-button-text{line-height: 1.25rem; padding: 0 0.25rem;}
     `,
     ];
-
-    if (userPrefs.hideAmazonPageFooter) {
-      //Hide the "recently viewed items" and the footer underneath all the vine items
-      //This make the page easier to scroll around on and speeds up the page since it will never load the data dynamically now
-      addedPageStyles.push(`#rhf, #navFooter{display: none !important;}`);
-    }
 
     //Sticky top bar - but not with custom mobile styles
     if (!clientAlsoUsingMobileStyles && userPrefs.stickyTopBar) {
@@ -536,8 +529,6 @@ TODO:
     <small>(reload page to see changes)</small>
     <div class="VINE-UIE-settings-dialog-section">
       <h3>Page Options</h3>`;
-
-    settingsDialogHtml += createSettingsCheckbox("hideAmazonPageFooter", "Hide Amazon Page Footer");
 
     //No sticky anything for mobile styles - would take up too much space
     if (!clientAlsoUsingMobileStyles) {

@@ -6,15 +6,24 @@ A few Tampermonkey/Greasemonkey scripts I've made
 * Windows/Mac/Linux web browsers:
   1. Install the [Tampermonkey browser plugin](https://www.tampermonkey.net/) or [GreaseMonkey browser plugin](https://www.greasespot.net/)
   2. click one of the install links below
-* iOS (Hyperweb)
-  1. Install [Hyperweb](https://apps.apple.com/us/app/hyperweb/id1581824571)(App Store link)
-  2. From this page press and hold on the **Install ...** script link and choose **Copy Link**
-  3. Open the Hyperweb app, go to the **Essentials** tab > **Custom Scripts** > **Local** > press **Add script from URL** and paste in the URL of the script you copied in the last step
+
 
 ## Amazon Vine UI Enhancer
 **[📜 Install Amazon Vine Enhancer Script](https://raw.githubusercontent.com/FiniteLooper/UserScripts/main/src/amazon-vine-enhancer.user.js)**
 Minor UI improvements to using Amazon Vine:
 
+* To install this on a web browser in Windows/Mac/Linux, follow the instructions above
+* To install this on iOS:
+  1. Install [Hyperweb](https://apps.apple.com/us/app/hyperweb/id1581824571)(App Store link)
+  2. From this page press and hold on the **📜 Install Amazon Vine Enhancer Script** link above and choose **Copy Link**
+  3. Open the Hyperweb app, go to the **Advanced** tab at the bottom then **Create Local Extension**
+  4. Give it a name like "Amazon Vine"
+  5. Press **New Condition** and then **Condition Type?** and select **URL matches RegEx**
+  6. Enter `^https:\/\/www.amazon.com\/vine` as the value (if you are not from United States change the `.com` on the domain to match your country)
+  7. Under the **Then** section tap **Add Action** and the **Action Type?** and select **Inject JS from URL**
+  8. paste in the URL of the script you copied earlier
+
+**Features**
 * On all pages, adds a "close" button to any alert/message from vine. This will remember the last alert you've closed
 * On the "Orders" page, a button is added on each item that shows all the info about it in an `alert` for easy copy/paste into a spreadsheet or something like that.
 * On the "Account" page it will add the specific time that a reevaluation will occur on the reevaluation date

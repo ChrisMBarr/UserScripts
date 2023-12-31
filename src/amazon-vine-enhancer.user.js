@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Amazon Vine UI Enhancer
 // @namespace    https://github.com/FiniteLooper/UserScripts
-// @version      0.7.2
+// @version      0.7.3
 // @description  Minor UI improvements to browsing items on Amazon Vine
 // @author       Chris Barr
 // @homepageURL  https://github.com/FiniteLooper/UserScripts
@@ -186,7 +186,8 @@ TODO:
       stickySidebar: true,
       stickyTopBar: true,
       stickyPagination: true,
-      addUiButtons: true,
+      addUiButtonEtv: true,
+      addUiButtonFixInfiniteSpinner: true,
     };
     if (storedPrefs !== null) {
       const parsedPrefs = JSON.parse(storedPrefs);
@@ -368,32 +369,30 @@ TODO:
 
     let detailsButtonGridClass = "";
     let extraButtonGridClass = "";
-    if (userPrefs.addUiButtons) {
+    if (userPrefs.addUiButtonEtv || userPrefs.addUiButtonFixInfiniteSpinner) {
       if (!clientAlsoUsingMobileStyles) {
         detailsButtonGridClass = "a-button-span" + (clientAlsoUsingStyleBot ? 6 : 8);
         extraButtonGridClass = "a-button-span" + (clientAlsoUsingStyleBot ? 3 : 2);
       }
-
-      const extraButtonWidth = clientAlsoUsingStyleBot ? "25%" : "17%"; //match the amazon grid system sizes
 
       const addedTileButtonStyles = [
         `.vvp-details-btn{
       border-top-right-radius:0 !important;
       border-bottom-right-radius:0 !important;
     }
-    .VINE-UIE-get-etv-link, .VINE-UIE-fix-asin-link {
+    .vvp-item-tile-content .a-button:not(.vvp-details-btn, :last-child) {
+      border-radius: 0;
+    }
+    .vvp-item-tile-content .a-button:not(.vvp-details-btn) {
       height: auto !important;
+      padding: 0;
+      border-top-left-radius: 0;
+      border-bottom-left-radius: 0;
     }
-    .VINE-UIE-get-etv-link {
-      border-radius:0 !important;
-    }
-    .VINE-UIE-fix-asin-link {
-      border-top-left-radius: 0 !important;
-      border-bottom-left-radius: 0 !important;
-    }
-    .VINE-UIE-get-etv-link .a-button-text, .VINE-UIE-fix-asin-link .a-button-text{
+    .vvp-item-tile-content .a-button:not(.vvp-details-btn) .a-button-text{
       padding:0;
     }
+    .vvp-item-tile-content .a-button.a-button-span2{width: 16.5% !important;}
     .VINE-UIE-get-etv-link.a-button-disabled, .VINE-UIE-get-etv-link.a-button-disabled .a-button-text{
       cursor: not-allowed !important;
       filter: saturate(50%);
@@ -409,27 +408,6 @@ TODO:
         addedTileButtonStyles.push(
           `.a-button-inner{height: auto !important}
       .vvp-item-tile .a-button-text{padding:5px 2px;}`
-        );
-      } else {
-        addedTileButtonStyles.push(
-          `.VINE-UIE-etv-display{
-        position: absolute;
-        right: ${extraButtonWidth};
-        bottom: 55px;
-        width: auto !important;
-      }`
-        );
-      }
-
-      if (!clientAlsoUsingMobileStyles) {
-        addedTileButtonStyles.push(
-          `.vvp-item-tile-content{ position: relative; }
-      .VINE-UIE-get-etv-link, .VINE-UIE-fix-asin-link {
-        position: absolute;
-        bottom:0;
-      }
-      .VINE-UIE-get-etv-link { right: ${extraButtonWidth}; }
-      .VINE-UIE-fix-asin-link { right:0; }`
         );
       }
 
@@ -450,71 +428,75 @@ TODO:
       }
 
       //Add a link to check the ETV
-      const getEtvLink = document.createElement("button");
-      getEtvLink.setAttribute("type", "button");
-      getEtvLink.setAttribute("class", `VINE-UIE-get-etv-link a-button a-button-primary ${extraButtonGridClass}`);
-      getEtvLink.innerHTML = `<div class='a-button-text'>💵</div>`;
+      if (userPrefs.addUiButtonEtv) {
+        const getEtvLink = document.createElement("button");
+        getEtvLink.setAttribute("type", "button");
+        getEtvLink.setAttribute("class", `VINE-UIE-get-etv-link a-button a-button-primary ${extraButtonGridClass}`);
+        getEtvLink.innerHTML = `<div class='a-button-text'>💵</div>`;
 
-      const etvLinkClickFn = async (ev) => {
-        ev.preventDefault();
+        const etvLinkClickFn = async (ev) => {
+          ev.preventDefault();
 
-        //Only one click per button
-        getEtvLink.classList.remove("a-button-primary");
-        getEtvLink.classList.add("a-button-disabled");
-        getEtvLink.removeEventListener("click", etvLinkClickFn);
+          //Only one click per button
+          getEtvLink.classList.remove("a-button-primary");
+          getEtvLink.classList.add("a-button-disabled");
+          getEtvLink.removeEventListener("click", etvLinkClickFn);
 
-        const etvDisplayEl = document.createElement("div");
-        etvDisplayEl.className = "VINE-UIE-etv-display";
-        etvDisplayEl.innerText = "loading...";
-        tileContentEl.insertBefore(etvDisplayEl, detailsButtonEl);
+          const etvDisplayEl = document.createElement("div");
+          etvDisplayEl.className = "VINE-UIE-etv-display";
+          etvDisplayEl.innerText = "loading...";
+          tileContentEl.insertBefore(etvDisplayEl, detailsButtonEl);
 
-        const recommendationId = encodeURIComponent(inputEl.getAttribute("data-recommendation-id"));
-        const asin = inputEl.getAttribute("data-asin");
-        let url = `${location.origin}/vine/api/recommendations/${recommendationId}/item/${asin}?imageSize=180`;
-        const req = await fetch(url);
-        const response = await req.json();
-        const data = response.result;
+          const recommendationId = encodeURIComponent(inputEl.getAttribute("data-recommendation-id"));
+          const asin = inputEl.getAttribute("data-asin");
+          let url = `${location.origin}/vine/api/recommendations/${recommendationId}/item/${asin}?imageSize=180`;
+          const req = await fetch(url);
+          const response = await req.json();
+          const data = response.result;
 
-        if (data) {
-          const currencyFormatter = new Intl.NumberFormat("en-US", { style: "currency", currency: data.taxCurrency });
-          etvDisplayEl.innerText = `ETV: ${currencyFormatter.format(data.taxValue)}`;
+          if (data) {
+            const currencyFormatter = new Intl.NumberFormat("en-US", { style: "currency", currency: data.taxCurrency });
+            etvDisplayEl.innerText = `ETV: ${currencyFormatter.format(data.taxValue)}`;
+          } else {
+            etvDisplayEl.innerText = "Error getting ETV!";
+          }
+
+          //Remove focus from the element so keyboard navigation can easily resume
+          document.activeElement.blur();
+        };
+
+        if (isParent) {
+          getEtvLink.title = "Has variations, see the details";
+          getEtvLink.classList.remove("a-button-primary");
+          getEtvLink.classList.add("a-button-disabled");
+          getEtvLink.setAttribute("disabled", "");
         } else {
-          etvDisplayEl.innerText = "Error getting ETV!";
+          getEtvLink.title = "Get ETV";
+          getEtvLink.addEventListener("click", etvLinkClickFn);
         }
 
-        //Remove focus from the element so keyboard navigation can easily resume
-        document.activeElement.blur();
-      };
-
-      if (isParent) {
-        getEtvLink.title = "Has variations, see the details";
-        getEtvLink.classList.remove("a-button-primary");
-        getEtvLink.classList.add("a-button-disabled");
-        getEtvLink.setAttribute("disabled", "");
-      } else {
-        getEtvLink.title = "Get ETV";
-        getEtvLink.addEventListener("click", etvLinkClickFn);
+        tileContentEl.append(getEtvLink);
       }
 
-      tileContentEl.append(getEtvLink);
-
       //Add a link to fix the infinite load issue
-      const fixLink = document.createElement("button");
-      fixLink.setAttribute("type", "button");
-      fixLink.className = `VINE-UIE-fix-asin-link a-button a-button-primary ${extraButtonGridClass}`;
-      fixLink.innerHTML = `<span class='a-button-text'>🔃</span>`;
-      fixLink.title = "Fix infinite spinner error";
-      tileContentEl.append(fixLink);
+      if (userPrefs.addUiButtonFixInfiniteSpinner) {
+        const fixLink = document.createElement("button");
+        fixLink.setAttribute("type", "button");
+        fixLink.className = `VINE-UIE-fix-asin-link a-button a-button-primary ${extraButtonGridClass}`;
+        fixLink.innerHTML = `<span class='a-button-text'>🔃</span>`;
+        fixLink.title = "Fix infinite spinner error";
+        tileContentEl.append(fixLink);
 
-      fixLink.addEventListener("click", (ev) => {
-        ev.preventDefault();
-        const newASIN = prompt("Open the product page, copy the ASIN number, and put it here...");
-        if (newASIN !== "") {
-          inputEl.setAttribute("data-is-parent-asin", "false");
-          inputEl.setAttribute("data-asin", newASIN);
-          inputEl.focus();
-        }
-      });
+        fixLink.addEventListener("click", (ev) => {
+          ev.preventDefault();
+          const newASIN = prompt("Open the product page, copy the ASIN number, and put it here...");
+          if (newASIN !== "") {
+            inputEl.setAttribute("data-is-parent-asin", "false");
+            inputEl.setAttribute("data-asin", newASIN);
+            inputEl.focus();
+          }
+        });
+      }
     }
 
     //=========================================================================
@@ -555,7 +537,8 @@ TODO:
       settingsDialogHtml += createSettingsCheckbox("stickyPagination", "Sticky Pagination");
     }
 
-    settingsDialogHtml += createSettingsCheckbox("addUiButtons", 'Add "Get ETV" and "fix infinite spinner" buttons to the UI');
+    settingsDialogHtml += createSettingsCheckbox("addUiButtonEtv", 'Add "Get ETV" button to the UI');
+    settingsDialogHtml += createSettingsCheckbox("addUiButtonFixInfiniteSpinner", 'Add "fix infinite spinner" button to the UI');
 
     settingsDialogHtml += `
     </div>
@@ -735,7 +718,7 @@ TODO:
     //Loop over each product tile and run functions for each one
     $$("#vvp-items-grid > .vvp-item-tile").forEach((itemElement) => {
       dimTileWithDescriptionWordInList(itemElement);
-      if (userPrefs.addUiButtons) {
+      if (userPrefs.addUiButtonEtv || userPrefs.addUiButtonFixInfiniteSpinner) {
         addTileLinks(itemElement);
       }
     });

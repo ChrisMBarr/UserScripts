@@ -54,10 +54,20 @@ TODO:
     }
   }
 
+  //Grab the body BG color in case any custom themes are applied to the site
+  const bodyStyles = getComputedStyle(document.body);
+  const bodyBgColor = bodyStyles.backgroundColor;
+  const bodyTextColor = bodyStyles.color;
+
+  //grab the border color, style, and size
+  const border = getComputedStyle($('[data-a-name="vine-items"]')).border;
+
   //Dialogs - all created dialogs will share the same basic styles
-  GM_addStyle(
-    `.VINE-UIE-dialog{
+  GM_addStyle(`
+  .VINE-UIE-dialog{
     width: 530px;
+    background-color: ${bodyBgColor};
+    color: ${bodyTextColor};
   }
   .VINE-UIE-dialog::backdrop{
     background-color: #0F1111;
@@ -67,8 +77,7 @@ TODO:
     position: absolute;
     top: 7px;
     right: 7px;
-  }`
-  );
+  }`);
 
   //Generic function to create a reusable and closable dialog
   function createDialog(id, bodyHtml) {
@@ -210,11 +219,7 @@ TODO:
     const clientAlsoUsingMobileStyles =
       getComputedStyle($("#vvp-items-grid .a-button-primary")).backgroundColor !== "rgb(255, 216, 20)";
 
-    //Grab the body BG color in case any custom themes are applied to the site
-    const bodyBgColor = getComputedStyle(document.body).backgroundColor;
 
-    //grab the border color, style, and size
-    const border = getComputedStyle($('[data-a-name="vine-items"]')).border;
 
     //The top bar with the buttons and the search
     const btnAndSearchEl = $('[data-a-name="vine-items"] .vvp-items-button-and-search-container');

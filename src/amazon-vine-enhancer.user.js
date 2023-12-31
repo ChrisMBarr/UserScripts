@@ -389,7 +389,7 @@ TODO:
       border-top-left-radius: 0;
       border-bottom-left-radius: 0;
     }
-    .vvp-item-tile-content .a-button:not(.vvp-details-btn) .a-button-text{
+    .vvp-item-tile-content .a-button .a-button-text{
       padding:0;
     }
     .vvp-item-tile-content .a-button.a-button-span2{width: 16.5% !important;}

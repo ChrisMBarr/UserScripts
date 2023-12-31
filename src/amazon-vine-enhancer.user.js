@@ -405,10 +405,19 @@ TODO:
 
       if (clientAlsoUsingStyleBot || clientAlsoUsingMobileStyles) {
         //When also using StyleBot, the all buttons need less padding so they can fit
-        addedTileButtonStyles.push(
-          `.a-button-inner{height: auto !important}
-      .vvp-item-tile .a-button-text{padding:5px 2px;}`
-        );
+        addedTileButtonStyles.push(`
+          .a-button-inner{height: auto !important}
+          .vvp-item-tile .a-button-text{padding:5px 2px;}
+        `);
+      } else if (userPrefs.addUiButtonEtv) {
+        addedTileButtonStyles.push(`
+        .vvp-item-tile-content{position: relative;}
+        .VINE-UIE-etv-display{
+          position: absolute;
+          right: 16.5%;
+          bottom: 55px;
+          width: auto !important;
+        }`);
       }
 
       GM_addStyle(addedTileButtonStyles.join(""));

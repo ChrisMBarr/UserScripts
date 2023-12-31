@@ -532,8 +532,7 @@ TODO:
       renderList();
     });
 
-    const disabledCheckboxPrefHtml = clientAlsoUsingMobileStyles ? " disabled title='Not allowed with custom mobile styles'" : "";
-    const settingsDialogHtml = `
+    let settingsDialogHtml = `
     <h1>Vine UI Enhancer Settings</h1>
     <small>(reload page to see changes)</small>
 
@@ -542,21 +541,25 @@ TODO:
       <label>
         <input type="checkbox" data-pref="hideAmazonPageFooter"${userPrefs.hideAmazonPageFooter ? " checked" : ""}>
         Hide Amazon Page Footer
-      </label>
-      <label>
-        <input type="checkbox" data-pref="stickyTopBar"${userPrefs.stickyTopBar ? " checked" : ""}${disabledCheckboxPrefHtml}>
+      </label>`;
+
+    //No sticky anything for mobile styles - would take up too much space
+    if (!clientAlsoUsingMobileStyles) {
+      settingsDialogHtml += `<label>
+        <input type="checkbox" data-pref="stickyTopBar"${userPrefs.stickyTopBar ? " checked" : ""}>
         Sticky Top Bar
       </label>
       <label>
-        <input type="checkbox" data-pref="stickySidebar"${userPrefs.stickySidebar ? " checked" : ""}${disabledCheckboxPrefHtml}>
+        <input type="checkbox" data-pref="stickySidebar"${userPrefs.stickySidebar ? " checked" : ""}>
         Sticky Sidebar
       </label>
       <label>
-        <input type="checkbox" data-pref="stickyPagination"${
-          userPrefs.stickyPagination ? " checked" : ""
-        }${disabledCheckboxPrefHtml}>
+        <input type="checkbox" data-pref="stickyPagination"${userPrefs.stickyPagination ? " checked" : ""}>
         Sticky Pagination
-      </label>
+      </label>`;
+    }
+
+    settingsDialogHtml += `
       <label>
         <input type="checkbox" data-pref="addUiButtons"${userPrefs.addUiButtons ? " checked" : ""}>
         Add "Get ETV" and "fix infinite spinner" buttons to the UI
@@ -571,6 +574,7 @@ TODO:
       <button type="button" class="a-button a-button-primary" id="VINE-UIE-add-word-list-btn"><div class='a-button-text'>Add Word</div></button>
       <button type="button" class="a-button" id="VINE-UIE-show-top-words-btn"><div class='a-button-text'>Show top words on this page</div></button>
     </div>`;
+
     const settingsDialog = createDialog("VINE-UIE-settings-dialog", settingsDialogHtml);
 
     settingsDialog.querySelectorAll("input[type=checkbox]").forEach((check) => {

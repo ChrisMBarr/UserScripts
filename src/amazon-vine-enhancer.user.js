@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Amazon Vine UI Enhancer
 // @namespace    https://github.com/FiniteLooper/UserScripts
-// @version      0.7.3
+// @version      0.7.4
 // @description  Minor UI improvements to browsing items on Amazon Vine
 // @author       Chris Barr
 // @homepageURL  https://github.com/FiniteLooper/UserScripts
@@ -210,16 +210,16 @@ TODO:
       userPrefs = parsedPrefs;
     }
 
-    //Detect if any StyleBot styles are being injected,
     //for Amazon Vine users this typically means they are using Thorvarium's styles: https://github.com/Thorvarium/vine-styling
-    //if so we may want to do a few things differently for compatibility between these two things
-    const clientAlsoUsingStyleBot = !!$('style[id^="stylebot-"]');
+    //if so we may want to do a few things differently for compatibility when this is used in addition to this script
+    const thorStylesheets = [...$$("style")].filter((s) => s.innerText.includes("{{ thorvarium | vine-styling | "));
 
-    //If not the default yellow color, then it's using the customized mobile styles
-    const clientAlsoUsingMobileStyles =
-      getComputedStyle($("#vvp-items-grid .a-button-primary")).backgroundColor !== "rgb(255, 216, 20)";
+    //We can detect each stylesheet that is added if needed
+    const usingThorDesktopStylesSmallItems = thorStylesheets.some((s) => s.innerText.includes("| desktop | small-items }}"));
 
-
+    const usingThorMobileStyles = thorStylesheets.some(
+      (s) => s.innerText.includes("| mobile | base }}") || s.innerText.includes("| mobile | ios-with-bugfix }}")
+    );
 
     //The top bar with the buttons and the search
     const btnAndSearchEl = $('[data-a-name="vine-items"] .vvp-items-button-and-search-container');
@@ -246,7 +246,7 @@ TODO:
       //Settings
       `.VINE-UIE-open-settings-btn {
       ${
-        clientAlsoUsingMobileStyles
+        usingThorMobileStyles
           ? "width: 50px;"
           : `position:absolute; right: 0; bottom: ${userPrefs.stickyTopBar ? "1px" : "-20px"};`
       }
@@ -275,7 +275,7 @@ TODO:
     ];
 
     //Sticky top bar - but not with custom mobile styles
-    if (!clientAlsoUsingMobileStyles && userPrefs.stickyTopBar) {
+    if (!usingThorMobileStyles && userPrefs.stickyTopBar) {
       addedPageStyles.push(
         `[data-a-name="vine-items"] .vvp-items-button-and-search-container {
       position: sticky;
@@ -294,7 +294,7 @@ TODO:
     }
 
     //Sticky side bar with categories - but not with custom mobile styles
-    if (!clientAlsoUsingMobileStyles && userPrefs.stickySidebar) {
+    if (!usingThorMobileStyles && userPrefs.stickySidebar) {
       addedPageStyles.push(
         `#vvp-browse-nodes-container {
         align-self: start;
@@ -304,7 +304,7 @@ TODO:
     }
 
     //Sticky footer pagination - but not with custom mobile styles
-    if (!clientAlsoUsingMobileStyles && userPrefs.stickyPagination) {
+    if (!usingThorMobileStyles && userPrefs.stickyPagination) {
       addedPageStyles.push(
         `#vvp-items-grid-container > [role="navigation"] {
       position:sticky;
@@ -368,9 +368,9 @@ TODO:
     let detailsButtonGridClass = "";
     let extraButtonGridClass = "";
     if (userPrefs.addUiButtonEtv || userPrefs.addUiButtonFixInfiniteSpinner) {
-      if (!clientAlsoUsingMobileStyles) {
-        detailsButtonGridClass = "a-button-span" + (clientAlsoUsingStyleBot ? 6 : 8);
-        extraButtonGridClass = "a-button-span" + (clientAlsoUsingStyleBot ? 3 : 2);
+      if (!usingThorMobileStyles) {
+        detailsButtonGridClass = "a-button-span" + (usingThorDesktopStylesSmallItems ? 6 : 8);
+        extraButtonGridClass = "a-button-span" + (usingThorDesktopStylesSmallItems ? 3 : 2);
       }
 
       const addedTileButtonStyles = [
@@ -401,7 +401,7 @@ TODO:
     }`,
       ];
 
-      if (clientAlsoUsingStyleBot || clientAlsoUsingMobileStyles) {
+      if (usingThorDesktopStylesSmallItems || usingThorMobileStyles) {
         //When also using StyleBot, the all buttons need less padding so they can fit
         addedTileButtonStyles.push(`
           .a-button-inner{height: auto !important}
@@ -429,7 +429,7 @@ TODO:
 
       //Use an Amazon grid class to size the "see details" button
       if (detailsButtonGridClass !== "") detailsButtonEl.classList.add(detailsButtonGridClass);
-      if (clientAlsoUsingStyleBot) {
+      if (usingThorDesktopStylesSmallItems) {
         //less text in the details button when using StyleBot styles so the extra buttons can fit better
         detailsButtonEl.querySelector(".a-button-text").innerText = "details";
       }
@@ -536,7 +536,7 @@ TODO:
       <h3>Page Options</h3>`;
 
     //No sticky anything for mobile styles - would take up too much space
-    if (!clientAlsoUsingMobileStyles) {
+    if (!usingThorMobileStyles) {
       settingsDialogHtml += createSettingsCheckbox("stickyTopBar", "Sticky Top Bar");
       settingsDialogHtml += createSettingsCheckbox("stickySidebar", "Sticky Sidebar");
       settingsDialogHtml += createSettingsCheckbox("stickyPagination", "Sticky Pagination");
@@ -700,7 +700,7 @@ TODO:
 
     //Steal the margin value and use it as padding instead for the header so we can have a colored BG
     const btnAndSearchStyles = getComputedStyle(btnAndSearchEl);
-    if (!clientAlsoUsingMobileStyles && userPrefs.stickyTopBar) {
+    if (!usingThorMobileStyles && userPrefs.stickyTopBar) {
       btnAndSearchEl.style.padding = btnAndSearchStyles.margin;
       btnAndSearchEl.style.margin = "0 !important";
     }
@@ -712,7 +712,7 @@ TODO:
     //Set the sticky top position of the categories to the height of the top bar
     //unless the categories are taller than the screen
     if (
-      !clientAlsoUsingMobileStyles &&
+      !usingThorMobileStyles &&
       userPrefs.stickySidebar &&
       elCategories.offsetHeight + btnAndSearchEl.offsetHeight <= document.documentElement.clientHeight
     ) {

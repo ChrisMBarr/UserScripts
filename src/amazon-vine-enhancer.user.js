@@ -441,7 +441,7 @@ TODO:
         const getEtvLink = document.createElement("button");
         getEtvLink.setAttribute("type", "button");
         getEtvLink.setAttribute("class", `VINE-UIE-get-etv-link a-button a-button-primary ${extraButtonGridClass}`);
-        getEtvLink.innerHTML = `<div class='a-button-text'>💵</div>`;
+        getEtvLink.innerHTML = `<span class='a-button-inner'><span class='a-button-text'>💵</span></span>`;
 
         const etvLinkClickFn = async (ev) => {
           ev.preventDefault();
@@ -492,7 +492,7 @@ TODO:
         const fixLink = document.createElement("button");
         fixLink.setAttribute("type", "button");
         fixLink.className = `VINE-UIE-fix-asin-link a-button a-button-primary ${extraButtonGridClass}`;
-        fixLink.innerHTML = `<span class='a-button-text'>🔃</span>`;
+        fixLink.innerHTML = `<span class='a-button-inner'><span class='a-button-text'>🔃</span></span>`;
         fixLink.title = "Fix infinite spinner error";
         tileContentEl.append(fixLink);
 

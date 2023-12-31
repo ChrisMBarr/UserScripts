@@ -222,7 +222,7 @@ TODO:
     //=========================================================================
     //Styles needed for various features
     const addedPageStyles = [
-      //Slightly taller popup modal window to the ETV is always visible =========
+      //Slightly taller popup modal window so the ETV is always visible =========
       `.a-popover-modal-fixed-height{height: 550px !important;} .a-popover-inner{padding-bottom: 112px !important;}`,
       //Side categories: bolded selected items and show nesting better ==========
       `a.selectedNode{font-weight: bold;}
@@ -404,7 +404,7 @@ TODO:
     }`,
       ];
 
-      if (clientAlsoUsingStyleBot) {
+      if (clientAlsoUsingStyleBot || clientAlsoUsingMobileStyles) {
         //When also using StyleBot, the all buttons need less padding so they can fit
         addedTileButtonStyles.push(
           `.a-button-inner{height: auto !important}

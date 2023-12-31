@@ -532,38 +532,32 @@ TODO:
       renderList();
     });
 
-    let settingsDialogHtml = `
-    <h1>Vine UI Enhancer Settings</h1>
-    <small>(reload page to see changes)</small>
-
-    <div class="VINE-UIE-settings-dialog-section">
-      <h3>Page Options</h3>
+    function createSettingsCheckbox(preferenceKey, labelText) {
+      return `
       <label>
-        <input type="checkbox" data-pref="hideAmazonPageFooter"${userPrefs.hideAmazonPageFooter ? " checked" : ""}>
-        Hide Amazon Page Footer
-      </label>`;
-
-    //No sticky anything for mobile styles - would take up too much space
-    if (!clientAlsoUsingMobileStyles) {
-      settingsDialogHtml += `<label>
-        <input type="checkbox" data-pref="stickyTopBar"${userPrefs.stickyTopBar ? " checked" : ""}>
-        Sticky Top Bar
-      </label>
-      <label>
-        <input type="checkbox" data-pref="stickySidebar"${userPrefs.stickySidebar ? " checked" : ""}>
-        Sticky Sidebar
-      </label>
-      <label>
-        <input type="checkbox" data-pref="stickyPagination"${userPrefs.stickyPagination ? " checked" : ""}>
-        Sticky Pagination
+        <input type="checkbox" data-pref="${preferenceKey}"${userPrefs[preferenceKey] ? " checked" : ""}>
+        ${labelText}
       </label>`;
     }
 
+    let settingsDialogHtml = `
+    <h1>Vine UI Enhancer Settings</h1>
+    <small>(reload page to see changes)</small>
+    <div class="VINE-UIE-settings-dialog-section">
+      <h3>Page Options</h3>`;
+
+    settingsDialogHtml += createSettingsCheckbox("hideAmazonPageFooter", "Hide Amazon Page Footer");
+
+    //No sticky anything for mobile styles - would take up too much space
+    if (!clientAlsoUsingMobileStyles) {
+      settingsDialogHtml += createSettingsCheckbox("stickyTopBar", "Sticky Top Bar");
+      settingsDialogHtml += createSettingsCheckbox("stickySidebar", "Sticky Sidebar");
+      settingsDialogHtml += createSettingsCheckbox("stickyPagination", "Sticky Pagination");
+    }
+
+    settingsDialogHtml += createSettingsCheckbox("addUiButtons", 'Add "Get ETV" and "fix infinite spinner" buttons to the UI');
+
     settingsDialogHtml += `
-      <label>
-        <input type="checkbox" data-pref="addUiButtons"${userPrefs.addUiButtons ? " checked" : ""}>
-        Add "Get ETV" and "fix infinite spinner" buttons to the UI
-      </label>
     </div>
 
     <div class="VINE-UIE-settings-dialog-section">

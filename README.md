@@ -43,6 +43,7 @@ Minor UI improvements to using Amazon Vine:
     * The RFY/AFA/AI area buttons are normally hidden, this will restore them
     * Pressing the "show all" link will send you to the AI area instead of RFY
   * Plays nice with [Thorvarium's Vine Styling](https://github.com/Thorvarium/vine-styling) when installed via StyleBot
+    * When using Thorvarium's "Small Items" styles, the size of the items in the grid can be customized
 
 Here's what the settings and most features look like
 

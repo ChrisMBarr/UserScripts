@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Amazon Vine UI Enhancer
 // @namespace    https://github.com/FiniteLooper/UserScripts
-// @version      0.7.4
+// @version      0.7.5
 // @description  Minor UI improvements to browsing items on Amazon Vine
 // @author       Chris Barr
 // @homepageURL  https://github.com/FiniteLooper/UserScripts
@@ -18,7 +18,6 @@
 /*
 TODO:
  * customizable highlight list
- * Customizable grid size
 */
 
 (function () {
@@ -196,6 +195,8 @@ TODO:
       stickyPagination: true,
       addUiButtonEtv: true,
       addUiButtonFixInfiniteSpinner: true,
+      useCustomItemSize: false,
+      customItemSize: 110, //matches page default
     };
     if (storedPrefs !== null) {
       const parsedPrefs = JSON.parse(storedPrefs);
@@ -360,7 +361,7 @@ TODO:
       const wordMatches = wordList.filter((listItem) => description.includes(listItem));
       if (wordMatches.length > 0) {
         itemElement.classList.add("VINE-UIE-dimmed-tile");
-        itemElement.title = `Dimmed because the description contains:\n -${wordMatches.join('\n -')}`
+        itemElement.title = `Dimmed because the description contains:\n -${wordMatches.join("\n -")}`;
       }
     }
 
@@ -547,9 +548,16 @@ TODO:
     settingsDialogHtml += createSettingsCheckbox("addUiButtonEtv", 'Add "Get ETV" button to the UI');
     settingsDialogHtml += createSettingsCheckbox("addUiButtonFixInfiniteSpinner", 'Add "fix infinite spinner" button to the UI');
 
+    if (usingThorDesktopStylesSmallItems) {
+      settingsDialogHtml += `
+      ${createSettingsCheckbox("useCustomItemSize", "Use a custom item display size")}
+      <input type="number" id="VINE-UIE-customItemSize" style="margin-left:1.2rem; width:5rem;" ${
+        userPrefs.useCustomItemSize ? "" : "class='a-hidden'"
+      } value="${userPrefs.customItemSize}" min="100" max="500">`;
+    }
+
     settingsDialogHtml += `
     </div>
-
     <div class="VINE-UIE-settings-dialog-section">
       <h3>Dim Items Containing these words/phrases</h3>
 
@@ -560,6 +568,24 @@ TODO:
     </div>`;
 
     const settingsDialog = createDialog("VINE-UIE-settings-dialog", settingsDialogHtml);
+    const itemGridEl = $("#vvp-items-grid");
+    const customItemSizeInputEl = $("#VINE-UIE-customItemSize");
+
+    function setItemGridSize() {
+      itemGridEl.style.setProperty("--grid-column-width", customItemSizeInputEl.value + "px");
+    }
+
+    if (usingThorDesktopStylesSmallItems) {
+      if (userPrefs.useCustomItemSize) {
+        setItemGridSize();
+      }
+      customItemSizeInputEl.addEventListener("change", () => {
+        setItemGridSize();
+
+        userPrefs.customItemSize = customItemSizeInputEl.value;
+        localStorage.setItem(storageKeyUserPrefs, JSON.stringify(userPrefs));
+      });
+    }
 
     settingsDialog.querySelectorAll("input[type=checkbox]").forEach((check) => {
       check.addEventListener("change", () => {
@@ -569,6 +595,15 @@ TODO:
         userPrefs[pref] = isChecked;
 
         localStorage.setItem(storageKeyUserPrefs, JSON.stringify(userPrefs));
+
+        if (usingThorDesktopStylesSmallItems && pref === "useCustomItemSize") {
+          customItemSizeInputEl.classList.toggle("a-hidden", !isChecked);
+          if (isChecked) {
+            setItemGridSize();
+          } else {
+            itemGridEl.style.setProperty("--grid-column-width", "");
+          }
+        }
       });
     });
 

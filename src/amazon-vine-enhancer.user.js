@@ -357,8 +357,10 @@ TODO:
     //Fade/Dim items with descriptions that match something in the word list defined at the top
     function dimTileWithDescriptionWordInList(itemElement) {
       const description = itemElement.querySelector(".vvp-item-product-title-container .a-truncate-full").innerText.toLowerCase();
-      if (wordList.some((listItem) => description.includes(listItem))) {
+      const wordMatches = wordList.filter((listItem) => description.includes(listItem));
+      if (wordMatches.length > 0) {
         itemElement.classList.add("VINE-UIE-dimmed-tile");
+        itemElement.title = `Dimmed because the description contains:\n -${wordMatches.join('\n -')}`
       }
     }
 

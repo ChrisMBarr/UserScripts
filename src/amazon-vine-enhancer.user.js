@@ -789,9 +789,9 @@ TODO:
         //We have a valid number so we can do something here
         const totalResultsNum = parseInt(totalResultsMatch[0], 10);
 
-        //If you use the pager and return to page #1 this is added where it wasn't there before
-        //To avoid confusion, remove this and use that for URL comparisons
-        const normalizedCurrentUrl = location.href.replace("&cn=&page=1", "");
+        //Ignore the page number in a URL, just remember the category
+        //When paging and returning to a top-level category remove the empty `cn` parameter
+        const normalizedCurrentUrl = location.href.replace("cn=&", "").replace(/&page=\d+/, "");
 
         let thisPageTimer = userSessionPreferences.autoRefreshTimers.find((list) => list.url === normalizedCurrentUrl);
         if (thisPageTimer === undefined) {

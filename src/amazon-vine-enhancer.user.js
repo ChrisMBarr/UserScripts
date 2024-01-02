@@ -211,25 +211,6 @@ TODO:
       userPreferences = parsedPreferences;
     }
 
-    const storageKeySessionPreferences = storageKeyPrefix + "PREFERENCES";
-    const storedSessionPreferences = sessionStorage.getItem(storageKeySessionPreferences);
-    let userSessionPreferences = {
-      //default preferences if nothing is stored yet
-      autoRefreshTimers: [],
-    };
-    if (storedSessionPreferences !== null) {
-      const parsedPreferences = JSON.parse(storedSessionPreferences);
-
-      //Update any missing preferences with the default values
-      Object.keys(userSessionPreferences).forEach((prefKey) => {
-        if (typeof parsedPreferences[prefKey] === "undefined") {
-          parsedPreferences[prefKey] = userSessionPreferences[prefKey];
-        }
-      });
-
-      userSessionPreferences = parsedPreferences;
-    }
-
     //for Amazon Vine users this typically means they are using Thorvarium's styles: https://github.com/Thorvarium/vine-styling
     //if so we may want to do a few things differently for compatibility when this is used in addition to this script
     const thorStylesheets = [...$$("style")].filter((s) => s.innerText.includes("{{ thorvarium | vine-styling | "));
@@ -773,102 +754,6 @@ TODO:
       elCategories.offsetHeight + btnAndSearchEl.offsetHeight <= document.documentElement.clientHeight
     ) {
       elCategories.style.top = `${btnAndSearchEl.offsetHeight}px`;
-    }
-
-    //=========================================================================
-    //Add watchers and timers for total results on the current page but only for non-mobile users
-    if (!usingThorMobileStyles) {
-      const totalResultsEl = $("#vvp-items-grid-container > p");
-      const totalResultsText = totalResultsEl.innerText;
-      //The results text element can look like these 3 possible strings
-      //`Displaying 1-36 of 33362 results` or `463 item(s) matching "dog"` or `No results found for "asdf"`
-      //We want to extract just the total number of items if that exists. Keep in mind that non-english Vine pages will have different text!
-      const totalResultsMatch = totalResultsText.match(/\s\d+\s/);
-      console.log(totalResultsText, totalResultsMatch)
-      if (totalResultsMatch && totalResultsMatch.length === 1) {
-        //We have a valid number so we can do something here
-        const totalResultsNum = parseInt(totalResultsMatch[0], 10);
-
-        //Ignore the page number in a URL, just remember the category
-        //When paging and returning to a top-level category remove the empty `cn` parameter
-        const normalizedCurrentUrl = location.href.replace("cn=&", "").replace(/&page=\d+/, "");
-
-        let thisPageTimer = userSessionPreferences.autoRefreshTimers.find((list) => list.url === normalizedCurrentUrl);
-        if (thisPageTimer === undefined) {
-          thisPageTimer = {
-            url: normalizedCurrentUrl,
-            enabled: false,
-            interval: 30,
-            resultCount: totalResultsNum,
-          };
-        }
-
-        let autoRefreshTimer = null;
-
-        function startPageTimer() {
-          autoRefreshTimer = setTimeout(() => {
-            location.reload();
-          }, thisPageTimer.interval * 1000);
-        }
-
-        function stopPageTimer() {
-          clearTimeout(autoRefreshTimer);
-          autoRefreshTimer = null;
-        }
-
-        if (thisPageTimer.resultCount !== totalResultsNum) {
-          totalResultsEl.style.backgroundColor = "#fca";
-          totalResultsEl.title = `Item count has changed from ${thisPageTimer.resultCount} when the auto-refresh was started`;
-        }
-
-        if (thisPageTimer.enabled) {
-          startPageTimer();
-        }
-
-        totalResultsEl.innerHTML += `<label style="display:inline-block; margin-left:1rem;">
-        <input type="checkbox" ${thisPageTimer.enabled ? "checked" : ""} />
-        Auto-refresh page
-      </label>
-      <span id="VINE-UIE-refresh-timer-wrapper" ${thisPageTimer.enabled ? "" : 'class="a-hidden"'}>
-        every <input type="number" style="height:auto; width:4rem;" min="10" value="${thisPageTimer.interval}"/> seconds
-      </span>`;
-
-        const refreshTimerWrapperEl = $("#VINE-UIE-refresh-timer-wrapper");
-        totalResultsEl.querySelector("input[type=checkbox]").addEventListener("change", (ev) => {
-          refreshTimerWrapperEl.classList.toggle("a-hidden", !ev.target.checked);
-          thisPageTimer.enabled = ev.target.checked;
-
-          if (ev.target.checked) {
-            //add it
-            userSessionPreferences.autoRefreshTimers.push(thisPageTimer);
-
-            startPageTimer(thisPageTimer.interval);
-          } else {
-            //remove it
-            userSessionPreferences.autoRefreshTimers.splice(
-              userSessionPreferences.autoRefreshTimers.findIndex((x) => x.url === thisPageTimer.url),
-              1
-            );
-
-            //remove BG color & title
-            totalResultsEl.style.backgroundColor = "";
-            totalResultsEl.removeAttribute("title");
-            stopPageTimer();
-          }
-
-          //save the changes
-          sessionStorage.setItem(storageKeySessionPreferences, JSON.stringify(userSessionPreferences));
-        });
-
-        refreshTimerWrapperEl.querySelector("input[type=number]").addEventListener("change", (ev) => {
-          //update object and save the changes
-          thisPageTimer.interval = ev.target.value;
-          sessionStorage.setItem(storageKeySessionPreferences, JSON.stringify(userSessionPreferences));
-
-          stopPageTimer();
-          startPageTimer();
-        });
-      }
     }
 
     //=========================================================================

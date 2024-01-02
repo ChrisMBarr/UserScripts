@@ -39,6 +39,7 @@ Minor UI improvements to using Amazon Vine:
   * Pressing the left and right arrow keys on your keyboard will navigate to the previous and next pages of whatever you are viewing
   * The "see details" modal popup is made slightly larger so that the ETV is always visible for items with longer descriptions
   * Dims items with descriptions that match anything in an array defined at the top (example: hides "cake toppers")
+  * Allows auto-refreshing a page on an interval (minimum 10 seconds) and highlights when the total item count changes from when the auto-refresh was started. This is per-page, so you can have multiple windows open each on a different page/URL with their own timers. This is only stored on a session so leaving Vine and returning later will not retain these settings
   * When performing a search:
     * The RFY/AFA/AI area buttons are normally hidden, this will restore them
     * Pressing the "show all" link will send you to the AI area instead of RFY

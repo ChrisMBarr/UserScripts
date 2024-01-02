@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Amazon Vine UI Enhancer
 // @namespace    https://github.com/FiniteLooper/UserScripts
-// @version      0.7.5
+// @version      0.7.6
 // @description  Minor UI improvements to browsing items on Amazon Vine
 // @author       Chris Barr
 // @homepageURL  https://github.com/FiniteLooper/UserScripts
@@ -186,9 +186,9 @@ TODO:
       wordList = JSON.parse(storedWords);
     }
 
-    const storageKeyUserPrefs = storageKeyPrefix + "PREFERENCES";
-    const storedPrefs = localStorage.getItem(storageKeyUserPrefs);
-    let userPrefs = {
+    const storageKeyUserPreferences = storageKeyPrefix + "PREFERENCES";
+    const storedPreferences = localStorage.getItem(storageKeyUserPreferences);
+    let userPreferences = {
       //default preferences if nothing is stored yet
       stickySidebar: true,
       stickyTopBar: true,
@@ -198,17 +198,36 @@ TODO:
       useCustomItemSize: false,
       customItemSize: 110, //matches page default
     };
-    if (storedPrefs !== null) {
-      const parsedPrefs = JSON.parse(storedPrefs);
+    if (storedPreferences !== null) {
+      const parsedPreferences = JSON.parse(storedPreferences);
 
       //Update any missing preferences with the default values
-      Object.keys(userPrefs).forEach((prefKey) => {
-        if (typeof parsedPrefs[prefKey] === "undefined") {
-          parsedPrefs[prefKey] = userPrefs[prefKey];
+      Object.keys(userPreferences).forEach((prefKey) => {
+        if (typeof parsedPreferences[prefKey] === "undefined") {
+          parsedPreferences[prefKey] = userPreferences[prefKey];
         }
       });
 
-      userPrefs = parsedPrefs;
+      userPreferences = parsedPreferences;
+    }
+
+    const storageKeySessionPreferences = storageKeyPrefix + "PREFERENCES";
+    const storedSessionPreferences = sessionStorage.getItem(storageKeySessionPreferences);
+    let userSessionPreferences = {
+      //default preferences if nothing is stored yet
+      autoRefreshTimers: [],
+    };
+    if (storedSessionPreferences !== null) {
+      const parsedPreferences = JSON.parse(storedSessionPreferences);
+
+      //Update any missing preferences with the default values
+      Object.keys(userSessionPreferences).forEach((prefKey) => {
+        if (typeof parsedPreferences[prefKey] === "undefined") {
+          parsedPreferences[prefKey] = userSessionPreferences[prefKey];
+        }
+      });
+
+      userSessionPreferences = parsedPreferences;
     }
 
     //for Amazon Vine users this typically means they are using Thorvarium's styles: https://github.com/Thorvarium/vine-styling
@@ -249,7 +268,7 @@ TODO:
       ${
         usingThorMobileStyles
           ? "width: 50px;"
-          : `position:absolute; right: 0; bottom: ${userPrefs.stickyTopBar ? "1px" : "-20px"};`
+          : `position:absolute; right: 0; bottom: ${userPreferences.stickyTopBar ? "1px" : "-20px"};`
       }
     }
     .VINE-UIE-open-settings-btn .a-btn-text{padding: 0 6px;}
@@ -276,7 +295,7 @@ TODO:
     ];
 
     //Sticky top bar - but not with custom mobile styles
-    if (!usingThorMobileStyles && userPrefs.stickyTopBar) {
+    if (!usingThorMobileStyles && userPreferences.stickyTopBar) {
       addedPageStyles.push(
         `[data-a-name="vine-items"] .vvp-items-button-and-search-container {
       position: sticky;
@@ -295,7 +314,7 @@ TODO:
     }
 
     //Sticky side bar with categories - but not with custom mobile styles
-    if (!usingThorMobileStyles && userPrefs.stickySidebar) {
+    if (!usingThorMobileStyles && userPreferences.stickySidebar) {
       addedPageStyles.push(
         `#vvp-browse-nodes-container {
         align-self: start;
@@ -305,7 +324,7 @@ TODO:
     }
 
     //Sticky footer pagination - but not with custom mobile styles
-    if (!usingThorMobileStyles && userPrefs.stickyPagination) {
+    if (!usingThorMobileStyles && userPreferences.stickyPagination) {
       addedPageStyles.push(
         `#vvp-items-grid-container > [role="navigation"] {
       position:sticky;
@@ -370,7 +389,7 @@ TODO:
 
     let detailsButtonGridClass = "";
     let extraButtonGridClass = "";
-    if (userPrefs.addUiButtonEtv || userPrefs.addUiButtonFixInfiniteSpinner) {
+    if (userPreferences.addUiButtonEtv || userPreferences.addUiButtonFixInfiniteSpinner) {
       if (!usingThorMobileStyles) {
         detailsButtonGridClass = "a-button-span" + (usingThorDesktopStylesSmallItems ? 6 : 8);
         extraButtonGridClass = "a-button-span" + (usingThorDesktopStylesSmallItems ? 3 : 2);
@@ -410,7 +429,7 @@ TODO:
           .a-button-inner{height: auto !important}
           .vvp-item-tile .a-button-text{padding:5px 2px;}
         `);
-      } else if (userPrefs.addUiButtonEtv) {
+      } else if (userPreferences.addUiButtonEtv) {
         addedTileButtonStyles.push(`
         .vvp-item-tile-content{position: relative;}
         .VINE-UIE-etv-display{
@@ -438,7 +457,7 @@ TODO:
       }
 
       //Add a link to check the ETV
-      if (userPrefs.addUiButtonEtv) {
+      if (userPreferences.addUiButtonEtv) {
         const getEtvLink = document.createElement("button");
         getEtvLink.setAttribute("type", "button");
         getEtvLink.setAttribute("class", `VINE-UIE-get-etv-link a-button a-button-primary ${extraButtonGridClass}`);
@@ -489,7 +508,7 @@ TODO:
       }
 
       //Add a link to fix the infinite load issue
-      if (userPrefs.addUiButtonFixInfiniteSpinner) {
+      if (userPreferences.addUiButtonFixInfiniteSpinner) {
         const fixLink = document.createElement("button");
         fixLink.setAttribute("type", "button");
         fixLink.className = `VINE-UIE-fix-asin-link a-button a-button-primary ${extraButtonGridClass}`;
@@ -527,7 +546,7 @@ TODO:
     function createSettingsCheckbox(preferenceKey, labelText) {
       return `
       <label>
-        <input type="checkbox" data-pref="${preferenceKey}"${userPrefs[preferenceKey] ? " checked" : ""}>
+        <input type="checkbox" data-pref="${preferenceKey}"${userPreferences[preferenceKey] ? " checked" : ""}>
         ${labelText}
       </label>`;
     }
@@ -552,8 +571,8 @@ TODO:
       settingsDialogHtml += `
       ${createSettingsCheckbox("useCustomItemSize", "Use a custom item display size")}
       <input type="number" id="VINE-UIE-customItemSize" style="margin-left:1.2rem; width:5rem;" ${
-        userPrefs.useCustomItemSize ? "" : "class='a-hidden'"
-      } value="${userPrefs.customItemSize}" min="100" max="500">`;
+        userPreferences.useCustomItemSize ? "" : "class='a-hidden'"
+      } value="${userPreferences.customItemSize}" min="100" max="500">`;
     }
 
     settingsDialogHtml += `
@@ -576,14 +595,14 @@ TODO:
     }
 
     if (usingThorDesktopStylesSmallItems || usingThorMobileStyles) {
-      if (userPrefs.useCustomItemSize) {
+      if (userPreferences.useCustomItemSize) {
         setItemGridSize();
       }
       customItemSizeInputEl.addEventListener("change", () => {
         setItemGridSize();
 
-        userPrefs.customItemSize = customItemSizeInputEl.value;
-        localStorage.setItem(storageKeyUserPrefs, JSON.stringify(userPrefs));
+        userPreferences.customItemSize = customItemSizeInputEl.value;
+        localStorage.setItem(storageKeyUserPreferences, JSON.stringify(userPreferences));
       });
     }
 
@@ -592,11 +611,11 @@ TODO:
         const pref = check.getAttribute("data-pref");
         const isChecked = check.checked;
 
-        userPrefs[pref] = isChecked;
+        userPreferences[pref] = isChecked;
 
-        localStorage.setItem(storageKeyUserPrefs, JSON.stringify(userPrefs));
+        localStorage.setItem(storageKeyUserPreferences, JSON.stringify(userPreferences));
 
-        if (pref === "useCustomItemSize" && (usingThorDesktopStylesSmallItems || usingThorMobileStyles) ) {
+        if (pref === "useCustomItemSize" && (usingThorDesktopStylesSmallItems || usingThorMobileStyles)) {
           customItemSizeInputEl.classList.toggle("a-hidden", !isChecked);
           if (isChecked) {
             setItemGridSize();
@@ -737,7 +756,7 @@ TODO:
 
     //Steal the margin value and use it as padding instead for the header so we can have a colored BG
     const btnAndSearchStyles = getComputedStyle(btnAndSearchEl);
-    if (!usingThorMobileStyles && userPrefs.stickyTopBar) {
+    if (!usingThorMobileStyles && userPreferences.stickyTopBar) {
       btnAndSearchEl.style.padding = btnAndSearchStyles.margin;
       btnAndSearchEl.style.margin = "0 !important";
     }
@@ -750,17 +769,113 @@ TODO:
     //unless the categories are taller than the screen
     if (
       !usingThorMobileStyles &&
-      userPrefs.stickySidebar &&
+      userPreferences.stickySidebar &&
       elCategories.offsetHeight + btnAndSearchEl.offsetHeight <= document.documentElement.clientHeight
     ) {
       elCategories.style.top = `${btnAndSearchEl.offsetHeight}px`;
     }
 
     //=========================================================================
+    //Add watchers and timers for total results on the current page but only for non-mobile users
+    if (!usingThorMobileStyles) {
+      const totalResultsEl = $("#vvp-items-grid-container > p");
+      const totalResultsText = totalResultsEl.innerText;
+      //The results text element can look like these 3 possible strings
+      //`Displaying 1-36 of 33362 results` or `463 item(s) matching "dog"` or `No results found for "asdf"`
+      //We want to extract just the total number of items if that exists. Keep in mind that non-english Vine pages will have different text!
+      const totalResultsMatch = totalResultsText.match(/\s\d+\s/);
+      console.log(totalResultsText, totalResultsMatch)
+      if (totalResultsMatch && totalResultsMatch.length === 1) {
+        //We have a valid number so we can do something here
+        const totalResultsNum = parseInt(totalResultsMatch[0], 10);
+
+        //If you use the pager and return to page #1 this is added where it wasn't there before
+        //To avoid confusion, remove this and use that for URL comparisons
+        const normalizedCurrentUrl = location.href.replace("&cn=&page=1", "");
+
+        let thisPageTimer = userSessionPreferences.autoRefreshTimers.find((list) => list.url === normalizedCurrentUrl);
+        if (thisPageTimer === undefined) {
+          thisPageTimer = {
+            url: normalizedCurrentUrl,
+            enabled: false,
+            interval: 30,
+            resultCount: totalResultsNum,
+          };
+        }
+
+        let autoRefreshTimer = null;
+
+        function startPageTimer() {
+          autoRefreshTimer = setTimeout(() => {
+            location.reload();
+          }, thisPageTimer.interval * 1000);
+        }
+
+        function stopPageTimer() {
+          clearTimeout(autoRefreshTimer);
+          autoRefreshTimer = null;
+        }
+
+        if (thisPageTimer.resultCount !== totalResultsNum) {
+          totalResultsEl.style.backgroundColor = "#fca";
+          totalResultsEl.title = `Item count has changed from ${thisPageTimer.resultCount} when the auto-refresh was started`;
+        }
+
+        if (thisPageTimer.enabled) {
+          startPageTimer();
+        }
+
+        totalResultsEl.innerHTML += `<label style="display:inline-block; margin-left:1rem;">
+        <input type="checkbox" ${thisPageTimer.enabled ? "checked" : ""} />
+        Auto-refresh page
+      </label>
+      <span id="VINE-UIE-refresh-timer-wrapper" ${thisPageTimer.enabled ? "" : 'class="a-hidden"'}>
+        every <input type="number" style="height:auto; width:4rem;" min="10" value="${thisPageTimer.interval}"/> seconds
+      </span>`;
+
+        const refreshTimerWrapperEl = $("#VINE-UIE-refresh-timer-wrapper");
+        totalResultsEl.querySelector("input[type=checkbox]").addEventListener("change", (ev) => {
+          refreshTimerWrapperEl.classList.toggle("a-hidden", !ev.target.checked);
+          thisPageTimer.enabled = ev.target.checked;
+
+          if (ev.target.checked) {
+            //add it
+            userSessionPreferences.autoRefreshTimers.push(thisPageTimer);
+
+            startPageTimer(thisPageTimer.interval);
+          } else {
+            //remove it
+            userSessionPreferences.autoRefreshTimers.splice(
+              userSessionPreferences.autoRefreshTimers.findIndex((x) => x.url === thisPageTimer.url),
+              1
+            );
+
+            //remove BG color & title
+            totalResultsEl.style.backgroundColor = "";
+            totalResultsEl.removeAttribute("title");
+            stopPageTimer();
+          }
+
+          //save the changes
+          sessionStorage.setItem(storageKeySessionPreferences, JSON.stringify(userSessionPreferences));
+        });
+
+        refreshTimerWrapperEl.querySelector("input[type=number]").addEventListener("change", (ev) => {
+          //update object and save the changes
+          thisPageTimer.interval = ev.target.value;
+          sessionStorage.setItem(storageKeySessionPreferences, JSON.stringify(userSessionPreferences));
+
+          stopPageTimer();
+          startPageTimer();
+        });
+      }
+    }
+
+    //=========================================================================
     //Loop over each product tile and run functions for each one
     $$("#vvp-items-grid > .vvp-item-tile").forEach((itemElement) => {
       dimTileWithDescriptionWordInList(itemElement);
-      if (userPrefs.addUiButtonEtv || userPrefs.addUiButtonFixInfiniteSpinner) {
+      if (userPreferences.addUiButtonEtv || userPreferences.addUiButtonFixInfiniteSpinner) {
         addTileLinks(itemElement);
       }
     });

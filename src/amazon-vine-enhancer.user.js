@@ -548,7 +548,7 @@ TODO:
     settingsDialogHtml += createSettingsCheckbox("addUiButtonEtv", 'Add "Get ETV" button to the UI');
     settingsDialogHtml += createSettingsCheckbox("addUiButtonFixInfiniteSpinner", 'Add "fix infinite spinner" button to the UI');
 
-    if (usingThorDesktopStylesSmallItems) {
+    if (usingThorDesktopStylesSmallItems || usingThorMobileStyles) {
       settingsDialogHtml += `
       ${createSettingsCheckbox("useCustomItemSize", "Use a custom item display size")}
       <input type="number" id="VINE-UIE-customItemSize" style="margin-left:1.2rem; width:5rem;" ${
@@ -575,7 +575,7 @@ TODO:
       itemGridEl.style.setProperty("--grid-column-width", customItemSizeInputEl.value + "px");
     }
 
-    if (usingThorDesktopStylesSmallItems) {
+    if (usingThorDesktopStylesSmallItems || usingThorMobileStyles) {
       if (userPrefs.useCustomItemSize) {
         setItemGridSize();
       }
@@ -596,7 +596,7 @@ TODO:
 
         localStorage.setItem(storageKeyUserPrefs, JSON.stringify(userPrefs));
 
-        if (usingThorDesktopStylesSmallItems && pref === "useCustomItemSize") {
+        if (pref === "useCustomItemSize" && (usingThorDesktopStylesSmallItems || usingThorMobileStyles) ) {
           customItemSizeInputEl.classList.toggle("a-hidden", !isChecked);
           if (isChecked) {
             setItemGridSize();

@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Amazon Vine UI Enhancer
 // @namespace    https://github.com/FiniteLooper/UserScripts
-// @version      0.7.6
+// @version      0.7.7
 // @description  Minor UI improvements to browsing items on Amazon Vine
 // @author       Chris Barr
 // @homepageURL  https://github.com/FiniteLooper/UserScripts
@@ -197,6 +197,8 @@ TODO:
       addUiButtonFixInfiniteSpinner: true,
       useCustomItemSize: false,
       customItemSize: 110, //matches page default
+      useCustomItemFontSize: false,
+      customItemFontSize: 14, //in pixels, matches page default
     };
     if (storedPreferences !== null) {
       const parsedPreferences = JSON.parse(storedPreferences);
@@ -222,8 +224,28 @@ TODO:
       (s) => s.innerText.includes("| mobile | base }}") || s.innerText.includes("| mobile | ios-with-bugfix }}")
     );
 
+    const itemGridEl = $("#vvp-items-grid");
+
     //The top bar with the buttons and the search
     const btnAndSearchEl = $('[data-a-name="vine-items"] .vvp-items-button-and-search-container');
+
+    //=========================================================================
+    //Set some style preferences as soon as possible before other render stuff happens
+    function setItemGridSize(size) {
+      itemGridEl.style.setProperty("--grid-column-width", `${size}px`);
+    }
+
+    function setItemFontSize(size) {
+      itemGridEl.style.fontSize = `${size}px`;
+    }
+
+    if (userPreferences.useCustomItemSize && (usingThorDesktopStylesSmallItems || usingThorMobileStyles)) {
+      setItemGridSize(userPreferences.customItemSize);
+    }
+
+    if (userPreferences.useCustomItemFontSize) {
+      setItemFontSize(userPreferences.customItemFontSize);
+    }
 
     //=========================================================================
     //Styles needed for various features
@@ -520,7 +542,7 @@ TODO:
     btnAndSearchEl.appendChild(showSettingsBtnEl);
     showSettingsBtnEl.addEventListener("click", (ev) => {
       ev.preventDefault();
-      settingsDialog.showModal();
+      settingsDialogEl.showModal();
       renderList();
     });
 
@@ -530,6 +552,11 @@ TODO:
         <input type="checkbox" data-pref="${preferenceKey}"${userPreferences[preferenceKey] ? " checked" : ""}>
         ${labelText}
       </label>`;
+    }
+
+    function createSettingsNumberInput(displayPrefKey, valuePrefKey, min, max) {
+      const cssClass = userPreferences[displayPrefKey] ? "" : "class='a-hidden'";
+      return `<input type="number" id="VINE-UIE-${valuePrefKey}" style="margin-left:1.2rem; width:5rem;" ${cssClass} value="${userPreferences[valuePrefKey]}" min="${min}" max="${max}">`;
     }
 
     let settingsDialogHtml = `
@@ -548,12 +575,12 @@ TODO:
     settingsDialogHtml += createSettingsCheckbox("addUiButtonEtv", 'Add "Get ETV" button to the UI');
     settingsDialogHtml += createSettingsCheckbox("addUiButtonFixInfiniteSpinner", 'Add "fix infinite spinner" button to the UI');
 
+    settingsDialogHtml += createSettingsCheckbox("useCustomItemFontSize", "Use a custom item font size");
+    settingsDialogHtml += createSettingsNumberInput("useCustomItemFontSize", "customItemFontSize", 7, 30);
+
     if (usingThorDesktopStylesSmallItems || usingThorMobileStyles) {
-      settingsDialogHtml += `
-      ${createSettingsCheckbox("useCustomItemSize", "Use a custom item display size")}
-      <input type="number" id="VINE-UIE-customItemSize" style="margin-left:1.2rem; width:5rem;" ${
-        userPreferences.useCustomItemSize ? "" : "class='a-hidden'"
-      } value="${userPreferences.customItemSize}" min="100" max="500">`;
+      settingsDialogHtml += createSettingsCheckbox("useCustomItemSize", "Use a custom item display size");
+      settingsDialogHtml += createSettingsNumberInput("useCustomItemSize", "customItemSize", 100, 500);
     }
 
     settingsDialogHtml += `
@@ -567,27 +594,27 @@ TODO:
       <button type="button" class="a-button" id="VINE-UIE-show-top-words-btn"><div class='a-button-text'>Show top words on this page</div></button>
     </div>`;
 
-    const settingsDialog = createDialog("VINE-UIE-settings-dialog", settingsDialogHtml);
-    const itemGridEl = $("#vvp-items-grid");
+    const settingsDialogEl = createDialog("VINE-UIE-settings-dialog", settingsDialogHtml);
     const customItemSizeInputEl = $("#VINE-UIE-customItemSize");
-
-    function setItemGridSize() {
-      itemGridEl.style.setProperty("--grid-column-width", customItemSizeInputEl.value + "px");
-    }
+    const customItemFontSizeInputEl = $("#VINE-UIE-customItemFontSize");
 
     if (usingThorDesktopStylesSmallItems || usingThorMobileStyles) {
-      if (userPreferences.useCustomItemSize) {
-        setItemGridSize();
-      }
       customItemSizeInputEl.addEventListener("change", () => {
-        setItemGridSize();
+        setItemGridSize(customItemSizeInputEl.value);
 
         userPreferences.customItemSize = customItemSizeInputEl.value;
         localStorage.setItem(storageKeyUserPreferences, JSON.stringify(userPreferences));
       });
     }
 
-    settingsDialog.querySelectorAll("input[type=checkbox]").forEach((check) => {
+    customItemFontSizeInputEl.addEventListener("change", () => {
+      setItemFontSize(customItemFontSizeInputEl.value);
+
+      userPreferences.customItemFontSize = customItemFontSizeInputEl.value;
+      localStorage.setItem(storageKeyUserPreferences, JSON.stringify(userPreferences));
+    });
+
+    settingsDialogEl.querySelectorAll("input[type=checkbox]").forEach((check) => {
       check.addEventListener("change", () => {
         const pref = check.getAttribute("data-pref");
         const isChecked = check.checked;
@@ -599,18 +626,25 @@ TODO:
         if (pref === "useCustomItemSize" && (usingThorDesktopStylesSmallItems || usingThorMobileStyles)) {
           customItemSizeInputEl.classList.toggle("a-hidden", !isChecked);
           if (isChecked) {
-            setItemGridSize();
+            setItemGridSize(customItemSizeInputEl.value);
           } else {
             itemGridEl.style.setProperty("--grid-column-width", "");
+          }
+        } else if (pref === "useCustomItemFontSize") {
+          customItemFontSizeInputEl.classList.toggle("a-hidden", !isChecked);
+          if (isChecked) {
+            setItemFontSize(customItemFontSizeInputEl.value);
+          } else {
+            itemGridEl.style.fontSize = "";
           }
         }
       });
     });
 
-    const ulWordListEl = settingsDialog.querySelector("#VINE-UIE-word-list-display");
-    const txtWordListEl = settingsDialog.querySelector("#VINE-UIE-add-word-list-txt");
+    const ulWordListEl = settingsDialogEl.querySelector("#VINE-UIE-word-list-display");
+    const txtWordListEl = settingsDialogEl.querySelector("#VINE-UIE-add-word-list-txt");
 
-    settingsDialog.querySelector("#VINE-UIE-add-word-list-btn").addEventListener("click", addWordFromUI);
+    settingsDialogEl.querySelector("#VINE-UIE-add-word-list-btn").addEventListener("click", addWordFromUI);
     txtWordListEl.addEventListener("keyup", (ev) => {
       if (ev.key === "Enter") addWordFromUI();
     });
@@ -707,7 +741,7 @@ TODO:
     }
 
     //Show the top most common words
-    settingsDialog.querySelector("#VINE-UIE-show-top-words-btn").addEventListener("click", (ev) => {
+    settingsDialogEl.querySelector("#VINE-UIE-show-top-words-btn").addEventListener("click", (ev) => {
       ev.preventDefault();
       const ignoreWords = ["the", "and", "for", "with", "to", "of", "in", "-", "&"];
       const allWords = [...$$(".a-truncate-full")]

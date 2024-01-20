@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Amazon Vine UI Enhancer
 // @namespace    https://github.com/FiniteLooper/UserScripts
-// @version      0.7.7
+// @version      0.7.8
 // @description  Minor UI improvements to browsing items on Amazon Vine
 // @author       Chris Barr
 // @homepageURL  https://github.com/FiniteLooper/UserScripts
@@ -215,14 +215,24 @@ TODO:
 
     //for Amazon Vine users this typically means they are using Thorvarium's styles: https://github.com/Thorvarium/vine-styling
     //if so we may want to do a few things differently for compatibility when this is used in addition to this script
-    const thorStylesheets = [...$$("style")].filter((s) => s.innerText.includes("{{ thorvarium | vine-styling | "));
+    const thorStyles = {
+      styleSheets: [...$$("style")].filter((s) => s.innerText.includes("{{ thorvarium | vine-styling | ")),
+      //defaults to false, only adding the ones we need to check for
+      mobile: false,
+      moreDescriptionText: false,
+      smallItems: false,
+    };
 
-    //We can detect each stylesheet that is added if needed
-    const usingThorDesktopStylesSmallItems = thorStylesheets.some((s) => s.innerText.includes("| desktop | small-items }}"));
-
-    const usingThorMobileStyles = thorStylesheets.some(
-      (s) => s.innerText.includes("| mobile | base }}") || s.innerText.includes("| mobile | ios-with-bugfix }}")
-    );
+    if (thorStyles.styleSheets.length > 0) {
+      //We can detect each stylesheet that is added if needed by checking for specific strings in CSS comments in these files
+      thorStyles.mobile = thorStyles.styleSheets.some(
+        (s) => s.innerText.includes("| mobile | base }}") || s.innerText.includes("| mobile | ios-with-bugfix }}")
+      );
+      thorStyles.moreDescriptionText = thorStyles.styleSheets.some((s) =>
+        s.innerText.includes("| desktop | more-description-text }}")
+      );
+      thorStyles.smallItems = thorStyles.styleSheets.some((s) => s.innerText.includes("| desktop | small-items }}"));
+    }
 
     const itemGridEl = $("#vvp-items-grid");
 
@@ -231,15 +241,22 @@ TODO:
 
     //=========================================================================
     //Set some style preferences as soon as possible before other render stuff happens
+
     function setItemGridSize(size) {
-      itemGridEl.style.setProperty("--grid-column-width", `${size}px`);
+      const val = size == null ? "" : `${size}px`;
+      itemGridEl.style.setProperty("--grid-column-width", val);
     }
 
     function setItemFontSize(size) {
-      itemGridEl.style.fontSize = `${size}px`;
+      const val = size == null ? "" : `${size}px`;
+      if (thorStyles.moreDescriptionText) {
+        itemGridEl.style.setProperty("--product-title-text-size", val);
+      } else {
+        itemGridEl.style.fontSize = val;
+      }
     }
 
-    if (userPreferences.useCustomItemSize && (usingThorDesktopStylesSmallItems || usingThorMobileStyles)) {
+    if (userPreferences.useCustomItemSize && (thorStyles.smallItems || thorStyles.mobile)) {
       setItemGridSize(userPreferences.customItemSize);
     }
 
@@ -269,7 +286,7 @@ TODO:
       //Settings
       `.VINE-UIE-open-settings-btn {
       ${
-        usingThorMobileStyles
+        thorStyles.mobile
           ? "width: 50px;"
           : `position:absolute; right: 0; bottom: ${userPreferences.stickyTopBar ? "1px" : "-20px"};`
       }
@@ -298,7 +315,7 @@ TODO:
     ];
 
     //Sticky top bar - but not with custom mobile styles
-    if (!usingThorMobileStyles && userPreferences.stickyTopBar) {
+    if (!thorStyles.mobile && userPreferences.stickyTopBar) {
       addedPageStyles.push(
         `[data-a-name="vine-items"] .vvp-items-button-and-search-container {
       position: sticky;
@@ -317,7 +334,7 @@ TODO:
     }
 
     //Sticky side bar with categories - but not with custom mobile styles
-    if (!usingThorMobileStyles && userPreferences.stickySidebar) {
+    if (!thorStyles.mobile && userPreferences.stickySidebar) {
       addedPageStyles.push(
         `#vvp-browse-nodes-container {
         align-self: start;
@@ -327,7 +344,7 @@ TODO:
     }
 
     //Sticky footer pagination - but not with custom mobile styles
-    if (!usingThorMobileStyles && userPreferences.stickyPagination) {
+    if (!thorStyles.mobile && userPreferences.stickyPagination) {
       addedPageStyles.push(
         `#vvp-items-grid-container > [role="navigation"] {
       position:sticky;
@@ -393,9 +410,9 @@ TODO:
     let detailsButtonGridClass = "";
     let extraButtonGridClass = "";
     if (userPreferences.addUiButtonEtv || userPreferences.addUiButtonFixInfiniteSpinner) {
-      if (!usingThorMobileStyles) {
-        detailsButtonGridClass = "a-button-span" + (usingThorDesktopStylesSmallItems ? 6 : 8);
-        extraButtonGridClass = "a-button-span" + (usingThorDesktopStylesSmallItems ? 3 : 2);
+      if (!thorStyles.mobile) {
+        detailsButtonGridClass = "a-button-span" + (thorStyles.smallItems ? 6 : 8);
+        extraButtonGridClass = "a-button-span" + (thorStyles.smallItems ? 3 : 2);
       }
 
       const addedTileButtonStyles = [
@@ -426,7 +443,7 @@ TODO:
     }`,
       ];
 
-      if (usingThorDesktopStylesSmallItems || usingThorMobileStyles) {
+      if (thorStyles.smallItems || thorStyles.mobile) {
         //When also using StyleBot, the all buttons need less padding so they can fit
         addedTileButtonStyles.push(`
           .a-button-inner{height: auto !important}
@@ -454,7 +471,7 @@ TODO:
 
       //Use an Amazon grid class to size the "see details" button
       if (detailsButtonGridClass !== "") detailsButtonEl.classList.add(detailsButtonGridClass);
-      if (usingThorDesktopStylesSmallItems) {
+      if (thorStyles.smallItems) {
         //less text in the details button when using StyleBot styles so the extra buttons can fit better
         detailsButtonEl.querySelector(".a-button-text").innerText = "details";
       }
@@ -556,7 +573,7 @@ TODO:
 
     function createSettingsNumberInput(displayPrefKey, valuePrefKey, min, max) {
       const cssClass = userPreferences[displayPrefKey] ? "" : "class='a-hidden'";
-      return `<input type="number" id="VINE-UIE-${valuePrefKey}" style="margin-left:1.2rem; width:5rem;" ${cssClass} value="${userPreferences[valuePrefKey]}" min="${min}" max="${max}">`;
+      return `<input type="number" id="VINE-UIE-${valuePrefKey}" pattern="\d*" style="margin-left:1.2rem; width:5rem;" ${cssClass} value="${userPreferences[valuePrefKey]}" min="${min}" max="${max}">`;
     }
 
     let settingsDialogHtml = `
@@ -566,7 +583,7 @@ TODO:
       <h3>Page Options</h3>`;
 
     //No sticky anything for mobile styles - would take up too much space
-    if (!usingThorMobileStyles) {
+    if (!thorStyles.mobile) {
       settingsDialogHtml += createSettingsCheckbox("stickyTopBar", "Sticky Top Bar");
       settingsDialogHtml += createSettingsCheckbox("stickySidebar", "Sticky Sidebar");
       settingsDialogHtml += createSettingsCheckbox("stickyPagination", "Sticky Pagination");
@@ -578,7 +595,7 @@ TODO:
     settingsDialogHtml += createSettingsCheckbox("useCustomItemFontSize", "Use a custom item font size");
     settingsDialogHtml += createSettingsNumberInput("useCustomItemFontSize", "customItemFontSize", 7, 30);
 
-    if (usingThorDesktopStylesSmallItems || usingThorMobileStyles) {
+    if (thorStyles.smallItems || thorStyles.mobile) {
       settingsDialogHtml += createSettingsCheckbox("useCustomItemSize", "Use a custom item display size");
       settingsDialogHtml += createSettingsNumberInput("useCustomItemSize", "customItemSize", 100, 500);
     }
@@ -598,7 +615,7 @@ TODO:
     const customItemSizeInputEl = $("#VINE-UIE-customItemSize");
     const customItemFontSizeInputEl = $("#VINE-UIE-customItemFontSize");
 
-    if (usingThorDesktopStylesSmallItems || usingThorMobileStyles) {
+    if (thorStyles.smallItems || thorStyles.mobile) {
       customItemSizeInputEl.addEventListener("change", () => {
         setItemGridSize(customItemSizeInputEl.value);
 
@@ -623,19 +640,19 @@ TODO:
 
         localStorage.setItem(storageKeyUserPreferences, JSON.stringify(userPreferences));
 
-        if (pref === "useCustomItemSize" && (usingThorDesktopStylesSmallItems || usingThorMobileStyles)) {
+        if (pref === "useCustomItemSize" && (thorStyles.smallItems || thorStyles.mobile)) {
           customItemSizeInputEl.classList.toggle("a-hidden", !isChecked);
           if (isChecked) {
             setItemGridSize(customItemSizeInputEl.value);
           } else {
-            itemGridEl.style.setProperty("--grid-column-width", "");
+            setItemGridSize(null);
           }
         } else if (pref === "useCustomItemFontSize") {
           customItemFontSizeInputEl.classList.toggle("a-hidden", !isChecked);
           if (isChecked) {
             setItemFontSize(customItemFontSizeInputEl.value);
           } else {
-            itemGridEl.style.fontSize = "";
+            setItemFontSize(null);
           }
         }
       });
@@ -771,7 +788,7 @@ TODO:
 
     //Steal the margin value and use it as padding instead for the header so we can have a colored BG
     const btnAndSearchStyles = getComputedStyle(btnAndSearchEl);
-    if (!usingThorMobileStyles && userPreferences.stickyTopBar) {
+    if (!thorStyles.mobile && userPreferences.stickyTopBar) {
       btnAndSearchEl.style.padding = btnAndSearchStyles.margin;
       btnAndSearchEl.style.margin = "0 !important";
     }
@@ -783,7 +800,7 @@ TODO:
     //Set the sticky top position of the categories to the height of the top bar
     //unless the categories are taller than the screen
     if (
-      !usingThorMobileStyles &&
+      !thorStyles.mobile &&
       userPreferences.stickySidebar &&
       elCategories.offsetHeight + btnAndSearchEl.offsetHeight <= document.documentElement.clientHeight
     ) {

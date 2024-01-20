@@ -98,11 +98,7 @@ TODO:
     dialog.addEventListener("click", function (event) {
       //Close dialog when clicking on backdrop - https://stackoverflow.com/a/26984690/79677
       var rect = dialog.getBoundingClientRect();
-      var isInDialog =
-        rect.top <= event.clientY &&
-        event.clientY <= rect.top + rect.height &&
-        rect.left <= event.clientX &&
-        event.clientX <= rect.left + rect.width;
+      var isInDialog = rect.top <= event.clientY && event.clientY <= rect.top + rect.height && rect.left <= event.clientX && event.clientX <= rect.left + rect.width;
       if (!isInDialog) {
         dialog.close();
       }
@@ -220,17 +216,15 @@ TODO:
       //defaults to false, only adding the ones we need to check for
       mobile: false,
       moreDescriptionText: false,
+      paginationOnTop: false,
       smallItems: false,
     };
 
     if (thorStyles.styleSheets.length > 0) {
       //We can detect each stylesheet that is added if needed by checking for specific strings in CSS comments in these files
-      thorStyles.mobile = thorStyles.styleSheets.some(
-        (s) => s.innerText.includes("| mobile | base }}") || s.innerText.includes("| mobile | ios-with-bugfix }}")
-      );
-      thorStyles.moreDescriptionText = thorStyles.styleSheets.some((s) =>
-        s.innerText.includes("| desktop | more-description-text }}")
-      );
+      thorStyles.mobile = thorStyles.styleSheets.some((s) => s.innerText.includes("| mobile | base }}") || s.innerText.includes("| mobile | ios-with-bugfix }}"));
+      thorStyles.moreDescriptionText = thorStyles.styleSheets.some((s) => s.innerText.includes("| desktop | more-description-text }}"));
+      thorStyles.paginationOnTop = thorStyles.styleSheets.some((s) => s.innerText.includes("| desktop | pagination-on-top }}"));
       thorStyles.smallItems = thorStyles.styleSheets.some((s) => s.innerText.includes("| desktop | small-items }}"));
     }
 
@@ -269,6 +263,8 @@ TODO:
     const addedPageStyles = [
       //Slightly taller popup modal window so the ETV is always visible =========
       `.a-popover-modal-fixed-height{height: 550px !important;} .a-popover-inner{padding-bottom: 112px !important;}`,
+      //Raise the pagination z-index to be above the top bar in case the "pagination on top" Thor styles are added
+      `.a-pagination{z-index:100}`,
       //Side categories: bolded selected items and show nesting better ==========
       `a.selectedNode{font-weight: bold;}
     a.selectedNode:hover{color: inherit !important;}
@@ -285,11 +281,7 @@ TODO:
     .VINE-UIE-dimmed-tile:hover { opacity: 1; }`,
       //Settings
       `.VINE-UIE-open-settings-btn {
-      ${
-        thorStyles.mobile
-          ? "width: 50px;"
-          : `position:absolute; right: 0; bottom: ${userPreferences.stickyTopBar ? "1px" : "-20px"};`
-      }
+      ${thorStyles.mobile ? "width: 50px;" : `position:absolute; right: 0; bottom: ${userPreferences.stickyTopBar ? "1px" : "-20px"};`}
     }
     .VINE-UIE-open-settings-btn .a-btn-text{padding: 0 6px;}
     #VINE-UIE-settings-dialog h1{padding:0;}
@@ -343,8 +335,8 @@ TODO:
       );
     }
 
-    //Sticky footer pagination - but not with custom mobile styles
-    if (!thorStyles.mobile && userPreferences.stickyPagination) {
+    //Sticky footer pagination - but not with custom mobile styles or "pagination on top" styles
+    if (!thorStyles.mobile && !thorStyles.paginationOnTop && userPreferences.stickyPagination) {
       addedPageStyles.push(
         `#vvp-items-grid-container > [role="navigation"] {
       position:sticky;
@@ -563,11 +555,12 @@ TODO:
       renderList();
     });
 
-    function createSettingsCheckbox(preferenceKey, labelText) {
+    function createSettingsCheckbox(preferenceKey, labelText, isDisabled, disableReason) {
+      const isChecked = isDisabled ? false : userPreferences[preferenceKey] ;
       return `
-      <label>
-        <input type="checkbox" data-pref="${preferenceKey}"${userPreferences[preferenceKey] ? " checked" : ""}>
-        ${labelText}
+      <label${isDisabled ? ' style="color:#888;"': ''}>
+        <input type="checkbox" data-pref="${preferenceKey}"${isChecked ? " checked" : ""}${isDisabled ? " disabled" : ""}>
+        ${labelText}${isDisabled ? ` <small>(${disableReason})</small>` : ""}
       </label>`;
     }
 
@@ -583,11 +576,14 @@ TODO:
       <h3>Page Options</h3>`;
 
     //No sticky anything for mobile styles - would take up too much space
-    if (!thorStyles.mobile) {
-      settingsDialogHtml += createSettingsCheckbox("stickyTopBar", "Sticky Top Bar");
-      settingsDialogHtml += createSettingsCheckbox("stickySidebar", "Sticky Sidebar");
-      settingsDialogHtml += createSettingsCheckbox("stickyPagination", "Sticky Pagination");
+    settingsDialogHtml += createSettingsCheckbox("stickyTopBar", "Sticky Top Bar", thorStyles.mobile, "not available with Thor mobile styles");
+    settingsDialogHtml += createSettingsCheckbox("stickySidebar", "Sticky Sidebar", thorStyles.mobile, "not available with Thor mobile styles");
+
+    let paginationDisableReason = thorStyles.mobile ? "not available with Thor mobile styles" : "";
+    if (thorStyles.paginationOnTop) {
+      paginationDisableReason = 'not available with Thor "pagination on top" styles';
     }
+    settingsDialogHtml += createSettingsCheckbox("stickyPagination", "Sticky Pagination", thorStyles.mobile || thorStyles.paginationOnTop, paginationDisableReason);
 
     settingsDialogHtml += createSettingsCheckbox("addUiButtonEtv", 'Add "Get ETV" button to the UI');
     settingsDialogHtml += createSettingsCheckbox("addUiButtonFixInfiniteSpinner", 'Add "fix infinite spinner" button to the UI');
@@ -595,8 +591,10 @@ TODO:
     settingsDialogHtml += createSettingsCheckbox("useCustomItemFontSize", "Use a custom item font size");
     settingsDialogHtml += createSettingsNumberInput("useCustomItemFontSize", "customItemFontSize", 7, 30);
 
-    if (thorStyles.smallItems || thorStyles.mobile) {
-      settingsDialogHtml += createSettingsCheckbox("useCustomItemSize", "Use a custom item display size");
+    const allowCustomItemSize = thorStyles.smallItems || thorStyles.mobile;
+    const itemSizeDisableReason = allowCustomItemSize ? "" : 'Only available when using Thor mobile or "small items" styles';
+    settingsDialogHtml += createSettingsCheckbox("useCustomItemSize", "Use a custom item display size", !allowCustomItemSize, itemSizeDisableReason);
+    if (allowCustomItemSize) {
       settingsDialogHtml += createSettingsNumberInput("useCustomItemSize", "customItemSize", 100, 500);
     }
 
@@ -799,11 +797,7 @@ TODO:
 
     //Set the sticky top position of the categories to the height of the top bar
     //unless the categories are taller than the screen
-    if (
-      !thorStyles.mobile &&
-      userPreferences.stickySidebar &&
-      elCategories.offsetHeight + btnAndSearchEl.offsetHeight <= document.documentElement.clientHeight
-    ) {
+    if (!thorStyles.mobile && userPreferences.stickySidebar && elCategories.offsetHeight + btnAndSearchEl.offsetHeight <= document.documentElement.clientHeight) {
       elCategories.style.top = `${btnAndSearchEl.offsetHeight}px`;
     }
 

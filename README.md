@@ -7,6 +7,9 @@ A few Tampermonkey/Greasemonkey scripts I've made
   1. Install the [Tampermonkey browser plugin](https://www.tampermonkey.net/) or [GreaseMonkey browser plugin](https://www.greasespot.net/)
   2. click one of the install links below
 
+## Udemy Media Keys
+**[📜 Install Udemy Media Keys Script](https://raw.githubusercontent.com/FiniteLooper/UserScripts/main/src/udemy-media-keys.user.js)**
+Makes your keyboard media keys work on Udemy again
 
 ## Amazon Vine UI Enhancer
 **[📜 Install Amazon Vine Enhancer Script](https://raw.githubusercontent.com/FiniteLooper/UserScripts/main/src/amazon-vine-enhancer.user.js)**

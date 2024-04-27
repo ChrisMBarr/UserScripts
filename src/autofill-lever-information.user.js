@@ -1,11 +1,11 @@
 // ==UserScript==
 // @name         Auto-Fill Lever.co Information
-// @namespace    https://github.com/FiniteLooper/UserScripts
+// @namespace    https://github.com/ChrisMBarr/UserScripts
 // @version      0.1.1
 // @description  Auto-Fill Some Information on Lever.co  job applications
 // @author       Chris Barr
-// @homepageURL  https://github.com/FiniteLooper/UserScripts
-// @updateURL    https://github.com/FiniteLooper/UserScripts/raw/main/src/autofill-lever-information.user.js
+// @homepageURL  https://github.com/ChrisMBarr/UserScripts
+// @updateURL    https://github.com/ChrisMBarr/UserScripts/raw/main/src/autofill-lever-information.user.js
 // @match        https://jobs.lever.co/*/*/apply
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=lever.co
 // @grant        none

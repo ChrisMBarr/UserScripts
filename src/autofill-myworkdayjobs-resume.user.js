@@ -1,11 +1,11 @@
 // ==UserScript==
 // @name         Auto-Fill MyWorkday Resume
-// @namespace    https://github.com/FiniteLooper/UserScripts
+// @namespace    https://github.com/ChrisMBarr/UserScripts
 // @version      0.11
 // @description  Auto-Fill MyWorkday Resume
 // @author       Chris Barr
-// @homepageURL  https://github.com/FiniteLooper/UserScripts
-// @updateURL    https://github.com/FiniteLooper/UserScripts/raw/main/src/autofill-myworkdayjobs-resume.user.js
+// @homepageURL  https://github.com/ChrisMBarr/UserScripts
+// @updateURL    https://github.com/ChrisMBarr/UserScripts/raw/main/src/autofill-myworkdayjobs-resume.user.js
 // @match        *://*.myworkdayjobs.com/*/job/*
 // @match        *://*.*.myworkdayjobs.com/*/job/*
 // @icon         data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==

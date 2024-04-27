@@ -1,11 +1,11 @@
 // ==UserScript==
 // @name         Job Search Highlighting
-// @namespace    https://github.com/FiniteLooper/UserScripts
+// @namespace    https://github.com/ChrisMBarr/UserScripts
 // @version      0.97
 // @description  Highlights key words and locations on many popular job sites
 // @author       Chris Barr
-// @homepageURL  https://github.com/FiniteLooper/UserScripts
-// @updateURL    https://github.com/FiniteLooper/UserScripts/raw/main/src/job-search-highlighting.user.js
+// @homepageURL  https://github.com/ChrisMBarr/UserScripts
+// @updateURL    https://github.com/ChrisMBarr/UserScripts/raw/main/src/job-search-highlighting.user.js
 // @match        *://*.applytojob.com/*
 // @match        *://*.avature.net/*/careers/JobDetail/*
 // @match        *://*.dejobs.org/*

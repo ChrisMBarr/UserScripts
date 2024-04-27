@@ -1,11 +1,11 @@
 // ==UserScript==
 // @name         Stack Overflow Enhancer
-// @namespace    https://github.com/FiniteLooper/UserScripts
+// @namespace    https://github.com/ChrisMBarr/UserScripts
 // @version      0.5
 // @description  Improve some UI/UX stuff on StackOverflow
 // @author       Chris Barr
-// @homepageURL  https://github.com/FiniteLooper/UserScripts
-// @updateURL    https://github.com/FiniteLooper/UserScripts/raw/main/src/stack-overflow-enhancer.user.js
+// @homepageURL  https://github.com/ChrisMBarr/UserScripts
+// @updateURL    https://github.com/ChrisMBarr/UserScripts/raw/main/src/stack-overflow-enhancer.user.js
 // @match        https://stackoverflow.com/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=stackoverflow.com
 // @grant        unsafeWindow

@@ -1,11 +1,11 @@
 // ==UserScript==
 // @name         Fix Udemy Media Keys
-// @namespace    https://github.com/FiniteLooper/UserScripts
+// @namespace    https://github.com/ChrisMBarr/UserScripts
 // @version      1.0.0
 // @description  Make your keyboard media key work on Udemy again
 // @author       Chris Barr
-// @homepageURL  https://github.com/FiniteLooper/UserScripts
-// @updateURL    https://github.com/FiniteLooper/UserScripts/raw/main/src/udemy-media-keys.user.js
+// @homepageURL  https://github.com/ChrisMBarr/UserScripts
+// @updateURL    https://github.com/ChrisMBarr/UserScripts/raw/main/src/udemy-media-keys.user.js
 // @match       *://*.udemy.com/course/*
 // @icon         https://daveytree.udemy.com/staticx/udemy/images/v8/favicon-32x32.png
 // @grant        none

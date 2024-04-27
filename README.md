@@ -8,11 +8,11 @@ A few Tampermonkey/Greasemonkey scripts I've made
   2. click one of the install links below
 
 ## Udemy Media Keys
-**[📜 Install Udemy Media Keys Script](https://raw.githubusercontent.com/FiniteLooper/UserScripts/main/src/udemy-media-keys.user.js)**
+**[📜 Install Udemy Media Keys Script](https://raw.githubusercontent.com/ChrisMBarr/UserScripts/main/src/udemy-media-keys.user.js)**
 Makes your keyboard media keys work on Udemy again
 
 ## Amazon Vine UI Enhancer
-**[📜 Install Amazon Vine Enhancer Script](https://raw.githubusercontent.com/FiniteLooper/UserScripts/main/src/amazon-vine-enhancer.user.js)**
+**[📜 Install Amazon Vine Enhancer Script](https://raw.githubusercontent.com/ChrisMBarr/UserScripts/main/src/amazon-vine-enhancer.user.js)**
 Minor UI improvements to using Amazon Vine:
 
 * To install this on a web browser in Windows/Mac/Linux, follow the instructions above
@@ -64,12 +64,12 @@ Here's what the added reevaluation time looks like
 
 
 ## Washington Post Paywall Remover
-**[📜 Install Washington Post Paywall Remover Script](https://raw.githubusercontent.com/FiniteLooper/UserScripts/main/src/washington-post-paywall-remover.user.js)**
+**[📜 Install Washington Post Paywall Remover Script](https://raw.githubusercontent.com/ChrisMBarr/UserScripts/main/src/washington-post-paywall-remover.user.js)**
 
 Exactly what you think it does. When you visit the Washington Post website it removes the paywall that blocks you from seeing the whole article. The full text of the article has already been downloaded, they just don't allow you to scroll down to read it. This removes those limitations.
 
 ## Job Search Highlighting
-**[📜 Install Job Search Highlighting Script](https://raw.githubusercontent.com/FiniteLooper/UserScripts/main/src/job-search-highlighting.user.js)**
+**[📜 Install Job Search Highlighting Script](https://raw.githubusercontent.com/ChrisMBarr/UserScripts/main/src/job-search-highlighting.user.js)**
 
 ### Features
 *  Highlight key words, locations, all mentions of money/currency, and your search terms if they are found within job descriptions
@@ -99,7 +99,7 @@ After installing you will need to edit the configuration variables described abo
 
 
 ## Stack Overflow Enhancer
-**[📜 Install Stack Overflow Enhancer Script](https://raw.githubusercontent.com/FiniteLooper/UserScripts/main/src/stack-overflow-enhancer.user.js)**
+**[📜 Install Stack Overflow Enhancer Script](https://raw.githubusercontent.com/ChrisMBarr/UserScripts/main/src/stack-overflow-enhancer.user.js)**
 
 ### Features
 *  Hides certain items in the right sidebar
@@ -132,12 +132,12 @@ After installing you will need to edit the configuration variables described abo
 After installing you can edit the configuration variables described above to match whatever your preferences are.
 
 ## Autofill Lever Jobs EEO Information
-**[📜 Install Autofill Lever Jobs Information Script](https://raw.githubusercontent.com/FiniteLooper/UserScripts/main/src/autofill-lever-information.user.js)**
+**[📜 Install Autofill Lever Jobs Information Script](https://raw.githubusercontent.com/ChrisMBarr/UserScripts/main/src/autofill-lever-information.user.js)**
 A simple script that adds a button to the UI for Lever.co job applications, when pressed it auto-fills the dropdowns, etc. with whatever values you have specified
 
 
 ## Autofill MyWorkday Jobs Resume
-**[📜 Install Autofill MyWorkday Jobs Resume Script](https://raw.githubusercontent.com/FiniteLooper/UserScripts/main/src/autofill-myworkdayjobs-resume.user.js)**
+**[📜 Install Autofill MyWorkday Jobs Resume Script](https://raw.githubusercontent.com/ChrisMBarr/UserScripts/main/src/autofill-myworkdayjobs-resume.user.js)**
 
 Applying for jobs via MyWorkday Jobs is cumbersome because many companies use them, but you have to create a new account for each company and re-enter your same resume for each company. It's the same website and yet they don't allow you to import a previously used resume.  This script allow you to store your resume in a JSON format and it puts some buttons in the UI at each step of the application. Just press the buttons and it will auto-fill your details for that step. It saves me a LOT of time if I am applying to many jobs.
 

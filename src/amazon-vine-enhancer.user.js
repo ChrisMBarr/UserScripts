@@ -186,6 +186,7 @@ TODO:
     const storedPreferences = localStorage.getItem(storageKeyUserPreferences);
     let userPreferences = {
       //default preferences if nothing is stored yet
+      hideWordMatches: false,
       stickySidebar: true,
       stickyTopBar: true,
       stickyPagination: true,
@@ -277,6 +278,10 @@ TODO:
       `.VINE-UIE-dimmed-tile {
       opacity: .25;
       transition: opacity 300ms;
+   }`,
+      //hide tiles completely
+      `.VINE-UIE-hidden-tile {
+      display:none;
     }
     .VINE-UIE-dimmed-tile:hover { opacity: 1; }`,
       //Settings
@@ -388,11 +393,18 @@ TODO:
     //=========================================================================
     //Fade/Dim items with descriptions that match something in the word list defined at the top
     function dimTileWithDescriptionWordInList(itemElement) {
-      const description = itemElement.querySelector(".vvp-item-product-title-container .a-truncate-full").innerText.toLowerCase();
+
+    const description = itemElement.querySelector(".vvp-item-product-title-container .a-truncate-full").innerText.toLowerCase();
       const wordMatches = wordList.filter((listItem) => description.includes(listItem));
       if (wordMatches.length > 0) {
-        itemElement.classList.add("VINE-UIE-dimmed-tile");
-        itemElement.title = `Dimmed because the description contains:\n -${wordMatches.join("\n -")}`;
+        if (userPreferences.hideWordMatches){
+            itemElement.classList.add("VINE-UIE-hidden-tile");
+            itemElement.title = `Hidden because hideWordMatches is enabled and description contains:\n -${wordMatches.join("\n -")}`;
+        } else {
+            itemElement.classList.add("VINE-UIE-dimmed-tile");
+            itemElement.title = `Dimmed because the description contains:\n -${wordMatches.join("\n -")}`;
+        }
+        
       }
     }
 
@@ -590,6 +602,8 @@ TODO:
 
     settingsDialogHtml += createSettingsCheckbox("useCustomItemFontSize", "Use a custom item font size");
     settingsDialogHtml += createSettingsNumberInput("useCustomItemFontSize", "customItemFontSize", 7, 30);
+
+    settingsDialogHtml += createSettingsCheckbox("hideWordMatches", "Hide word list matches instead of dimming");
 
     const allowCustomItemSize = thorStyles.smallItems || thorStyles.mobile;
     const itemSizeDisableReason = allowCustomItemSize ? "" : 'Only available when using Thor mobile or "small items" styles';

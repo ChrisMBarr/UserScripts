@@ -7,7 +7,7 @@
 // @homepageURL  https://github.com/ChrisMBarr/UserScripts
 // @updateURL    https://github.com/ChrisMBarr/UserScripts/raw/main/src/udemy-media-keys.user.js
 // @match       *://*.udemy.com/course/*
-// @icon         https://daveytree.udemy.com/staticx/udemy/images/v8/favicon-32x32.png
+// @icon         https://udemy.com/staticx/udemy/images/v8/favicon-32x32.png
 // @grant        none
 // ==/UserScript==
 

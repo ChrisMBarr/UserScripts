@@ -278,7 +278,7 @@ TODO:
     }`,
       //Fade/Dim tiles
       `.VINE-UIE-dimmed-tile {
-      opacity: .25;
+      opacity: .25 !important;
       transition: opacity 300ms;
    }`,
       //hide tiles completely

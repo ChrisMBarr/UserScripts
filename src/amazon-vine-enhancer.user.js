@@ -198,6 +198,8 @@ TODO:
       customItemSize: 110, //matches page default
       useCustomItemFontSize: false,
       customItemFontSize: 14, //in pixels, matches page default
+      hideAmazonHeader: true,  //Hides the Amazon Header
+      hideVineHeader: true,  //Hides the Amazon Header
     };
     if (storedPreferences !== null) {
       const parsedPreferences = JSON.parse(storedPreferences);
@@ -352,6 +354,40 @@ TODO:
       background-color: ${bodyBgColor};
       border-top: ${border};
       z-index: 30;
+    }`
+      );
+    }
+
+    // Hide Amazon Header - but not with custom mobile styles or "pagination on top" styles
+    if (userPreferences.hideAmazonHeader) {
+      addedPageStyles.push(
+        ` #navbar-main  {
+      display: none;
+    }`
+      );
+
+
+      addedPageStyles.push(
+        `.nav-ewc-persistent-hover body  {
+      padding: 0 !important;
+    }`
+      );
+    }
+
+     // Hide Amazon Header - but not with custom mobile styles or "pagination on top" styles
+    if (userPreferences.hideVineHeader) {
+      addedPageStyles.push(
+        `#vvp-header  {
+      display: none !important;
+    }`
+      );
+    }
+
+     // Hide Amazon Header - but not with custom mobile styles or "pagination on top" styles
+    if (userPreferences.hideVineHeader || userPreferences.hideAmazonHeader) {
+      addedPageStyles.push(
+        `#skiplink  {
+      display: none !important;
     }`
       );
     }
@@ -613,6 +649,9 @@ TODO:
     if (allowCustomItemSize) {
       settingsDialogHtml += createSettingsNumberInput("useCustomItemSize", "customItemSize", 100, 500);
     }
+    settingsDialogHtml += createSettingsCheckbox("hideAmazonHeader", "Hide Amazon Header and Sidebar");
+    settingsDialogHtml += createSettingsCheckbox("hideVineHeader", "Hides Vine Header");
+
 
     settingsDialogHtml += `
     </div>

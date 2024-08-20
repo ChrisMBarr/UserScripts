@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Amazon Vine UI Enhancer
 // @namespace    https://github.com/ChrisMBarr/UserScripts
-// @version      0.7.9
+// @version      0.7.10
 // @description  Minor UI improvements to browsing items on Amazon Vine
 // @author       Chris Barr
 // @homepageURL  https://github.com/ChrisMBarr/UserScripts

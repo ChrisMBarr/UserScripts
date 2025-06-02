@@ -11,6 +11,51 @@ A few Tampermonkey/Greasemonkey scripts I've made
 **[📜 Install Udemy Media Keys Script](https://raw.githubusercontent.com/ChrisMBarr/UserScripts/main/src/udemy-media-keys.user.js)**
 Makes your keyboard media keys work on Udemy again
 
+## Washington Post Paywall Remover
+**[📜 Install Washington Post Paywall Remover Script](https://raw.githubusercontent.com/ChrisMBarr/UserScripts/main/src/washington-post-paywall-remover.user.js)**
+
+Exactly what you think it does. When you visit the Washington Post website it removes the paywall that blocks you from seeing the whole article. The full text of the article has already been downloaded, they just don't allow you to scroll down to read it. This removes those limitations.
+
+## Daily Beast Paywall Remover
+**[📜 Install Daily Beast Paywall Remover Script](https://raw.githubusercontent.com/ChrisMBarr/UserScripts/main/src/daily-beast-paywall-remover.user.js)**
+
+Exactly what you think it does. When you visit the Daily Beast website it removes the paywall that blocks you from seeing the whole article. The full text of the article has already been downloaded, they just don't allow you to scroll down to read it. This removes those limitations.
+
+
+## Stack Overflow Enhancer
+**[📜 Install Stack Overflow Enhancer Script](https://raw.githubusercontent.com/ChrisMBarr/UserScripts/main/src/stack-overflow-enhancer.user.js)**
+
+### Features
+*  Hides certain items in the right sidebar
+*  Highlights/flags tags on a question if specific combinations are found
+*  When viewing questions by tag, the current tags are highlighted
+*  Dims questioned that have been marked as `[CLOSED]` or `[DUPLICATE]`
+*  Allows easy indenting of code/text when editing a question or an answer (not within the snippet editor, just the plain question/answer editor)
+*  Adds a button to the question/answer toolbar to convert all tab indentations to spaces
+*  Adds "comment snippets" when adding a comment. Helpful if you find yourself re-writing the exact same comment many times (useful for moderating questions from new users)
+
+#### Flagged Tag Combinations
+![combo-tags](doc-img/so-combo-tags.png)
+
+#### Comment Snippets
+![comment snippet](doc-img/so-comment-snippet.gif)
+
+#### Enhanced editor indenting
+![indenting](doc-img/so-indenting.gif)
+
+#### Configuration
+| Property                         | Type         | Description                                                                                                  |
+|:---------------------------------|:-------------|:-------------------------------------------------------------------------------------------------------------|
+| `flagTagCombos`                  | `string[][]` | tags that when all are found in combination on a question they are highlighted in **red**. This is useful when moderating to improve question quality and searchability.  This might alert you that either one of these tags was likely added as a mistake, or that the question asker is using several things in combination that they probably should not be doing |
+| `sidebarHideBlogs`               | `boolean`    | hides the yellow **"The Overflow Blog"** from the right sidebar                                              |
+| `sidebarHideCollectives`         | `boolean`    | hides the **"Collectives"** from the right sidebar                                                           |
+| `sidebarHideAds`                 | `boolean`    | hides the **ads** from the right sidebar                                                                     |
+| `editorIndentSpaces`             | `number`     | number of spaces to use when indenting code.                                                                 |
+| `commentSnippets`                | `object[]`   | Each comment snippet has a display `name` property and a `text` property which contains the actual comment   |
+
+After installing you can edit the configuration variables described above to match whatever your preferences are.
+
+
 ## Amazon Vine UI Enhancer
 **[📜 Install Amazon Vine Enhancer Script](https://raw.githubusercontent.com/ChrisMBarr/UserScripts/main/src/amazon-vine-enhancer.user.js)**
 Minor UI improvements to using Amazon Vine:
@@ -62,11 +107,7 @@ Here's what the added reevaluation time looks like
 
 ![](doc-img/amazon-vine-eval-time.png)
 
-
-## Washington Post Paywall Remover
-**[📜 Install Washington Post Paywall Remover Script](https://raw.githubusercontent.com/ChrisMBarr/UserScripts/main/src/washington-post-paywall-remover.user.js)**
-
-Exactly what you think it does. When you visit the Washington Post website it removes the paywall that blocks you from seeing the whole article. The full text of the article has already been downloaded, they just don't allow you to scroll down to read it. This removes those limitations.
+# Job Site Helpers
 
 ## Job Search Highlighting
 **[📜 Install Job Search Highlighting Script](https://raw.githubusercontent.com/ChrisMBarr/UserScripts/main/src/job-search-highlighting.user.js)**
@@ -97,39 +138,6 @@ How to use
 
 After installing you will need to edit the configuration variables described above to match whatever your preferences are.
 
-
-## Stack Overflow Enhancer
-**[📜 Install Stack Overflow Enhancer Script](https://raw.githubusercontent.com/ChrisMBarr/UserScripts/main/src/stack-overflow-enhancer.user.js)**
-
-### Features
-*  Hides certain items in the right sidebar
-*  Highlights/flags tags on a question if specific combinations are found
-*  When viewing questions by tag, the current tags are highlighted
-*  Dims questioned that have been marked as `[CLOSED]` or `[DUPLICATE]`
-*  Allows easy indenting of code/text when editing a question or an answer (not within the snippet editor, just the plain question/answer editor)
-*  Adds a button to the question/answer toolbar to convert all tab indentations to spaces
-*  Adds "comment snippets" when adding a comment. Helpful if you find yourself re-writing the exact same comment many times (useful for moderating questions from new users)
-
-#### Flagged Tag Combinations
-![combo-tags](doc-img/so-combo-tags.png)
-
-#### Comment Snippets
-![comment snippet](doc-img/so-comment-snippet.gif)
-
-#### Enhanced editor indenting
-![indenting](doc-img/so-indenting.gif)
-
-#### Configuration
-| Property                         | Type         | Description                                                                                                  |
-|:---------------------------------|:-------------|:-------------------------------------------------------------------------------------------------------------|
-| `flagTagCombos`                  | `string[][]` | tags that when all are found in combination on a question they are highlighted in **red**. This is useful when moderating to improve question quality and searchability.  This might alert you that either one of these tags was likely added as a mistake, or that the question asker is using several things in combination that they probably should not be doing |
-| `sidebarHideBlogs`               | `boolean`    | hides the yellow **"The Overflow Blog"** from the right sidebar                                              |
-| `sidebarHideCollectives`         | `boolean`    | hides the **"Collectives"** from the right sidebar                                                           |
-| `sidebarHideAds`                 | `boolean`    | hides the **ads** from the right sidebar                                                                     |
-| `editorIndentSpaces`             | `number`     | number of spaces to use when indenting code.                                                                 |
-| `commentSnippets`                | `object[]`   | Each comment snippet has a display `name` property and a `text` property which contains the actual comment   |
-
-After installing you can edit the configuration variables described above to match whatever your preferences are.
 
 ## Autofill Lever Jobs EEO Information
 **[📜 Install Autofill Lever Jobs Information Script](https://raw.githubusercontent.com/ChrisMBarr/UserScripts/main/src/autofill-lever-information.user.js)**

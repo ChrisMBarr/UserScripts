@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Amazon Vine Mobile Styles
 // @namespace    https://github.com/ChrisMBarr/UserScripts
-// @version      1.0.0
+// @version      1.0.1
 // @description  Add Thoravarium's Vine Styles to a mobile browser
 // @author       Chris Barr
 // @homepageURL  https://github.com/ChrisMBarr/UserScripts

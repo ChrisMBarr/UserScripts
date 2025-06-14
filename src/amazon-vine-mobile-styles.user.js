@@ -14,7 +14,8 @@
 // @grant        GM_addStyle
 // ==/UserScript==
 
-(function() {
-  'use strict';
-  GM_addStyle('@import url(https://raw.githubusercontent.com/Thorvarium/vine-styling/main/mobile/ios-with-bugfix.css)');
+(async function() {
+  const result = await fetch('https://raw.githubusercontent.com/Thorvarium/vine-styling/main/mobile/ios-with-bugfix.css');
+  const cssContent = await result.text();
+  GM_addStyle(cssContent);
 })();

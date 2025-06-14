@@ -13,7 +13,6 @@
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=amazon.com
 // @grant        unsafeWindow
 // @grant        GM_addStyle
-// @grant        GM.addStyle
 // @require      https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js
 // ==/UserScript==
 
@@ -442,7 +441,7 @@ TODO:
             itemElement.classList.add("VINE-UIE-dimmed-tile");
             itemElement.title = `Dimmed because the description contains:\n -${wordMatches.join("\n -")}`;
         }
-        
+
       }
     }
 

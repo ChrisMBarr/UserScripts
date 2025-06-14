@@ -55,6 +55,9 @@ Exactly what you think it does. When you visit the Daily Beast website it remove
 
 After installing you can edit the configuration variables described above to match whatever your preferences are.
 
+## Amazon Vine Mobile CSS
+**[📜 Install Amazon Vine Mobile CSS](https://raw.githubusercontent.com/ChrisMBarr/UserScripts/main/src/amazon-vine-mobile-styles.user.js)**
+A simple way to add [Thorvarium's Vine Styling](https://github.com/Thorvarium/vine-styling) CSS for mobile browsers
 
 ## Amazon Vine UI Enhancer
 **[📜 Install Amazon Vine Enhancer Script](https://raw.githubusercontent.com/ChrisMBarr/UserScripts/main/src/amazon-vine-enhancer.user.js)**

@@ -7,19 +7,25 @@ A few Tampermonkey/Greasemonkey scripts I've made
   1. Install the [Tampermonkey browser plugin](https://www.tampermonkey.net/) or [GreaseMonkey browser plugin](https://www.greasespot.net/)
   2. click one of the install links below
 
+
+
 ## Udemy Media Keys
 **[📜 Install Udemy Media Keys Script](https://raw.githubusercontent.com/ChrisMBarr/UserScripts/main/src/udemy-media-keys.user.js)**
 Makes your keyboard media keys work on Udemy again
 
-## Washington Post Paywall Remover
-**[📜 Install Washington Post Paywall Remover Script](https://raw.githubusercontent.com/ChrisMBarr/UserScripts/main/src/washington-post-paywall-remover.user.js)**
 
-Exactly what you think it does. When you visit the Washington Post website it removes the paywall that blocks you from seeing the whole article. The full text of the article has already been downloaded, they just don't allow you to scroll down to read it. This removes those limitations.
 
-## Daily Beast Paywall Remover
-**[📜 Install Daily Beast Paywall Remover Script](https://raw.githubusercontent.com/ChrisMBarr/UserScripts/main/src/daily-beast-paywall-remover.user.js)**
+##  Paywall Remover
+**[📜 Install Paywall Remover Script](https://raw.githubusercontent.com/ChrisMBarr/UserScripts/main/src/paywall-remover.user.js)**
 
-Exactly what you think it does. When you visit the Daily Beast website it removes the paywall that blocks you from seeing the whole article. The full text of the article has already been downloaded, they just don't allow you to scroll down to read it. This removes those limitations.
+Exactly what you think it does. When you visit **The Daily Beast**, **The Washington Post**, and **Rolling Stone** it removes the paywall that blocks you from seeing the whole article. The full text of the article has already been downloaded, they just don't allow you to scroll down to read it. This removes those limitations.
+
+
+
+## Amazon Vine Mobile CSS
+**[📜 Install Amazon Vine Mobile CSS](https://raw.githubusercontent.com/ChrisMBarr/UserScripts/main/src/amazon-vine-mobile-styles.user.js)**
+A simple way to add [Thorvarium's Vine Styling](https://github.com/Thorvarium/vine-styling) CSS for mobile browsers
+
 
 
 ## Stack Overflow Enhancer
@@ -44,10 +50,10 @@ Exactly what you think it does. When you visit the Daily Beast website it remove
 ![indenting](doc-img/so-indenting.gif)
 
 #### Configuration
-| Property                         | Type         | Description                                                                                                  |
-|:---------------------------------|:-------------|:-------------------------------------------------------------------------------------------------------------|
-| `flagTagCombos`                  | `string[][]` | tags that when all are found in combination on a question they are highlighted in **red**. This is useful when moderating to improve question quality and searchability.  This might alert you that either one of these tags was likely added as a mistake, or that the question asker is using several things in combination that they probably should not be doing |
-| `sidebarHideBlogs`               | `boolean`    | hides the yellow **"The Overflow Blog"** from the right sidebar                                              |
+| Property                         | Type         | Description                                              |
+|:---------------------------------|:-------------|:---------------------------------------------------------|
+| `flagTagCombos`                   | `string[][]` | tags that when all are found in combination on a question they are highlighted in **red**. This is useful when moderating to improve question quality and searchability.  This might alert you that either one of these tags was likely added as a mistake, or that the question asker is using several things in combination that they probably should not be doing |
+| `sidebarHideBlogs`               | `boolean`    | hides the yellow **"The Overflow Blog"** from the right sidebar                                               |
 | `sidebarHideCollectives`         | `boolean`    | hides the **"Collectives"** from the right sidebar                                                           |
 | `sidebarHideAds`                 | `boolean`    | hides the **ads** from the right sidebar                                                                     |
 | `editorIndentSpaces`             | `number`     | number of spaces to use when indenting code.                                                                 |
@@ -55,12 +61,11 @@ Exactly what you think it does. When you visit the Daily Beast website it remove
 
 After installing you can edit the configuration variables described above to match whatever your preferences are.
 
-## Amazon Vine Mobile CSS
-**[📜 Install Amazon Vine Mobile CSS](https://raw.githubusercontent.com/ChrisMBarr/UserScripts/main/src/amazon-vine-mobile-styles.user.js)**
-A simple way to add [Thorvarium's Vine Styling](https://github.com/Thorvarium/vine-styling) CSS for mobile browsers
-
 ## Amazon Vine UI Enhancer
 **[📜 Install Amazon Vine Enhancer Script](https://raw.githubusercontent.com/ChrisMBarr/UserScripts/main/src/amazon-vine-enhancer.user.js)**
+
+This is not really maintained any more. I strongly recommend using [Vine Helper](https://vinehelper.ovh) or [UltraViner](https://ultraviner.com) instead!
+
 Minor UI improvements to using Amazon Vine:
 
 * To install this on a web browser in Windows/Mac/Linux, follow the instructions above

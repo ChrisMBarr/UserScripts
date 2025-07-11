@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Vine Helper with UltraViner Links
 // @namespace    https://github.com/ChrisMBarr/UserScripts
-// @version      0.0.1
+// @version      0.0.2
 // @description  Adds Ultraviner links to items in the Vine Helper notifcation monitor
 // @author       Chris Barr
 // @homepageURL  https://github.com/ChrisMBarr/UserScripts
@@ -15,29 +15,22 @@
 // ==/UserScript==
 
 (function() {
-    'use strict';
+  'use strict';
 
-    if(location.hash === '#monitorLoadAllListeners'){
-
-        const gridContainerEl = document.querySelector('#vvp-items-grid');
-
-        function addUvLink(el){
-            el.setAttribute('data-uv-added', 'true')
-            const queue = el.getAttribute('data-queue');
-            const asin = el.getAttribute('data-asin');
-            const uvUrl = `${location.origin}${location.pathname}?queue=${queue}&asin=${asin}`;
-            const btnContainer = el.querySelector('.vh-btn-container');
-            btnContainer.innerHTML +=`<span class="a-button a-button-primary" style="width:40%;">
-  <span class="a-button-inner">
-    <a href="${uvUrl}" target="_blank" class="a-button-text">🦙UV</a>
-  </span>
-</span>`
+  if(location.hash === '#monitorLoadAllListeners'){
+    function addUvLink(el){
+      el.setAttribute('data-uv-added', 'true')
+      const queue = el.getAttribute('data-queue');
+      const asin = el.getAttribute('data-asin');
+      const uvUrl = `${location.origin}${location.pathname}?queue=${queue}&asin=${asin}`;
+      const btnContainer = el.querySelector('.vh-btn-container');
+      btnContainer.innerHTML +=`<span class="a-button a-button-primary" style="width:40%;"><span class="a-button-inner"><a href="${uvUrl}" target="_blank" class="a-button-text">🦙UV</a></span></span>`
     }
 
-        setInterval(()=>{
-            gridContainerEl.querySelectorAll(':scope > .vh-gridview:not([data-uv-added])').forEach((el)=>{
-                addUvLink(el)
-            });
-        }, 1000);
-    }
+    setInterval(()=>{
+      document.querySelectorAll('#vvp-items-grid > .vh-gridview:not([data-uv-added])').forEach((el)=>{
+        addUvLink(el)
+      });
+    }, 1000);
+  }
 })();

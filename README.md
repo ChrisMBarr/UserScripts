@@ -22,10 +22,14 @@ Exactly what you think it does. When you visit **The Daily Beast**, **The Washin
 
 
 
+## Amazon Vine - Vine Helper with UltraViner links
+**[📜 Install Amazon Vine Mobile CSS](https://raw.githubusercontent.com/ChrisMBarr/UserScripts/main/src/vine-helper-with-ultraviner-links.user.js)**
+If you want to use the Vine Helper notification monitor, but have links open in UltraViner!
+
+
 ## Amazon Vine Mobile CSS
 **[📜 Install Amazon Vine Mobile CSS](https://raw.githubusercontent.com/ChrisMBarr/UserScripts/main/src/amazon-vine-mobile-styles.user.js)**
 A simple way to add [Thorvarium's Vine Styling](https://github.com/Thorvarium/vine-styling) CSS for mobile browsers
-
 
 
 ## Stack Overflow Enhancer

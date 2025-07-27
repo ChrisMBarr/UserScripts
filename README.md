@@ -189,3 +189,9 @@ degreeType: [
 ```
 
 The script will do it's best to find a match, and if multiples are found it will select which ever one is first in the provided array.
+
+# Misc.
+
+## Flophouse Recommends Scraper
+A little script to scrape the recommendations off of the https://flophouserecommends.com site and put them into a textbox
+**[📜 Install Flophouse Recommends Scraper Script](https://raw.githubusercontent.com/ChrisMBarr/UserScripts/main/src/flophouse-recommends-scraper.user.js)**

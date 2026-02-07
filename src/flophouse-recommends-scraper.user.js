@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Flophouse Recommends Scraper
 // @namespace    https://github.com/ChrisMBarr/UserScripts
-// @version      0.0.2
+// @version      0.0.3
 // @description  Grab the Flophouse movie recommendations data as a simple list
 // @author       Chris Barr
 // @homepageURL  https://github.com/ChrisMBarr/UserScripts
@@ -14,7 +14,7 @@
 (function () {
   "use strict";
 
-  function scrape(isText) {
+  function getEpisodeData() {
     const hostRecEls = document.querySelectorAll("#main > .flex > div");
     const episodeTitleText = document.querySelector("#main > h2").textContent;
     const episodeTitleParts = /Episode (\d+):(.+)/.exec(episodeTitleText);
@@ -42,19 +42,29 @@
       episodeObj.hosts.push(hostObj);
     });
 
+    return episodeObj;
+  }
+
+  function showTextarea(isText) {
+    const episodeObj = getEpisodeData();
     const textAreaEl = document.createElement("textarea");
     if (isText) {
-
-      textAreaEl.value = episodeObj.hosts.map((host) => {
-        const recLinks = host.recommendations.map((rec) => `${rec.movie}
+      textAreaEl.value = episodeObj.hosts
+        .map((host) => {
+          const recLinks = host.recommendations
+            .map(
+              (rec) => `${rec.movie}
 ${rec.imdb}
-${rec.letterboxd}`).join("\n\n");
+${rec.letterboxd}`
+            )
+            .join("\n\n");
 
-        return `--------------------
+          return `--------------------
 ${host.name}
 --------------------
-${recLinks}`
-      }).join('\n\n');
+${recLinks}`;
+        })
+        .join("\n\n");
     } else {
       textAreaEl.value = JSON.stringify(episodeObj, null, 2);
     }
@@ -74,17 +84,19 @@ ${recLinks}`
     document.body.appendChild(closeButtonEl);
   }
 
-  const scrapeAdTextButtonEl = document.createElement("button");
-  scrapeAdTextButtonEl.innerText = "Scrape as Text";
-  scrapeAdTextButtonEl.setAttribute("style", "position:fixed; top:.5rem; right:.5rem;");
-  scrapeAdTextButtonEl.setAttribute("class", "bg-gray-200 rounded-lg p-2");
-  scrapeAdTextButtonEl.onclick = () => scrape(true);
-  document.body.appendChild(scrapeAdTextButtonEl);
+  if (/\d$/.test(location.pathname)) {
+    const scrapeAdTextButtonEl = document.createElement("button");
+    scrapeAdTextButtonEl.innerText = "Scrape as Text";
+    scrapeAdTextButtonEl.setAttribute("style", "position:fixed; top:.5rem; right:.5rem;");
+    scrapeAdTextButtonEl.setAttribute("class", "bg-gray-200 rounded-lg p-2");
+    scrapeAdTextButtonEl.onclick = () => showTextarea(true);
+    document.body.appendChild(scrapeAdTextButtonEl);
 
-  const scrapeAsJsonButtonEl = document.createElement("button");
-  scrapeAsJsonButtonEl.innerText = "Scrape as JSON";
-  scrapeAsJsonButtonEl.setAttribute("style", "position:fixed; top:3.5rem; right:.5rem;");
-  scrapeAsJsonButtonEl.setAttribute("class", "bg-gray-200 rounded-lg p-2");
-  scrapeAsJsonButtonEl.onclick = () => scrape(false);
-  document.body.appendChild(scrapeAsJsonButtonEl);
+    const scrapeAsJsonButtonEl = document.createElement("button");
+    scrapeAsJsonButtonEl.innerText = "Scrape as JSON";
+    scrapeAsJsonButtonEl.setAttribute("style", "position:fixed; top:3.5rem; right:.5rem;");
+    scrapeAsJsonButtonEl.setAttribute("class", "bg-gray-200 rounded-lg p-2");
+    scrapeAsJsonButtonEl.onclick = () => showTextarea(false);
+    document.body.appendChild(scrapeAsJsonButtonEl);
+  }
 })();
